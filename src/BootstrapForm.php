@@ -2,9 +2,11 @@
 
 namespace Bgaze\BootstrapForm;
 
+use Illuminate\Routing\Route;
 use Illuminate\Database\Eloquent\Model;
 use Collective\Html\HtmlBuilder;
 use Collective\Html\FormBuilder;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
@@ -157,22 +159,28 @@ class BootstrapForm
      */
     protected function initModelForm(Model $model)
     {
-        // Get action details based on model existance.
-        if ($model->exists) {
-            $method = 'PUT';
-            $action = $this->update;
-        } else {
-            $method = 'POST';
-            $action = $this->store;
-        }
+        // Adjust form settings based on model existance.
+        if ($model->exists && $this->update) {
+            // Set form method.
+            $this->attributes->method = 'PUT';
 
-        // Set method based on model existance.
-        $this->attributes->method = $method;
+            // Set form action.
+            if (is_array($this->update)) {
+                $type = Str::contains(Arr::first($this->update), '@') ? 'action' : 'route';
+                $this->attributes->{$type} = $this->update;
+                $this->attributes->{$type}[] = $model->getRouteKey();
+            } else {
+                $type = Str::contains($this->update, '@') ? 'action' : 'route';
+                $this->attributes->{$type} = [$this->update, $model->getRouteKey()];
+            }
+        } elseif (!$model->exists && $this->store) {
+            // Set form method.
+            $this->attributes->method = 'POST';
 
-        // Set action if provided.
-        if ($action) {
-            $layout = Str::contains($action, '@') ? 'action' : 'route';
-            $this->attributes->{$layout} = [$action, $model->getRouteKey()];
+            // Set form action.
+            $name = is_array($this->store) ? Arr::first($this->store) : $this->store;
+            $type = Str::contains($name, '@') ? 'action' : 'route';
+            $this->attributes->{$type} = $this->store;
         }
     }
 
@@ -192,7 +200,6 @@ class BootstrapForm
         // If model, open model form.
         if ($this->model instanceof Model) {
             $this->initModelForm($this->model);
-            //dd($this->model, $this->attributes->toArray());
             return $this->form->model($this->model, $this->attributes->toArray())->toHtml();
         }
 
