@@ -1,0 +1,36 @@
+{
+    "name": "bgaze/bootstrap-form",
+    "description": "Laravel 5 form wrappers for Bootstrap 4.",
+    "keywords": [
+        "laravel",
+        "form",
+        "bootstrap"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bgaze",
+            "email": "benjamin@bgaze.fr"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "laravelcollective/html": ">=5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bgaze\\BootstrapForm\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bgaze\\BootstrapForm\\BootstrapFormServiceProvider"
+            ],
+            "aliases": {
+                "BF": "Bgaze\\BootstrapForm\\Support\\Facades\\BF"
+            }
+        }
+    },
+    "minimum-stability": "dev"
+}
