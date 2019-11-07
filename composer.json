@@ -1,6 +1,6 @@
 {
     "name": "bgaze/bootstrap-form",
-    "description": "Laravel 5 form wrappers for Bootstrap 4.",
+    "description": "Bootstrap 4 forms builder for Laravel 5.8+",
     "keywords": [
         "laravel",
         "form",
@@ -15,7 +15,8 @@
     ],
     "require": {
         "php": ">=7.0",
-        "laravelcollective/html": ">=5.0"
+        "illuminate/support": ">=5.8",
+        "laravelcollective/html": ">=5.8"
     },
     "autoload": {
         "psr-4": {
