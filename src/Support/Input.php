@@ -28,6 +28,7 @@ use BF;
  * @property bool   $pull_right
  * @property string $left_class
  * @property string $right_class
+ * @property string $spacer
  */
 abstract class Input
 {
@@ -321,6 +322,14 @@ abstract class Input
             $this->label_attributes->addClass('col-form-label')->addClass($this->left_class);
         }
 
+        if ($this->layout === 'inline' && $this->hspace) {
+            $this->label_attributes->addClass($this->hspace);
+        }
+
+        if ($this->layout === 'inline' && $this->vspace) {
+            $this->label_attributes->addClass($this->vspace);
+        }
+
         return $this->label();
     }
 
@@ -336,8 +345,17 @@ abstract class Input
         $content .= $this->help();
 
         $attributes = Attributes::make();
+
         if ($this->layout === 'horizontal') {
-            $attributes->addClass($this->pull_left ? 'col' : $this->right_class);
+            $attributes->addClass($this->pull_right ? 'col' : $this->right_class);
+        }
+
+        if ($this->layout === 'inline' && $this->hspace) {
+            $attributes->addClass($this->hspace);
+        }
+
+        if ($this->layout === 'inline' && $this->vspace) {
+            $attributes->addClass($this->vspace);
         }
 
         return $this->html->tag('div', $content, $attributes->toArray())->toHtml();

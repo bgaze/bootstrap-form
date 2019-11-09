@@ -48,7 +48,7 @@ return [
 
     // You can add an empty left column to checkboxes, radios and fields without 
     // label to preserve fields alignment.
-    // Set to false to disable this feature, or set the HTML class attribute to use.
+    // Set to false to disable this feature, or set the HTML class to add.
     'pull_right' => 'hidden-md-down col-lg-2 col-xl-3',
 
     // The width of left column (labels).
@@ -56,6 +56,25 @@ return [
 
     // The width of right column (fields).
     'right_class' => 'col-lg-10 col-xl-9',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Inline forms
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify the default options for the inline form layout.
+    |
+    */
+
+    // The horizontal blank space between fields.
+    // Set to false to disable this feature, or set the HTML class to add on 
+    // fields and labels.
+    'hspace' => 'mr-2',
+
+    // The vertical blank space between fields.
+    // Set to false to disable this feature, or set the HTML class to add on 
+    // fields and labels.
+    'vspace' => 'mb-2',
 
     /*
     |--------------------------------------------------------------------------

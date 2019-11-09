@@ -62,6 +62,13 @@ class BootstrapForm
     protected $attributes;
 
     /**
+     * Wether a form is currently opened.
+     * 
+     * @var \Bgaze\BootstrapForm\Support\Attributes 
+     */
+    protected $opened;
+
+    /**
      * Constructor.
      *
      */
@@ -121,6 +128,9 @@ class BootstrapForm
 
         // Set default attributes.
         $this->attributes = Attributes::make(['role' => 'form']);
+
+        // Mark form as closed.
+        $this->opened = false;
     }
 
     /**
@@ -196,6 +206,9 @@ class BootstrapForm
     {
         // Configure form.
         $this->initForm($options);
+
+        // Mark form as opened.
+        $this->opened = true;
 
         // If model, open model form.
         if ($this->model instanceof Model) {
@@ -532,21 +545,45 @@ class BootstrapForm
     }
 
     /**
+     * Create options for Boostrap styled button.
+     *
+     * @param  string  $style
+     * @param  mixed   $options
+     * @return string
+     */
+    protected function buttonOption($style, $options)
+    {
+        $class = '';
+
+        if ($this->opened && $this->layout === 'inline') {
+            if ($this->hspace) {
+                $class .= $this->hspace . ' ';
+            }
+
+            if ($this->vspace) {
+                $class .=  $this->vspace . ' ';
+            }
+        }
+
+        $class .= 'btn btn-';
+
+        if (is_array($options)) {
+            return array_merge(['class' => $class . $style], $options);
+        }
+
+        return ['class' => $class . (empty($options) ? $style : $options)];
+    }
+
+    /**
      * Create a Boostrap submit button.
      *
      * @param  string  $value
      * @param  mixed   $options
      * @return string
      */
-    public function submit($value = null, $options = 'primary')
+    public function submit($value = null, $options = null)
     {
-        if (is_array($options)) {
-            $options = array_merge(['class' => 'btn btn-primary'], $options);
-        } else {
-            $options = ['class' => 'btn btn-' . $options];
-        }
-
-        return $this->form->submit($value, $options);
+        return $this->form->submit($value, $this->buttonOption('primary', $options));
     }
 
     /**
@@ -556,15 +593,9 @@ class BootstrapForm
      * @param  mixed   $options
      * @return string
      */
-    public function reset($value = null, $options = 'danger')
+    public function reset($value = null, $options = null)
     {
-        if (is_array($options)) {
-            $options = array_merge(['class' => 'btn btn-danger'], $options);
-        } else {
-            $options = ['class' => 'btn btn-' . $options];
-        }
-
-        return $this->form->reset($value, $options);
+        return $this->form->reset($value, $this->buttonOption('danger', $options));
     }
 
     /**
@@ -574,14 +605,8 @@ class BootstrapForm
      * @param  mixed   $options
      * @return string
      */
-    public function button($value = null, $options = 'primary')
+    public function button($value = null, $options = null)
     {
-        if (is_array($options)) {
-            $options = array_merge(['class' => 'btn btn-primary'], $options);
-        } else {
-            $options = ['class' => 'btn btn-' . $options];
-        }
-
-        return $this->form->button($value, $options);
+        return $this->form->button($value, $this->buttonOption('primary', $options));
     }
 }
