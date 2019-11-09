@@ -1,11 +1,14 @@
 # Bootstrap 4 forms builder for Laravel 5.8+ <!-- omit in toc --> 
 
+> BF is mainly inspired by [Dwight Watson's](https://github.com/dwightwatson/bootstrap-form) and [Michael Burgin's](https://github.com/realripley00/bootstrap-form) awesome work.  
+> Credits and many thanks to them :-)
+
 This package (BF) uses in background [Laravel Collective HTML helpers](https://laravelcollective.com/docs/5.8/html) to simplify Bootstrap 4 forms creation into Laravel applications.
 
 Model form binding and automatic error display are supported, as well as all Bootstrap forms features : form layouts, custom fields, input groups, ... 
 
-> BF is heavily inspired by [Dwight Watson's](https://github.com/dwightwatson/bootstrap-form) and [Michael Burgin's](https://github.com/realripley00/bootstrap-form) awesome work.  
-> Credits and many thanks to them :-)
+Any contribution or feedback is highly welcomed.  
+For that, please create a pull request or [submit a new issue](https://github.com/bgaze/bootstrap-form/issues/new).
 
 ## Table of content <!-- omit in toc --> 
 
@@ -243,7 +246,7 @@ An array of options.
 
 All the input functions accept following common options in addition to their specific ones.
 
-> The `layout` option allows to override the current context layout: for instance, you can add a horizontal form group inside a vertical form.
+> The `layout` option allows to override the current context layout: for instance, you can add a horizontal form group into a vertical form.
 > As this is not a planned Bootstrap feature, you'll probably need to adapt CSS accordingly.
 
 | Option                            | Default&nbsp;value              | Accepted&nbsp;values           | Decription                                                                                                                   |
@@ -388,14 +391,14 @@ In addition to [common options](#form-inputs), following ones are accepted:
 
 | Option                        | Default value                   | Accepted values        | Decription                                                                                           |
 | :---------------------------- | :------------------------------ | :--------------------- | :--------------------------------------------------------------------------------------------------- |
-| text&nbsp;<sup>**1**</sup>    | "Choose file"                   | string                 | The placeholder text                                                                                 |
-| button&nbsp;<sup>**1**</sup>  | null                            | string                 | The button text                                                                                      |
-| append&nbsp;<sup>**1**</sup>  | false                           | false / string / array | An input group prefix (see [Input groups](#input-groups))                                            |
-| prepend&nbsp;<sup>**1**</sup> | false                           | false / string / array | An input group suffix (see [Input groups](#input-groups))                                            |
-| custom                        | Inherited&nbsp;<sup>**2**</sup> | bool                   | Create a custom file input ([doc](https://getbootstrap.com/docs/4.3/components/forms/#file-browser)) |
+| custom                        | Inherited&nbsp;<sup>**1**</sup> | bool                   | Create a custom file input ([doc](https://getbootstrap.com/docs/4.3/components/forms/#file-browser)) |
+| text&nbsp;<sup>**2**</sup>    | "Choose file"                   | string                 | The placeholder text                                                                                 |
+| button&nbsp;<sup>**2**</sup>  | null                            | string                 | The button text                                                                                      |
+| append&nbsp;<sup>**2**</sup>  | false                           | false / string / array | An input group prefix (see [Input groups](#input-groups))                                            |
+| prepend&nbsp;<sup>**2**</sup> | false                           | false / string / array | An input group suffix (see [Input groups](#input-groups))                                            |
 
-<small>**1:** Custom file inputs only.</small>  
-<small>**2:** Inherited from current form options, or package configuration if no opened form.</small>  
+<small>**1:** Inherited from current form options, or package configuration if no opened form.</small>  
+<small>**2:** Custom file inputs only.</small>  
 
 ### Range input
 
