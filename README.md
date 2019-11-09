@@ -484,8 +484,8 @@ If you pass an array, it will be merge on `['class' => 'btn btn-xxx']`, with `xx
 Signature:
 
 ```html
-BF::submit($value = null, $options = 'primary')
-@submit($value = null, $options = 'primary')
+BF::submit($value = null, $options = null)
+@submit($value = null, $options = null)
 ```
 
 Examples:
@@ -511,8 +511,8 @@ Examples:
 Signature:
 
 ```html
-BF::reset($value = null, $options = 'danger')
-@reset($value = null, $options = 'danger')
+BF::reset($value = null, $options = null)
+@reset($value = null, $options = null)
 ```
 
 Examples:
@@ -538,8 +538,8 @@ Examples:
 Signature:
 
 ```html
-BF::button($value = null, $options = 'primary')
-@button($value = null, $options = 'primary')
+BF::button($value = null, $options = null)
+@button($value = null, $options = null)
 ```
 
 Examples:
