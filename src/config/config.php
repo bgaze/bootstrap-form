@@ -7,7 +7,7 @@ return [
     | Blade directives
     |--------------------------------------------------------------------------
     |
-    | Here you may specify if blade directives should be enabled.
+    | Here you may specify if blade directives must be enabled.
     |
     */
 
@@ -27,18 +27,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Horizontal form default sizing
+    | Horizontal forms
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default widths of the columns if you're using
-    | the horizontal form layout. You can use the Bootstrap grid classes as you
-    | wish.
+    | Here you may specify the default options for the forizontal form layout.
     |
     */
 
-    'left_column_class'  => 'col-lg-2 col-xl-3',
-    'right_column_class' => 'col-lg-10 col-xl-9',
-    
+    // You can add an empty left column to checkboxes, radios and fields without 
+    // label to preserve fields alignment.
+    // Set to false to disable this feature, or set the HTML class attribute to use.
+    'pull_right' => 'hidden-md-down col-lg-2 col-xl-3',
+
+    // The width of left column (labels).
+    'left_class' => 'col-lg-2 col-xl-3',
+
+    // The width of right column (fields).
+    'right_class' => 'col-lg-10 col-xl-9',
+
     /*
     |--------------------------------------------------------------------------
     | Error output

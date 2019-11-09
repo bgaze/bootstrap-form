@@ -25,8 +25,8 @@ use Bgaze\BootstrapForm\Inputs;
  * @property string $store
  * @property string $update
  * @property string $layout
- * @property string $left_column_class
- * @property string $right_column_class
+ * @property string $left_class
+ * @property string $right_class
  * @property bool   $show_all_errors
  */
 class BootstrapForm

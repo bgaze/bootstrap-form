@@ -18,17 +18,20 @@ class FileInput extends Input
     use HasAddons;
 
     /**
-     * Input specific configuration defaults.
+     * Get the input default options.
+     *
+     * @return Collection
      */
-    const DEFAULTS = [
-        'help' => false,
-        'pull_right' => true,
-        'custom' => false,
-        'text' => 'Choose file',
-        'button' => null,
-        'prepend' => false,
-        'append' => false,
-    ];
+    protected function defaults()
+    {
+        return parent::defaults()->merge([
+            'custom' => false,
+            'text' => 'Choose file',
+            'button' => null,
+            'prepend' => false,
+            'append' => false,
+        ]);
+    }
 
     /**
      * The class constructor.

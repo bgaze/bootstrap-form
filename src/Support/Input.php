@@ -4,6 +4,7 @@ namespace Bgaze\BootstrapForm\Support;
 
 use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Bgaze\BootstrapForm\Support\Traits\HasSettings;
 use Bgaze\BootstrapForm\Support\Attributes;
@@ -11,35 +12,27 @@ use BF;
 
 /**
  * Input settings:
- * 
+ *
  * @property string $errors
  * @property string $name
  * @property string $value
  * @property mixed  $label
  * @property bool   $group
  * @property string $help
- * @property bool   $pull_right
- * 
+ *
  * Inherited from form:
- * 
- * @property string $error_bag
+ *
  * @property string $layout
- * @property string $left_column_class
- * @property string $right_column_class
+ * @property string $error_bag
  * @property bool   $show_all_errors
+ * @property bool   $pull_right
+ * @property string $left_class
+ * @property string $right_class
  */
 abstract class Input
 {
 
     use HasSettings;
-
-    /**
-     * Input specific configuration defaults.
-     */
-    const DEFAULTS = [
-        'help' => false,
-        'pull_right' => true,
-    ];
 
     /**
      * The format to use to display error messages.
@@ -62,28 +55,28 @@ abstract class Input
 
     /**
      * The input attributes repository.
-     * 
-     * @var Attributes 
+     *
+     * @var Attributes
      */
     protected $input_attributes;
 
     /**
      * The label attributes repository.
      *
-     * @var Attributes 
+     * @var Attributes
      */
     protected $label_attributes;
 
     /**
      * The group attributes repository.
      *
-     * @var Attributes 
+     * @var Attributes
      */
     protected $group_attributes;
 
     /**
      * The class constructor.
-     * 
+     *
      * @param string $name
      * @param mixed  $label
      * @param mixed  $value
@@ -104,7 +97,7 @@ abstract class Input
 
     /**
      * Return the input as a HTML string.
-     * 
+     *
      * @return string
      */
     public function __toString()
@@ -115,16 +108,28 @@ abstract class Input
     ### CONFIGURATION ##########################################################
 
     /**
+     * Get the input default options.
+     *
+     * @return Collection
+     */
+    protected function defaults()
+    {
+        return BF::settings()->merge([
+            'help' => false,
+        ]);
+    }
+
+    /**
      * Set input configuration and attributes.
-     * 
+     *
      * @param string $name
      * @param mixed  $value
-     * @param array  $options 
+     * @param array  $options
      */
     protected function configureInput($name, $value, array $options)
     {
         // Get default settings.
-        $this->settings = BF::settings()->merge(static::DEFAULTS);
+        $this->settings = static::defaults();
 
         // Merge with provided configuration.
         $settings = collect($options)->only($this->settings->keys());
@@ -145,9 +150,9 @@ abstract class Input
 
     /**
      * Set label configuration and attributes.
-     * 
+     *
      * @param mixed $label
-     * @param array $options 
+     * @param array $options
      */
     protected function configureLabel($label, array $options)
     {
@@ -166,8 +171,8 @@ abstract class Input
 
     /**
      * Set group configuration and attributes.
-     * 
-     * @param array $options 
+     *
+     * @param array $options
      */
     protected function configureGroup(array $options)
     {
@@ -187,7 +192,7 @@ abstract class Input
     /**
      * Compile inputs errors to and HTML string.
      * Add error class to input and group if there is any errors.
-     * 
+     *
      */
     protected function getErrors()
     {
@@ -254,7 +259,7 @@ abstract class Input
 
     /**
      * Compile label to a HTML string.
-     * 
+     *
      * @return string
      */
     public function label()
@@ -268,7 +273,7 @@ abstract class Input
 
     /**
      * Compile label to a HTML string.
-     * 
+     *
      * @return string
      */
     public function help()
@@ -282,7 +287,7 @@ abstract class Input
 
     /**
      * Compile group to a HTML string.
-     * 
+     *
      * @return string
      */
     public function group()
@@ -303,17 +308,17 @@ abstract class Input
 
     /**
      * Get the "left" part of the form group (label or spacer in "pull right" mode).
-     * 
+     *
      * @return string
      */
     protected function leftGroupColumn()
     {
         if ($this->layout === 'horizontal' && $this->pull_right && !$this->label) {
-            return $this->html->tag('div', '', ['class' => $this->left_column_class])->toHtml();
+            return $this->html->tag('div', '', ['class' => $this->left_class])->toHtml();
         }
 
         if ($this->layout === 'horizontal') {
-            $this->label_attributes->addClass('col-form-label')->addClass($this->left_column_class);
+            $this->label_attributes->addClass('col-form-label')->addClass($this->left_class);
         }
 
         return $this->label();
@@ -321,7 +326,7 @@ abstract class Input
 
     /**
      * Get the "right" part of the form group (input + errors + help wrapped in a div).
-     * 
+     *
      * @return string
      */
     protected function rightGroupColumn()
@@ -332,7 +337,7 @@ abstract class Input
 
         $attributes = Attributes::make();
         if ($this->layout === 'horizontal') {
-            $attributes->addClass($this->pull_left ? 'col' : $this->right_column_class);
+            $attributes->addClass($this->pull_left ? 'col' : $this->right_class);
         }
 
         return $this->html->tag('div', $content, $attributes->toArray())->toHtml();

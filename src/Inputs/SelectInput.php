@@ -18,17 +18,20 @@ class SelectInput extends Input
     use HasAddons;
 
     /**
-     * Input specific configuration defaults.
+     * Get the input default options.
+     *
+     * @return Collection
      */
-    const DEFAULTS = [
-        'choices' => [],
-        'help' => false,
-        'pull_right' => true,
-        'custom' => false,
-        'size' => null,
-        'prepend' => false,
-        'append' => false,
-    ];
+    protected function defaults()
+    {
+        return parent::defaults()->merge([
+            'choices' => [],
+            'custom' => false,
+            'size' => null,
+            'prepend' => false,
+            'append' => false,
+        ]);
+    }
 
     /**
      * The class constructor.

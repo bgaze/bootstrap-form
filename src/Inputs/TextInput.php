@@ -17,16 +17,19 @@ class TextInput extends Input
     use HasAddons;
 
     /**
-     * Input specific configuration defaults.
+     * Get the input default options.
+     *
+     * @return Collection
      */
-    const DEFAULTS = [
-        'tag' => 'text',
-        'help' => false,
-        'pull_right' => true,
-        'prepend' => false,
-        'append' => false,
-        'size' => null,
-    ];
+    protected function defaults()
+    {
+        return parent::defaults()->merge([
+            'tag' => 'text',
+            'size' => null,
+            'prepend' => false,
+            'append' => false,
+        ]);
+    }
 
     /**
      * Instanciate a TextInput.

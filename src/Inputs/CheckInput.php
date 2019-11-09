@@ -7,8 +7,8 @@ use Bgaze\BootstrapForm\Support\Input;
 /**
  * Specific settings:
  * 
- * @property bool   $disable_errors
  * @property string $tag
+ * @property bool   $disable_errors
  * @property bool   $checked
  * @property bool   $inline
  * @property bool   $custom
@@ -18,18 +18,21 @@ class CheckInput extends Input
 {
 
     /**
-     * Input specific configuration defaults.
+     * Get the input default options.
+     *
+     * @return Collection
      */
-    const DEFAULTS = [
-        'disable_errors' => false,
-        'tag' => 'checkbox',
-        'checked' => null,
-        'help' => false,
-        'pull_right' => true,
-        'inline' => false,
-        'custom' => false,
-        'switch' => false,
-    ];
+    protected function defaults()
+    {
+        return parent::defaults()->merge([
+            'tag' => 'checkbox',
+            'disable_errors' => false,
+            'checked' => null,
+            'inline' => false,
+            'custom' => false,
+            'switch' => false,
+        ]);
+    }
 
     /**
      * The class constructor.
@@ -171,7 +174,7 @@ class CheckInput extends Input
     protected function leftGroupColumn()
     {
         if ($this->layout === 'horizontal' && $this->pull_right) {
-            return $this->html->tag('div', '', ['class' => $this->left_column_class])->toHtml();
+            return $this->html->tag('div', '', ['class' => $this->left_class])->toHtml();
         }
 
         return '';

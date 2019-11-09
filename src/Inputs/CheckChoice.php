@@ -18,22 +18,25 @@ class CheckChoice extends Input
 {
 
     /**
-     * Input specific configuration defaults.
-     */
-    const DEFAULTS = [
-        'tag' => 'checkbox',
-        'choices' => [],
-        'help' => false,
-        'pull_right' => true,
-        'inline' => false,
-        'custom' => false,
-        'switch' => false,
-    ];
-
-    /**
      * The format to use to display error messages.
      */
     const ERRORS_FORMAT = '<div class="invalid-feedback d-block">:message</div>';
+
+    /**
+     * Get the input default options.
+     *
+     * @return Collection
+     */
+    protected function defaults()
+    {
+        return parent::defaults()->merge([
+            'tag' => 'checkbox',
+            'choices' => [],
+            'inline' => false,
+            'custom' => false,
+            'switch' => false,
+        ]);
+    }
 
     /**
      * The class constructor.

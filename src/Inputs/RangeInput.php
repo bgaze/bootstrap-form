@@ -13,13 +13,16 @@ class RangeInput extends Input
 {
 
     /**
-     * Input specific configuration defaults.
+     * Get the input default options.
+     *
+     * @return Collection
      */
-    const DEFAULTS = [
-        'help' => false,
-        'pull_right' => true,
-        'custom' => false,
-    ];
+    protected function defaults()
+    {
+        return parent::defaults()->merge([
+            'custom' => false,
+        ]);
+    }
 
     /**
      * Instanciate a RangeInput.
