@@ -74,7 +74,7 @@ return [
     // The vertical blank space between fields.
     // Set to false to disable this feature, or set the HTML class to add on 
     // fields and labels.
-    'vspace' => 'mb-2',
+    'vspace' => 'my-1',
 
     /*
     |--------------------------------------------------------------------------
