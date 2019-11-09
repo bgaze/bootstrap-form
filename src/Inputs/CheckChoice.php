@@ -33,7 +33,6 @@ class CheckChoice extends Input
             'tag' => 'checkbox',
             'choices' => [],
             'inline' => false,
-            'custom' => false,
             'switch' => false,
         ]);
     }

@@ -29,7 +29,6 @@ class CheckInput extends Input
             'disable_errors' => false,
             'checked' => null,
             'inline' => false,
-            'custom' => false,
             'switch' => false,
         ]);
     }

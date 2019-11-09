@@ -13,18 +13,6 @@ class RangeInput extends Input
 {
 
     /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
-    {
-        return parent::defaults()->merge([
-            'custom' => false,
-        ]);
-    }
-
-    /**
      * Instanciate a RangeInput.
      * 
      * @param string $name

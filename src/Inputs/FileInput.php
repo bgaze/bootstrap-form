@@ -25,7 +25,6 @@ class FileInput extends Input
     protected function defaults()
     {
         return parent::defaults()->merge([
-            'custom' => false,
             'text' => 'Choose file',
             'button' => null,
             'prepend' => false,

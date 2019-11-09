@@ -26,7 +26,6 @@ class SelectInput extends Input
     {
         return parent::defaults()->merge([
             'choices' => [],
-            'custom' => false,
             'size' => null,
             'prepend' => false,
             'append' => false,

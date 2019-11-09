@@ -23,12 +23,14 @@ class TextInput extends Input
      */
     protected function defaults()
     {
-        return parent::defaults()->merge([
-            'tag' => 'text',
-            'size' => null,
-            'prepend' => false,
-            'append' => false,
-        ]);
+        return parent::defaults()
+            ->except('custom')
+            ->merge([
+                'tag' => 'text',
+                'size' => null,
+                'prepend' => false,
+                'append' => false,
+            ]);
     }
 
     /**
