@@ -4,7 +4,7 @@
     <img src="./intro.png">
 </p>
 
-This package uses in background [Laravel Collective HTML helpers](https://laravelcollective.com/docs/5.8/html) to simplify Bootstrap 4 forms creation into Laravel applications.
+This package uses in background [Laravel Collective HTML](https://laravelcollective.com/docs/5.8/html) to simplify Bootstrap 4 forms creation into Laravel applications.
 
 Model form binding and automatic error display are supported, as well as all Bootstrap forms features : form layouts, custom fields, input groups, ... 
 
