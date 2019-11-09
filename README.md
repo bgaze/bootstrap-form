@@ -160,8 +160,8 @@ Please find below available form options.
 | vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The vertical blank space between fields                                                              |
 
 <small>**1:** Inherited from package configuration.</small>  
-<small>**2:** Horizontal forms only.</small>  
-<small>**3:** Inline forms only.</small>  
+<small>**2:** Horizontal layout only.</small>  
+<small>**3:** Inline layout only.</small>  
 
 ### Form variations
 
@@ -241,7 +241,10 @@ An array of options.
 
 ### Common form inputs options
 
-All the input functions accept following options in addition to their specific ones:
+All the input functions accept following common options in addition to their specific ones.
+
+> The `layout` option allows to override the current context layout: for instance, you can add a horizontal form group inside a vertical form.
+> As this is not a planned Bootstrap feature, you'll probably need to adapt CSS accordingly.
 
 | Option                            | Default&nbsp;value              | Accepted&nbsp;values           | Decription                                                                                                                   |
 | :-------------------------------- | :------------------------------ | :----------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
@@ -257,7 +260,8 @@ All the input functions accept following options in addition to their specific o
 | vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The vertical blank space between fields                                                                                      |
 
 <small>**1:** Inherited from current form options, or package configuration if no opened form.</small>  
-<small>**2:** Horizontal forms only.</small>  
+<small>**2:** Horizontal layout only.</small>  
+<small>**3:** Inline layout only.</small>  
 
 ### Text inputs
 
@@ -390,7 +394,7 @@ In addition to [common options](#form-inputs), following ones are accepted:
 | prepend&nbsp;<sup>**1**</sup> | false                           | false / string / array | An input group suffix (see [Input groups](#input-groups))                                            |
 | custom                        | Inherited&nbsp;<sup>**2**</sup> | bool                   | Create a custom file input ([doc](https://getbootstrap.com/docs/4.3/components/forms/#file-browser)) |
 
-<small>**1:** custom file inputs only.</small>  
+<small>**1:** Custom file inputs only.</small>  
 <small>**2:** Inherited from current form options, or package configuration if no opened form.</small>  
 
 ### Range input
