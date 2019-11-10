@@ -66,14 +66,17 @@ return [
     |
     */
 
-    // The horizontal blank space between fields.
-    // Set to false to disable this feature, or set the HTML class to add on 
-    // fields and labels.
-    'hspace' => 'mr-2',
+    // The horizontal blank space between label and field.
+    // Set to false to disable this feature, or set the HTML class to add on labels.
+    // This setting doesn't applies to checkboxes and radios: CSS is needed for that.
+    'lspace' => 'mr-2',
 
-    // The vertical blank space between fields.
-    // Set to false to disable this feature, or set the HTML class to add on 
-    // fields and labels.
+    // The horizontal blank space between form group.
+    // Set to false to disable this feature, or set the HTML class to add on form groups. 
+    'hspace' => 'mr-3',
+
+    // The vertical blank space between form group.
+    // Set to false to disable this feature, or set the HTML class to add on form groups. 
     'vspace' => 'my-1',
 
     /*
@@ -81,7 +84,7 @@ return [
     | Error output
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the whether all the errors of an input should be
+    | Here you may specify whether all the errors of an input should be
     | displayed or just the first one.
     |
     */

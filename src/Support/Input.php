@@ -298,8 +298,17 @@ abstract class Input
         }
 
         $this->group_attributes->addClass('form-group');
+
         if ($this->layout === 'horizontal') {
             $this->group_attributes->addClass('row');
+        }
+
+        if ($this->layout === 'inline' && $this->hspace) {
+            $this->group_attributes->addClass($this->hspace);
+        }
+
+        if ($this->layout === 'inline' && $this->vspace) {
+            $this->group_attributes->addClass($this->vspace);
         }
 
         $content = $this->leftGroupColumn() . $this->rightGroupColumn();
@@ -322,12 +331,8 @@ abstract class Input
             $this->label_attributes->addClass('col-form-label')->addClass($this->left_class);
         }
 
-        if ($this->layout === 'inline' && $this->hspace) {
-            $this->label_attributes->addClass($this->hspace);
-        }
-
-        if ($this->layout === 'inline' && $this->vspace) {
-            $this->label_attributes->addClass($this->vspace);
+        if ($this->layout === 'inline' && $this->lspace) {
+            $this->label_attributes->addClass($this->lspace);
         }
 
         return $this->label();
@@ -348,14 +353,6 @@ abstract class Input
 
         if ($this->layout === 'horizontal') {
             $attributes->addClass($this->pull_right ? 'col' : $this->right_class);
-        }
-
-        if ($this->layout === 'inline' && $this->hspace) {
-            $attributes->addClass($this->hspace);
-        }
-
-        if ($this->layout === 'inline' && $this->vspace) {
-            $attributes->addClass($this->vspace);
         }
 
         return $this->html->tag('div', $content, $attributes->toArray())->toHtml();
