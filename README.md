@@ -46,12 +46,13 @@ Simply install the package using Composer:
 composer require bgaze/bootstrap-form
 ```
 
-There are a various configuration options available.  
-Publish the configuration file to customize them:
+There are a various configuration options available, publish the configuration file to customize them:
 
 ```shell
 php artisan vendor:publish --provider=Bgaze\BootstrapForm\BootstrapFormServiceProvider
 ```
+
+That's it, you can start to build forms.
 
 ## Quick start
 
@@ -62,13 +63,13 @@ In this doc, we'll mainly use blade directives as it is probably the most common
 Following examples are exactly the same:
 
 ```html
-echo BF::open(['url' => 'some-url']);
+echo BF::open(['url' => '/login']);
 echo BF::text('test', 'My test field');
 echo BF::close();
 ```
 
 ```html
-@open(['url' => 'some-url'])
+@open(['url' => '/login'])
 @text('test', 'My test field')
 @close
 ```
@@ -76,7 +77,7 @@ echo BF::close();
 They both will produce this HTML code:
 
 ```html
-<form method="POST" action="some-url" accept-charset="UTF-8" role="form">
+<form method="POST" action="/login" accept-charset="UTF-8" role="form">
     <input name="_token" type="hidden" value="H4qgr6kk7AlnnkxTbcUKvmEMWiFh8MaNyizdJB91">   
 
     <div id="test_group" class="form-group">
@@ -91,7 +92,7 @@ They both will produce this HTML code:
 Any form error present in the session error bag (`old` function) will be automatically displayed:
 
 ```html
-<form method="POST" action="some-url" accept-charset="UTF-8" role="form">
+<form method="POST" action="/login" accept-charset="UTF-8" role="form">
     <input name="_token" type="hidden" value="H4qgr6kk7AlnnkxTbcUKvmEMWiFh8MaNyizdJB91">   
 
     <div id="test_group" class="is-invalid form-group">
@@ -148,23 +149,24 @@ Please find below available form options.
 => Using a form option key as HTML attribute **is not possible**.  
 => Any key that is not in form's options list will be used as HTML attribute.
 
-| Option                            | Default&nbsp;value              | Accepted&nbsp;values               | Decription                                                                                           |
-| :-------------------------------- | :------------------------------ | :--------------------------------- | :--------------------------------------------------------------------------------------------------- |
-| files                             | null                            | null / true                        | Configure form enctype for file upload                                                               |
-| url                               | null                            | string                             | An url to use as form action<br>Example: `/foo/bar`                                                  |
-| route                             | null                            | string / array                     | A route to use as form action<br>Example: `users.update`                                             |
-| action                            | null                            | string / array                     | A controller action to use as form action<br>Example: `UserController@update`                        |
-| store                             | null                            | string / array                     | The store action when using model binding                                                            |
-| update                            | null                            | string / array                     | The update action when using model binding                                                           |
-| model                             | null                            | Illuminate\Database\Eloquent\Model | A model to bind to the form                                                                          |
-| layout                            | Inherited&nbsp;<sup>**1**</sup> | vertical / horizontal / inline     | The Bootstrap layout of the form ([doc](https://getbootstrap.com/docs/4.3/components/forms/#layout)) |
-| custom                            | Inherited&nbsp;<sup>**1**</sup> | bool                               | Use Bootstrap custom style by default when available                                                 |
-| show_all_errors                   | Inherited&nbsp;<sup>**1**</sup> | bool                               | Show all the errors of an input or just the first one                                                |
-| pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment |
-| left_class&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of left column                                                                     |
-| right_class&nbsp;<sup>**2**</sup> | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of right column                                                                    |
-| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between fields                                                            |
-| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The vertical blank space between fields                                                              |
+| Option                            | Default&nbsp;value              | Accepted&nbsp;values               | Decription                                                                                                          |
+| :-------------------------------- | :------------------------------ | :--------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
+| files                             | null                            | null / true                        | Configure form enctype for file upload                                                                              |
+| url                               | null                            | string                             | An url to use as form action<br>Example: `/foo/bar`                                                                 |
+| route                             | null                            | string / array                     | A route to use as form action<br>Example: `users.update`                                                            |
+| action                            | null                            | string / array                     | A controller action to use as form action<br>Example: `UserController@update`                                       |
+| store                             | null                            | string / array                     | The store action when using model binding                                                                           |
+| update                            | null                            | string / array                     | The update action when using model binding                                                                          |
+| model                             | null                            | Illuminate\Database\Eloquent\Model | A model to bind to the form                                                                                         |
+| layout                            | Inherited&nbsp;<sup>**1**</sup> | vertical / horizontal / inline     | The Bootstrap layout of the form ([doc](https://getbootstrap.com/docs/4.3/components/forms/#layout))                |
+| custom                            | Inherited&nbsp;<sup>**1**</sup> | bool                               | Use Bootstrap custom style by default when available                                                                |
+| show_all_errors                   | Inherited&nbsp;<sup>**1**</sup> | bool                               | Show all the errors of an input or just the first one                                                               |
+| pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment                |
+| left_class&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of left column                                                                                    |
+| right_class&nbsp;<sup>**2**</sup> | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of right column                                                                                   |
+| lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between labels and fields, doesn't apply to checkboxes and radios (CSS needed for those) |
+| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between fields                                                                           |
+| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The vertical blank space between fields                                                                             |
 
 <small>**1:** Inherited from package configuration.</small>  
 <small>**2:** Horizontal layout only.</small>  
@@ -263,8 +265,9 @@ All the input functions accept following common options in addition to their spe
 | pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment                         |
 | left_class&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | string                         | The default width of left column                                                                                             |
 | right_class&nbsp;<sup>**2**</sup> | Inherited&nbsp;<sup>**1**</sup> | string                         | The default width of right column                                                                                            |
-| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between fields                                                                                    |
-| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The vertical blank space between fields                                                                                      |
+| lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between label and field, doesn't apply to checkboxes and radios (CSS needed)                      |
+| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between form groups                                                                               |
+| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The vertical blank space between form groups                                                                                 |
 
 <small>**1:** Inherited from current form options, or package configuration if no opened form.</small>  
 <small>**2:** Horizontal layout only.</small>  
