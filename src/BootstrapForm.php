@@ -609,4 +609,17 @@ class BootstrapForm
     {
         return $this->form->button($value, $this->buttonOption('primary', $options));
     }
+
+    /**
+     * Create a Boostrap link button.
+     *
+     * @param  string  $url
+     * @param  string  $title
+     * @param  mixed   $options
+     * @return string
+     */
+    public function link($url, $title = null, $options = null)
+    {
+        return $this->html->link($url, $title, $this->buttonOption('primary', $options), null, false);
+    }
 }

@@ -53,7 +53,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
             'text', 'email', 'url', 'tel', 'number', 'date', 'time', 'textarea', 'password',
             'file', 'hidden', 'select', 'range',
             'checkbox', 'checkboxes', 'radio', 'radios',
-            'label', 'submit', 'reset', 'button',
+            'label', 'submit', 'reset', 'button', 'link',
         ];
 
         foreach ($functions as $f) {
