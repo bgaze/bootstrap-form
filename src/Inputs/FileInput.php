@@ -107,8 +107,33 @@ class FileInput extends Input
         $button = $this->form->label($this->input_attributes->id, $this->text, $attr, false);
 
         // Wrap elements.
-        return $this->html->tag('div', $input . $button, [
+        $input = $this->html->tag('div', $input . $button, [
             'class' => ($this->layout === 'inline') ? 'custom-file w-auto' : 'custom-file'
         ])->toHtml();
+
+        // Check if addons.
+        if (!$this->append && !$this->prepend) {
+            return $input;
+        }
+
+        // Prepare prepend group.
+        $prepend = '';
+        if ($this->prepend) {
+            $content = is_array($this->prepend) ? implode('', $this->prepend) : $this->prepend;
+            $prepend = $this->html->tag('div', $content, ['class' => 'input-group-prepend']);
+        }
+
+        // Prepare append group.
+        $append = '';
+        if ($this->append) {
+            $content = is_array($this->append) ? implode('', $this->append) : $this->append;
+            $append = $this->html->tag('div', $content, ['class' => 'input-group-append']);
+        }
+
+        // Prepare group class.
+        $class = 'input-group';
+
+        // Wrap elements.
+        return $this->html->tag('div', $prepend . $input . $append, ['class' => $class])->toHtml();
     }
 }
