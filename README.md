@@ -31,9 +31,9 @@ Please feel free to create a pull request or [submit a new issue](https://github
   - [Select input](#select-input)
   - [File input](#file-input)
   - [Range input](#range-input)
-- [Input groups](#input-groups)
 - [Misc](#misc)
   - [Hidden input](#hidden-input)
+  - [Input groups](#input-groups)
   - [Label](#label)
   - [Buttons](#buttons)
 - [Available methods and directives](#available-methods-and-directives)
@@ -149,24 +149,24 @@ Please find below available form options.
 => Using a form option key as HTML attribute **is not possible**.  
 => Any key that is not in form's options list will be used as HTML attribute.
 
-| Option                            | Default&nbsp;value              | Accepted&nbsp;values               | Decription                                                                                                          |
-| :-------------------------------- | :------------------------------ | :--------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
-| files                             | null                            | null / true                        | Configure form enctype for file upload                                                                              |
-| url                               | null                            | string                             | An url to use as form action<br>Example: `/foo/bar`                                                                 |
-| route                             | null                            | string / array                     | A route to use as form action<br>Example: `users.update`                                                            |
-| action                            | null                            | string / array                     | A controller action to use as form action<br>Example: `UserController@update`                                       |
-| store                             | null                            | string / array                     | The store action when using model binding                                                                           |
-| update                            | null                            | string / array                     | The update action when using model binding                                                                          |
-| model                             | null                            | Illuminate\Database\Eloquent\Model | A model to bind to the form                                                                                         |
-| layout                            | Inherited&nbsp;<sup>**1**</sup> | vertical / horizontal / inline     | The Bootstrap layout of the form ([doc](https://getbootstrap.com/docs/4.3/components/forms/#layout))                |
-| custom                            | Inherited&nbsp;<sup>**1**</sup> | bool                               | Use Bootstrap custom style by default when available                                                                |
-| show_all_errors                   | Inherited&nbsp;<sup>**1**</sup> | bool                               | Show all the errors of an input or just the first one                                                               |
-| pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment                |
-| left_class&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of left column                                                                                    |
-| right_class&nbsp;<sup>**2**</sup> | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of right column                                                                                   |
-| lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between labels and fields, doesn't apply to checkboxes and radios (CSS needed for those) |
-| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between fields                                                                           |
-| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The vertical blank space between fields                                                                             |
+| Option                            | Default&nbsp;value              | Accepted&nbsp;values               | Decription                                                                                                |
+| :-------------------------------- | :------------------------------ | :--------------------------------- | :-------------------------------------------------------------------------------------------------------- |
+| files                             | null                            | null / true                        | Configure form enctype for file upload                                                                    |
+| url                               | null                            | string                             | An url to use as form action<br>Example: `/foo/bar`                                                       |
+| route                             | null                            | string / array                     | A route to use as form action<br>Example: `users.update`                                                  |
+| action                            | null                            | string / array                     | A controller action to use as form action<br>Example: `UserController@update`                             |
+| store                             | null                            | string / array                     | The store action when using model binding                                                                 |
+| update                            | null                            | string / array                     | The update action when using model binding                                                                |
+| model                             | null                            | Illuminate\Database\Eloquent\Model | A model to bind to the form                                                                               |
+| layout                            | Inherited&nbsp;<sup>**1**</sup> | vertical / horizontal / inline     | The Bootstrap layout of the form ([doc](https://getbootstrap.com/docs/4.3/components/forms/#layout))      |
+| custom                            | Inherited&nbsp;<sup>**1**</sup> | bool                               | Use Bootstrap custom style by default when available                                                      |
+| show_all_errors                   | Inherited&nbsp;<sup>**1**</sup> | bool                               | Show all the errors of an input or just the first one                                                     |
+| pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment      |
+| left_class&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of left column                                                                          |
+| right_class&nbsp;<sup>**2**</sup> | Inherited&nbsp;<sup>**1**</sup> | string                             | The default width of right column                                                                         |
+| lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between labels and fields, doesn't apply to checkboxes and radios (CSS needed) |
+| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between fields                                                                 |
+| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The vertical blank space between fields                                                                   |
 
 <small>**1:** Inherited from package configuration.</small>  
 <small>**2:** Horizontal layout only.</small>  
@@ -229,7 +229,7 @@ Most of input functions accept following arguments:
 
 + **name**  
 The name of the field.  
-Unless they are explicitly provided, name will also be use as id attribute and as base for the form group id attribute.
+Unless they are explicitly provided, name will also be used as id attribute and as base for the form group id attribute.
 
 + **label**  
 The label of the field.  
@@ -361,10 +361,11 @@ BF::select($name, $label = null, $choices = [], $selected = null, array $options
 ```
 
 + **$choices:** the select options.  
-Pass a `value => label` associative array. Example: `['L' => 'Large', 'S' => 'Small']`  
+Pass a `value => label` associative array: 
+`['L' => 'Large', 'S' => 'Small']`  
 Options groups can be created using nested array. Example:  
 `['Cats' => ['leopard' => 'Leopard'],'Dogs' => ['spaniel' => 'Spaniel']]` 
-+ **$selected** argument accept an array containing the value(s) of selected option(s).  
++ **$selected:** an array of selected option(s) value(s).  
 If only one option is selected, you can pass its value directly.
 
 **Options:**
@@ -373,10 +374,10 @@ In addition to [common options](#form-inputs), following ones are accepted:
 
 | Option  | Default value                   | Accepted values        | Decription                                                                                           |
 | :------ | :------------------------------ | :--------------------- | :--------------------------------------------------------------------------------------------------- |
+| custom  | Inherited&nbsp;<sup>**1**</sup> | bool                   | Create a custom file input ([doc](https://getbootstrap.com/docs/4.3/components/forms/#file-browser)) |
 | size    | null                            | null / sm / lg         | The size of the field ([doc](https://getbootstrap.com/docs/4.3/components/forms/#sizing))            |
 | append  | false                           | false / string / array | An input group prefix (see [Input groups](#input-groups))                                            |
 | prepend | false                           | false / string / array | An input group suffix (see [Input groups](#input-groups))                                            |
-| custom  | Inherited&nbsp;<sup>**1**</sup> | bool                   | Create a custom file input ([doc](https://getbootstrap.com/docs/4.3/components/forms/#file-browser)) |
 
 <small>**1:** Inherited from current form options, or package configuration if no opened form.</small>  
 
@@ -409,6 +410,8 @@ In addition to [common options](#form-inputs), following ones are accepted:
 
 ### Range input
 
+See [documentation](https://getbootstrap.com/docs/4.3/components/forms/#range) for more details on range inputs usage.
+
 **Signature:**
 
 ```html
@@ -426,7 +429,17 @@ In addition to [common options](#form-inputs), following option is accepted:
 
 <small>**1:** Inherited from current form options, or package configuration if no opened form.</small>  
 
-## Input groups
+## Misc
+
+### Hidden input
+
+This function is an alias to [Form Builder function](https://laravelcollective.com/docs/5.8/html#text).
+
+```html
+BF::hidden($name, $value = null, $options = [])
+@hidden($name, $value = null, $options = [])
+```
+### Input groups
 
 For compatible input types, set `append` / `prepend` options to create a Bootstrap input group.  
 See [documentation](https://getbootstrap.com/docs/4.3/components/input-group/) for details.
@@ -451,17 +464,6 @@ Please note that provided HTML **is not escaped**.
 @text('input_with_addons_array', null, null, [
     'prepend' => ['<span class="input-group-text">Price</span>', '<span class="input-group-text">€</span>']
 ])
-```
-
-## Misc
-
-### Hidden input
-
-This function is an alias to [Form Builder function](https://laravelcollective.com/docs/5.8/html#text).
-
-```html
-BF::hidden($name, $value = null, $options = [])
-@hidden($name, $value = null, $options = [])
 ```
 
 ### Label
