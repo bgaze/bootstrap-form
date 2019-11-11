@@ -452,8 +452,8 @@ Please note that provided HTML **is not escaped**.
     'prepend' => '<span class="input-group-text">€</span>'
 ])
 
-@text('input_with_prepend', null, null, [
-    'prepend' => '<span class="input-group-text">€</span>'
+@text('input_with_append', null, null, [
+    'append' => '<span class="input-group-text">€</span>'
 ])
 
 @text('input_with_both', null, null, [
@@ -468,7 +468,7 @@ Please note that provided HTML **is not escaped**.
 
 ### Label
 
-This function is an alias to [Form Builder function](https://laravelcollective.com/docs/5.8/html#labels).
+This function is an alias to [Form Builder function](https://laravelcollective.com/docs/5.8/html#labels) with escaping HTML disabled by default.
 
 ```html
 BF::label($name, $value = null, array $options = [], $escapeHtml = false)
@@ -484,7 +484,8 @@ If you pass an array, it will be merge on `['class' => 'btn btn-xxx']`, with `xx
 
 **Submit button:**
 
-> Default style is `primary`.
+Default style is `primary`.  
+This function generates an `input` tag, if you want to create a `button` tag, use `BF::button()` or `@button()` instead, passing a `type` option.
 
 Signature:
 
@@ -499,19 +500,20 @@ Examples:
 @submit()
 @submit('Reset form', 'success btn-sm')
 @submit(null, ['id' => 'submit-button'])
-@submit(null, ['class' => 'custom-button'])
+@submit(null, ['class' => false])
 
 <!-- Result: -->
 
-<input class="btn btn-primary" type="submit"> 
+<input class="btn btn-primary" type="submit">
 <input class="btn btn-success btn-sm" type="submit" value="Reset form">
-<input class="btn btn-primary" id="submit-button" type="submit"> 
-<input class="custom-button" type="submit"> 
+<input class="btn btn-primary" id="submit-button" type="submit">
+<input type="submit">
 ```
 
 **Reset button:**
 
-> Default style is `danger`.
+Default style is `danger`.  
+This function generates an `input` tag, if you want to create a `button` tag, use `BF::button()` or `@button()` instead, passing a `type` option.
 
 Signature:
 
@@ -526,19 +528,19 @@ Examples:
 @reset()
 @reset('Reset form', 'warning btn-sm')
 @reset(null, ['id' => 'reset-button'])
-@reset(null, ['class' => 'custom-button'])
+@reset(null, ['class' => false])
 
 <!-- Result: -->
 
-<input class="btn btn-danger" type="reset"> 
+<input class="btn btn-danger" type="reset">
 <input class="btn btn-warning btn-sm" type="reset" value="Reset form">
-<input class="btn btn-danger" id="reset-button" type="reset"> 
-<input class="custom-button" type="reset"> 
+<input class="btn btn-danger" id="reset-button" type="reset">
+<input type="reset">
 ```
 
 **Standard button:**
 
-> Default style is `primary`.
+Default style is `primary`.
 
 Signature:
 
@@ -550,17 +552,48 @@ BF::button($value = null, $options = null)
 Examples:
 
 ```html
-@button()
-@button('Info', 'info btn-sm')
-@button('Info', ['id' => 'info-button'])
-@button('Info', ['class' => 'custom-button'])
+@button('Button')
+@button('<i class="fas fa-question-circle mr-2"></i> Info', 'info btn-sm')
+@button('<i class="fas fa-paper-plane mr-2"></i> Submit', ['class' => 'btn btn-primary', 'type' => 'submit'])
+@button('<i class="fas fa-exclamation-triangle mr-2"></i> Reset', ['class' => 'btn btn-danger', 'type' => 'submit'])
+@button('Button', ['class' => false])
 
 <!-- Result: -->
 
-<button class="btn btn-primary" type="button"></button>
-<button class="btn btn-info btn-sm" type="button">Info</button>
-<button class="btn btn-primary" id="info-button" type="button">Info</button>
-<button class="custom-button" type="button">Info</button>
+<button class="btn btn-primary" type="button">Button</button>
+<button class="btn btn-info btn-sm" type="button"><i class="fas fa-question-circle mr-2"></i> Info</button>
+<button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane mr-2"></i> Submit</button>
+<button class="btn btn-danger" type="submit"><i class="fas fa-exclamation-triangle mr-2"></i> Reset</button>
+<button type="button">Button</button>
+```
+
+**Link button:**
+
+Default style is `primary`.
+
+Signature:
+
+```html
+BF::link($url, $title = null, $options = null)
+@link($url, $title = null, $options = null)
+```
+
+Examples:
+
+```html
+@link('#', 'Button')
+@link('#', '<i class="fas fa-question-circle mr-2"></i> Info', 'info btn-sm')
+@link('#', '<i class="fas fa-paper-plane mr-2"></i> Submit', ['id' => 'submit-link'])
+@link('#', '<i class="fas fa-exclamation-triangle mr-2"></i> Reset', ['class' => 'btn btn-danger'])
+@link('#', 'Link', ['class' => false])
+
+<!-- Result: -->
+
+<a href="#" class="btn btn-primary">Button</a>
+<a href="#" class="btn btn-info btn-sm"><i class="fas fa-question-circle mr-2"></i> Info</a>
+<a href="#" class="btn btn-primary" id="submit-link"><i class="fas fa-paper-plane mr-2"></i> Submit</a>
+<a href="#" class="btn btn-danger"><i class="fas fa-exclamation-triangle mr-2"></i> Reset</a>
+<a href="#" >Link</a>
 ```
 
 ## Available methods and directives
@@ -597,3 +630,4 @@ Here is the list of available methods and directives:
 | BF::submit()      | @submit()        | Create a submit input                               |
 | BF::reset()       | @reset()         | Create a reset input                                |
 | BF::button()      | @button()        | Create a button                                     |
+| BF::link()        | @link()          | Create a link button                                |
