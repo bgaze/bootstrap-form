@@ -6,10 +6,9 @@
 
 This package uses in background [Laravel Collective HTML](https://laravelcollective.com/docs/5.8/html) to simplify Bootstrap 4 forms creation into Laravel applications.
 
-Model form binding and automatic error display are supported, as well as all Bootstrap forms features : form layouts, custom fields, input groups, ... 
+Model form binding and automatic error display are supported, as well as most of Bootstrap forms features : form layouts, custom fields, input groups, ... 
 
-Any contribution or feedback is highly welcomed. 
-Please feel free to create a pull request or [submit a new issue](https://github.com/bgaze/bootstrap-form/issues/new).
+Any contribution or feedback is highly welcomed, please feel free to create a pull request or [submit a new issue](https://github.com/bgaze/bootstrap-form/issues/new).
 
 > BF is mainly inspired by [Dwight Watson's](https://github.com/dwightwatson/bootstrap-form) and [Michael Burgin's](https://github.com/realripley00/bootstrap-form) awesome work.  
 > Credits and many thanks to them :-)
