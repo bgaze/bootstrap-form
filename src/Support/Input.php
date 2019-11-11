@@ -160,7 +160,7 @@ abstract class Input
         if ($label === false || $label === '0' || !empty($label)) {
             $this->label = $label;
         } else {
-            $this->label = str_replace('_', ' ', Str::title($this->name));
+            $this->label = str_replace('_', ' ', Str::ucfirst(Str::lower(Str::title($this->name))));
         }
 
         if (isset($options['label']) && is_array($options['label'])) {
