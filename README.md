@@ -553,17 +553,17 @@ Examples:
 
 ```html
 @button('Button')
-@button('<i class="fas fa-question-circle mr-2"></i> Info', 'info btn-sm')
-@button('<i class="fas fa-paper-plane mr-2"></i> Submit', ['class' => 'btn btn-primary', 'type' => 'submit'])
-@button('<i class="fas fa-exclamation-triangle mr-2"></i> Reset', ['class' => 'btn btn-danger', 'type' => 'submit'])
+@button('Info', 'info btn-sm')
+@button('Submit', ['class' => 'btn btn-primary', 'type' => 'submit'])
+@button('Reset', ['class' => 'btn btn-danger', 'type' => 'submit'])
 @button('Button', ['class' => false])
 
 <!-- Result: -->
 
 <button class="btn btn-primary" type="button">Button</button>
-<button class="btn btn-info btn-sm" type="button"><i class="fas fa-question-circle mr-2"></i> Info</button>
-<button class="btn btn-primary" type="submit"><i class="fas fa-paper-plane mr-2"></i> Submit</button>
-<button class="btn btn-danger" type="submit"><i class="fas fa-exclamation-triangle mr-2"></i> Reset</button>
+<button class="btn btn-info btn-sm" type="button">Info</button>
+<button class="btn btn-primary" type="submit">Submit</button>
+<button class="btn btn-danger" type="reset">Reset</button>
 <button type="button">Button</button>
 ```
 
@@ -582,17 +582,17 @@ Examples:
 
 ```html
 @link('#', 'Button')
-@link('#', '<i class="fas fa-question-circle mr-2"></i> Info', 'info btn-sm')
-@link('#', '<i class="fas fa-paper-plane mr-2"></i> Submit', ['id' => 'submit-link'])
-@link('#', '<i class="fas fa-exclamation-triangle mr-2"></i> Reset', ['class' => 'btn btn-danger'])
+@link('#', 'Info', 'info btn-sm')
+@link('#', 'Submit', ['id' => 'submit-link'])
+@link('#', 'Reset', ['class' => 'btn btn-danger'])
 @link('#', 'Link', ['class' => false])
 
 <!-- Result: -->
 
 <a href="#" class="btn btn-primary">Button</a>
-<a href="#" class="btn btn-info btn-sm"><i class="fas fa-question-circle mr-2"></i> Info</a>
-<a href="#" class="btn btn-primary" id="submit-link"><i class="fas fa-paper-plane mr-2"></i> Submit</a>
-<a href="#" class="btn btn-danger"><i class="fas fa-exclamation-triangle mr-2"></i> Reset</a>
+<a href="#" class="btn btn-info btn-sm">Info</a>
+<a href="#" class="btn btn-primary" id="submit-link">Submit</a>
+<a href="#" class="btn btn-danger">Reset</a>
 <a href="#" >Link</a>
 ```
 
