@@ -15,7 +15,7 @@ Any contribution or feedback is highly welcomed, please feel free to create a pu
 
 ## Table of content <!-- omit in toc --> 
 
-> Demos are available at [https://www.bgaze.fr/bootstrap-form]()
+> Demos are available at [https://www.bgaze.fr/bootstrap-form](https://www.bgaze.fr/bootstrap-form)
 
 - [Installation](#installation)
 - [Quick start](#quick-start)
