@@ -7,7 +7,8 @@ use Illuminate\Support\Collection;
 /**
  * Customize Collection class to ease HTML attributes set manipulation.
  */
-class Attributes extends Collection {
+class Attributes extends Collection
+{
 
     /**
      * Allow direct access to attributes.
@@ -15,7 +16,8 @@ class Attributes extends Collection {
      * @param string $key
      * @return mixed
      */
-    public function __get($key) {
+    public function __get($key)
+    {
         return $this->get($key);
     }
 
@@ -25,7 +27,8 @@ class Attributes extends Collection {
      * @param string $key
      * @param mixed $value
      */
-    public function __set($key, $value) {
+    public function __set($key, $value)
+    {
         $this->put($key, $value);
     }
 
@@ -35,7 +38,8 @@ class Attributes extends Collection {
      * @param string $class
      * @return $this
      */
-    public function addClass($class) {
+    public function addClass($class)
+    {
         if (empty(trim($class))) {
             return $this;
         }
@@ -51,4 +55,22 @@ class Attributes extends Collection {
         return $this;
     }
 
+    /**
+     * Get the collection of items as a plain array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = [];
+
+        foreach (parent::toArray() as $key => $value) {
+            if (substr($key, 0, 1) === '~') {
+                $key = substr($key, 1);
+            }
+            $array[$key] = $value;
+        }
+
+        return $array;
+    }
 }

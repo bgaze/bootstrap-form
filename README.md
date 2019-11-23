@@ -149,7 +149,7 @@ If your form is going to accept file uploads, add a files option to your array:
 ### Form options
 
 Please find below available form options.  
-=> Using a form option key as HTML attribute **is not possible**.  
+=> Options take precedence on attributes, to use an option key as HTML attribute, prefix it with a `~`.  
 => Any key that is not in form's options list will be used as HTML attribute.
 
 | Option                            | Default&nbsp;value              | Accepted&nbsp;values               | Decription                                                                                                |
@@ -248,7 +248,7 @@ Most of times, you just need to set `null` as value.
 
 + **options**  
 An array of options.  
-=> Using a field option key as HTML attribute **is not possible**.  
+=> Options take precedence on attributes, to use an option key as HTML attribute, prefix it with a `~`.  
 => Any key that is not in field's options list will be used as HTML attribute.
 
 ### Common form inputs options
