@@ -96,6 +96,7 @@ class CheckChoice extends Input
 
             $options = $this->settings
                 ->except(['choices', 'name', 'value', 'label'])
+                ->merge($this->input_attributes)
                 ->merge([
                     'layout' => 'vertical',
                     'disable_errors' => true,
