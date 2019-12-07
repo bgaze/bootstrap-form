@@ -18,11 +18,6 @@ class CheckChoice extends Input
 {
 
     /**
-     * The format to use to display error messages.
-     */
-    const ERRORS_FORMAT = '<div class="invalid-feedback d-block">:message</div>';
-
-    /**
      * Get the input default options.
      *
      * @return Collection
@@ -80,6 +75,14 @@ class CheckChoice extends Input
         if ($this->layout === 'horizontal') {
             $this->label_attributes->addClass('pt-0');
         }
+    }
+
+    /**
+     * Get the template to build up error messages.
+     */
+    protected function errorTemplate()
+    {
+        return '<div class="invalid-feedback d-block">:message</div>';
     }
 
     /**

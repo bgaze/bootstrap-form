@@ -12,6 +12,18 @@ trait HasAddons
 {
 
     /**
+     * Get the template to build up error messages.
+     */
+    protected function errorTemplate()
+    {
+        if ($this->append || $this->prepend) {
+            return '<div class="invalid-feedback d-block">:message</div>';
+        }
+
+        return '<div class="invalid-feedback">:message</div>';
+    }
+
+    /**
      * Build a Bootstrap input group if append or prepend options are provided.
      * 
      * @return string

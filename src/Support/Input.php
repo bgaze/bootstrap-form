@@ -36,11 +36,6 @@ abstract class Input
     use HasSettings;
 
     /**
-     * The format to use to display error messages.
-     */
-    const ERRORS_FORMAT = '<div class="invalid-feedback">:message</div>';
-
-    /**
      * Illuminate HtmlBuilder instance.
      *
      * @var HtmlBuilder
@@ -191,9 +186,16 @@ abstract class Input
     }
 
     /**
+     * Get the template to build up error messages.
+     */
+    protected function errorTemplate()
+    {
+        return '<div class="invalid-feedback">:message</div>';
+    }
+
+    /**
      * Compile inputs errors to and HTML string.
      * Add error class to input and group if there is any errors.
-     *
      */
     protected function getErrors()
     {
@@ -215,9 +217,9 @@ abstract class Input
         }
 
         if ($this->show_all_errors) {
-            $this->errors = implode('', $errorBag->get($field, static::ERRORS_FORMAT));
+            $this->errors = implode('', $errorBag->get($field, $this->errorTemplate()));
         } else {
-            $this->errors = $errorBag->first($field, static::ERRORS_FORMAT);
+            $this->errors = $errorBag->first($field, $this->errorTemplate());
         }
 
         $this->input_attributes->addClass('is-invalid');
