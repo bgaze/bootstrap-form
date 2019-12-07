@@ -162,6 +162,7 @@ Please find below available form options.
 | update                            | null                            | string / array                     | The update action when using model binding                                                                |
 | model                             | null                            | Illuminate\Database\Eloquent\Model | A model to bind to the form                                                                               |
 | layout                            | Inherited&nbsp;<sup>**1**</sup> | vertical / horizontal / inline     | The Bootstrap layout of the form ([doc](https://getbootstrap.com/docs/4.3/components/forms/#layout))      |
+| group                             | Inherited&nbsp;<sup>**1**</sup> | bool / array                       | A set of HTML attributes for all the form groups (extends **group** package configuration)                |
 | custom                            | Inherited&nbsp;<sup>**1**</sup> | bool                               | Use Bootstrap custom style by default when available                                                      |
 | show_all_errors                   | Inherited&nbsp;<sup>**1**</sup> | bool                               | Show all the errors of an input or just the first one                                                     |
 | pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment      |
@@ -170,7 +171,6 @@ Please find below available form options.
 | lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between labels and fields, doesn't apply to checkboxes and radios (CSS needed) |
 | hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The horizontal blank space between fields                                                                 |
 | vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class                 | The vertical blank space between fields                                                                   |
-| group&nbsp;<sup>**4**</sup>       | Inherited&nbsp;<sup>**1**</sup> | bool / array                       | A set of HTML attributes for all the form groups                                                          |
 
 <small>**1:** Inherited from package configuration.</small>  
 <small>**2:** Horizontal layout only.</small>  
@@ -260,20 +260,20 @@ All the input functions accept following common options in addition to their spe
 > The `layout` option allows to override the current context layout: for instance, you can add a horizontal form group into a vertical form.
 > As this is not a planned Bootstrap feature, you'll probably need to adapt CSS accordingly.
 
-| Option                            | Default&nbsp;value              | Accepted&nbsp;values           | Decription                                                                                                                   |
-| :-------------------------------- | :------------------------------ | :----------------------------- | :--------------------------------------------------------------------------------------------------------------------------- |
-| help                              | false                           | false / string                 | Display a help text under the field ([see doc](https://getbootstrap.com/docs/4.3/components/forms/#help-text))               |
-| pull_right                        | true                            | bool                           | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment (horizontal forms only) |
-| group                             | null                            | null / false / array           | `array`: a set of HTML attributes for the `form-group` element.<br>`false`: return the input element only.                   |
-| layout                            | Inherited&nbsp;<sup>**1**</sup> | vertical / horizontal / inline | The Bootstrap layout of the field                                                                                            |
-| show_all_errors                   | Inherited&nbsp;<sup>**1**</sup> | bool                           | Show all the errors of an input or just the first one                                                                        |
-| pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment                         |
-| left_class&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | string                         | The default width of left column                                                                                             |
-| right_class&nbsp;<sup>**2**</sup> | Inherited&nbsp;<sup>**1**</sup> | string                         | The default width of right column                                                                                            |
-| lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between label and field, doesn't apply to checkboxes and radios (CSS needed)                      |
-| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between form groups                                                                               |
-| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The vertical blank space between form groups                                                                                 |
-| group&nbsp;<sup>**4**</sup>       | Inherited&nbsp;<sup>**1**</sup> | bool / array                   | A set of HTML attributes for all the form groups                                                                             |
+| Option                            | Default&nbsp;value              | Accepted&nbsp;values           | Decription                                                                                                                                   |
+| :-------------------------------- | :------------------------------ | :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- |
+| help                              | false                           | false / string                 | Display a help text under the field ([see doc](https://getbootstrap.com/docs/4.3/components/forms/#help-text))                               |
+| pull_right                        | true                            | bool                           | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment (horizontal forms only)                 |
+| group                             | Inherited&nbsp;<sup>**1**</sup> | null / false / array           | `array`: a set of HTML attributes for the **form-group** element (extends **group** form option).<br>`false`: return the input element only. |
+| layout                            | Inherited&nbsp;<sup>**1**</sup> | vertical / horizontal / inline | The Bootstrap layout of the field                                                                                                            |
+| show_all_errors                   | Inherited&nbsp;<sup>**1**</sup> | bool                           | Show all the errors of an input or just the first one                                                                                        |
+| pull_right&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | Add an empty left column to checkboxes, radios and fields without label to preserve fields alignment                                         |
+| left_class&nbsp;<sup>**2**</sup>  | Inherited&nbsp;<sup>**1**</sup> | string                         | The default width of left column                                                                                                             |
+| right_class&nbsp;<sup>**2**</sup> | Inherited&nbsp;<sup>**1**</sup> | string                         | The default width of right column                                                                                                            |
+| lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between label and field, doesn't apply to checkboxes and radios (CSS needed)                                      |
+| hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between form groups                                                                                               |
+| vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The vertical blank space between form groups                                                                                                 |
+| group&nbsp;<sup>**4**</sup>       | Inherited&nbsp;<sup>**1**</sup> | bool / array                   | A set of HTML attributes for all the form groups                                                                                             |
 
 <small>**1:** Inherited from current form options, or package configuration if no opened form.</small>  
 <small>**2:** Horizontal layout only.</small>  
