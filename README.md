@@ -175,7 +175,6 @@ Please find below available form options.
 <small>**1:** Inherited from package configuration.</small>  
 <small>**2:** Horizontal layout only.</small>  
 <small>**3:** Inline layout only.</small>  
-<small>**4:** If an array is provided, it will be merged on package configuration `group` option.</small>  
 
 ### Form variations
 
@@ -273,12 +272,10 @@ All the input functions accept following common options in addition to their spe
 | lspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between label and field, doesn't apply to checkboxes and radios (CSS needed)                                      |
 | hspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The horizontal blank space between form groups                                                                                               |
 | vspace&nbsp;<sup>**3**</sup>      | Inherited&nbsp;<sup>**1**</sup> | false / HTML class             | The vertical blank space between form groups                                                                                                 |
-| group&nbsp;<sup>**4**</sup>       | Inherited&nbsp;<sup>**1**</sup> | bool / array                   | A set of HTML attributes for all the form groups                                                                                             |
 
 <small>**1:** Inherited from current form options, or package configuration if no opened form.</small>  
 <small>**2:** Horizontal layout only.</small>  
 <small>**3:** Inline layout only.</small>  
-<small>**4:** If an array is provided, it will be merged on form `group` option.</small>  
 
 ### Text inputs
 
