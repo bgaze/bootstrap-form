@@ -39,6 +39,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Group attributes
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify application wide default attributes for input groups.
+    | An array is expected, any other value will be ignored.
+    | Note that 'form-group' class will always be added if missing.
+    |
+    */
+
+    'group' => ['class' => 'test'],
+
+    /*
+    |--------------------------------------------------------------------------
     | Horizontal forms
     |--------------------------------------------------------------------------
     |

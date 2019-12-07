@@ -48,15 +48,13 @@ class TextInput extends Input
     }
 
     /**
-     * Set input configuration and attributes.
+     * Set input attributes.
      * 
-     * @param string $name
-     * @param mixed  $value
      * @param array  $options 
      */
-    protected function configureInput($name, $value, array $options)
+    protected function setInputAttributes(array $options)
     {
-        parent::configureInput($name, $value, $options);
+        parent::setInputAttributes($options);
 
         $this->input_attributes->addClass('form-control');
 

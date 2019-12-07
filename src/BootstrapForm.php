@@ -28,6 +28,7 @@ use Bgaze\BootstrapForm\Inputs;
  * @property string $left_class
  * @property string $right_class
  * @property bool   $show_all_errors
+ * @property array  $group
  */
 class BootstrapForm
 {
@@ -126,6 +127,11 @@ class BootstrapForm
             ->merge(config('bootstrap_form'))
             ->except('blade_directives');
 
+        // Force an array for group option.
+        if (!is_array($this->group)) {
+            $this->group = [];
+        }
+
         // Set default attributes.
         $this->attributes = Attributes::make(['role' => 'form']);
 
@@ -140,12 +146,20 @@ class BootstrapForm
      */
     protected function initForm(array $options = [])
     {
+
         // Merge with provided options.
-        $settings = collect($options)->only($this->settings->keys());
+        $settings = collect($options)->only($this->settings->keys())->except('group');
         $this->settings = $this->settings->merge($settings);
 
+        // Manage group option.
+        if (isset($options['group']) && $options['group'] === false) {
+            $this->group = false;
+        } elseif (isset($options['group']) && is_array($options['group'])) {
+            $this->group = array_merge($this->group, $options['group']);
+        }
+
         // Set form attributes.
-        $attributes = collect($options)->except($this->settings->keys());
+        $attributes = collect($options)->except($this->settings->keys())->except('group');
         $this->attributes = $this->attributes->merge($attributes);
 
         // Set form class based on form layout.

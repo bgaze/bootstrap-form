@@ -64,15 +64,13 @@ class CheckInput extends Input
     }
 
     /**
-     * Set input configuration and attributes.
+     * Set input attributes.
      * 
-     * @param string $name
-     * @param mixed  $value
      * @param array  $options 
      */
-    protected function configureInput($name, $value, array $options)
+    protected function setInputAttributes(array $options)
     {
-        parent::configureInput($name, $value, $options);
+        parent::setInputAttributes($options);
 
         if ($this->tag === 'radio') {
             $this->switch = false;
@@ -88,14 +86,13 @@ class CheckInput extends Input
     }
 
     /**
-     * Set label configuration and attributes.
+     * Set label attributes.
      * 
-     * @param mixed $label
      * @param array $options 
      */
-    protected function configureLabel($label, array $options)
+    protected function setLabelAttributes(array $options)
     {
-        parent::configureLabel($label, $options);
+        parent::setLabelAttributes($options);
 
         $this->label_attributes->addClass($this->custom ? 'custom-control-label' : 'form-check-label');
 

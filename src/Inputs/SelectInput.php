@@ -63,15 +63,13 @@ class SelectInput extends Input
     }
 
     /**
-     * Set input configuration and attributes.
+     * Set input attributes.
      * 
-     * @param string $name
-     * @param mixed  $value
      * @param array  $options 
      */
-    protected function configureInput($name, $value, array $options)
+    protected function setInputAttributes(array $options)
     {
-        parent::configureInput($name, $value, $options);
+        parent::setInputAttributes($options);
 
         $class = $this->custom ? 'custom-select' : 'form-control';
         $this->input_attributes->addClass($class);

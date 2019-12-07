@@ -17,18 +17,18 @@ use BF;
  * @property string $name
  * @property string $value
  * @property mixed  $label
- * @property bool   $group
  * @property string $help
  *
  * Inherited from form:
  *
- * @property string $layout
- * @property string $error_bag
- * @property bool   $show_all_errors
- * @property bool   $pull_right
- * @property string $left_class
- * @property string $right_class
- * @property string $spacer
+ * @property string       $layout
+ * @property string       $error_bag
+ * @property bool         $show_all_errors
+ * @property bool         $pull_right
+ * @property string       $left_class
+ * @property string       $right_class
+ * @property string       $spacer
+ * @property bool|array   $group
  */
 abstract class Input
 {
@@ -85,9 +85,10 @@ abstract class Input
         $this->form = BF::formBuilder();
 
         // Get field configuration.
-        $this->configureInput($name, $value, $options);
-        $this->configureLabel($label, $options);
-        $this->configureGroup($options);
+        $this->configure($name, $label, $value, $options);
+        $this->setInputAttributes($options);
+        $this->setLabelAttributes($options);
+        $this->setGroupAttributes($options);
         $this->getErrors();
     }
 
@@ -116,45 +117,53 @@ abstract class Input
     }
 
     /**
-     * Set input configuration and attributes.
+     * Merge provided options with default configuration.
      *
      * @param string $name
+     * @param mixed  $label
      * @param mixed  $value
      * @param array  $options
      */
-    protected function configureInput($name, $value, array $options)
+    protected function configure($name, $label, $value, array $options)
     {
         // Get default settings.
         $this->settings = static::defaults();
 
         // Merge with provided configuration.
-        $settings = collect($options)->only($this->settings->keys());
+        $settings = collect($options)
+            ->only($this->settings->keys())
+            ->except('group');
         $this->settings = $this->settings->merge($settings);
 
         // Add reserved values.
         $this->name = $name;
         $this->value = $value;
+        $this->label = $label;
+        $this->errors = '';
+    }
 
-        // Get input attributes.
-        $this->input_attributes = Attributes::make($options)
-            ->except($this->settings->keys())
-            ->except(['label', 'group']);
+    /**
+     * Set input attributes.
+     *
+     * @param array  $options
+     */
+    protected function setInputAttributes(array $options)
+    {
+        $this->input_attributes = Attributes::make($options)->except($this->settings->keys());
+
         if (!$this->input_attributes->id) {
             $this->input_attributes->id = $this->flattenName('_');
         }
     }
 
     /**
-     * Set label configuration and attributes.
+     * Set label attributes.
      *
-     * @param mixed $label
      * @param array $options
      */
-    protected function configureLabel($label, array $options)
+    protected function setLabelAttributes(array $options)
     {
-        if ($label === false || $label === '0' || !empty($label)) {
-            $this->label = $label;
-        } else {
+        if ($this->label !== false && $this->label !== '0' && empty($this->label)) {
             $this->label = str_replace('_', ' ', Str::ucfirst(Str::lower(Str::title($this->name))));
         }
 
@@ -166,16 +175,25 @@ abstract class Input
     }
 
     /**
-     * Set group configuration and attributes.
+     * Set group attributes.
      *
      * @param array $options
      */
-    protected function configureGroup(array $options)
+    protected function setGroupAttributes(array $options)
     {
-        $this->group = ((!isset($options['group']) || $options['group'] !== false));
+        if (isset($options['group'])) {
+            if ($options['group'] === false) {
+                $this->group = false;
+            } elseif (is_array($this->group) && is_array($options['group'])) {
+                $this->group = array_merge($this->group, $options['group']);
+            } elseif (is_array($options['group'])) {
+                $this->group = $options['group'];
+            }
+        }
 
-        if (isset($options['group']) && is_array($options['group'])) {
-            $this->group_attributes = Attributes::make($options['group']);
+        if (is_array($this->group)) {
+            $this->group_attributes = Attributes::make($this->group);
+            $this->group = true;
         } else {
             $this->group_attributes = Attributes::make();
         }
@@ -199,8 +217,6 @@ abstract class Input
      */
     protected function getErrors()
     {
-        $this->errors = '';
-
         $errors = $this->form->getSessionStore()->get('errors');
         if (empty($errors)) {
             return;

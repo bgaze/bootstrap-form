@@ -63,14 +63,13 @@ class CheckChoice extends Input
     }
 
     /**
-     * Set label configuration and attributes.
+     * Set label attributes.
      * 
-     * @param mixed $label
      * @param array $options 
      */
-    protected function configureLabel($label, array $options)
+    protected function setLabelAttributes(array $options)
     {
-        parent::configureLabel($label, $options);
+        parent::setLabelAttributes($options);
 
         if ($this->layout === 'horizontal') {
             $this->label_attributes->addClass('pt-0');
