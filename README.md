@@ -437,7 +437,8 @@ In addition to [common options](#form-inputs), following option is accepted:
 
 ### Hidden input
 
-This function is an alias to [Form Builder function](https://laravelcollective.com/docs/5.8/html#text).
+This function is an alias to [Form Builder function](https://laravelcollective.com/docs/5.8/html#text).  
+As for other inputs, `id` attribute will be added if missing
 
 ```html
 BF::hidden($name, $value = null, $options = [])
