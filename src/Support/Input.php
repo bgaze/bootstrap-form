@@ -152,7 +152,7 @@ abstract class Input
         $this->input_attributes = Attributes::make($options)->except($this->settings->keys());
 
         if (!$this->input_attributes->id) {
-            $this->input_attributes->id = $this->flattenName('_');
+            $this->input_attributes->id = $this->flattenName($this->name, '_');
         }
     }
 
@@ -199,7 +199,7 @@ abstract class Input
         }
 
         if (!$this->group_attributes->id) {
-            $this->group_attributes->id = $this->flattenName('_') . '_group';
+            $this->group_attributes->id = $this->flattenName($this->name, '_') . '_group';
         }
     }
 
@@ -227,7 +227,7 @@ abstract class Input
             return;
         }
 
-        $field = $this->flattenName('.');
+        $field = $this->flattenName($this->name, '.');
         if (!$errorBag->has($field)) {
             return;
         }
@@ -240,21 +240,6 @@ abstract class Input
 
         $this->input_attributes->addClass('is-invalid');
         $this->group_attributes->addClass('is-invalid');
-    }
-
-    /**
-     * Flatten arrayed field names to work with the validator, including removing "[]",
-     * and converting nested arrays like "foo[bar][baz]" to "foo.bar.baz".
-     *
-     * @return string
-     */
-    protected function flattenName($separator)
-    {
-        return preg_replace_callback("/\[(.*)\\]/U", function ($matches) use ($separator) {
-            if (!empty($matches[1]) || $matches[1] === '0') {
-                return $separator . $matches[1];
-            }
-        }, $this->name);
     }
 
     ### COMPONENTS #############################################################

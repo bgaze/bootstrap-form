@@ -476,6 +476,10 @@ class BootstrapForm
      */
     public function hidden($name, $value = null, $options = [])
     {
+        if (!isset($options['id'])) {
+            $options['id'] = $this->flattenName($name, '_');
+        }
+
         return $this->form->hidden($name, $value, $options);
     }
 
