@@ -163,7 +163,9 @@ abstract class Input
      */
     protected function setLabelAttributes(array $options)
     {
-        if ($this->label !== false && $this->label !== '0' && empty($this->label)) {
+        $label = $this->label;
+
+        if ($label !== false && $label !== '0' && empty($label)) {
             $this->label = str_replace('_', ' ', Str::ucfirst(Str::lower(Str::title($this->name))));
         }
 
