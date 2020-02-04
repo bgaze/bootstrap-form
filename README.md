@@ -50,7 +50,7 @@ composer require bgaze/bootstrap-form
 There are a various configuration options available, publish the configuration file to customize them:
 
 ```shell
-php artisan vendor:publish --provider=Bgaze\BootstrapForm\BootstrapFormServiceProvider
+php artisan vendor:publish --provider="Bgaze\BootstrapForm\BootstrapFormServiceProvider"
 ```
 
 That's it, you can start to build forms.
