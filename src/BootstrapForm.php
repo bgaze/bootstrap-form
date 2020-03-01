@@ -2,21 +2,21 @@
 
 namespace Bgaze\BootstrapForm;
 
-use Illuminate\Database\Eloquent\Model;
-use Collective\Html\HtmlBuilder;
+use Bgaze\BootstrapForm\Inputs;
+use Bgaze\BootstrapForm\Support\Attributes;
+use Bgaze\BootstrapForm\Support\Traits\HasSettings;
 use Collective\Html\FormBuilder;
+use Collective\Html\HtmlBuilder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
-use Bgaze\BootstrapForm\Support\Attributes;
-use Bgaze\BootstrapForm\Support\Traits\HasSettings;
-use Bgaze\BootstrapForm\Inputs;
 
 /**
  * Form configuration:
- * 
- * @property Model  $model
+ *
+ * @property Model $model
  * @property string $error_bag
  * @property string $url
  * @property string $route
@@ -26,8 +26,8 @@ use Bgaze\BootstrapForm\Inputs;
  * @property string $layout
  * @property string $left_class
  * @property string $right_class
- * @property bool   $show_all_errors
- * @property array  $group
+ * @property bool $show_all_errors
+ * @property array $group
  */
 class BootstrapForm
 {
@@ -38,7 +38,7 @@ class BootstrapForm
     /**
      * Configuration keys that won't be inherited by form inputs.
      */
-    protected const RESERVED = ['model', 'url', 'route', 'action', 'update', 'store'];
+    const RESERVED = ['model', 'url', 'route', 'action', 'update', 'store'];
 
     /**
      * Illuminate HtmlBuilder instance.
@@ -56,21 +56,24 @@ class BootstrapForm
 
     /**
      * The form attribute set.
-     * 
-     * @var \Bgaze\BootstrapForm\Support\Attributes 
+     *
+     * @var Attributes
      */
     protected $attributes;
 
     /**
-     * Wether a form is currently opened.
-     * 
-     * @var \Bgaze\BootstrapForm\Support\Attributes 
+     * Whether a form is currently opened.
+     *
+     * @var Attributes
      */
     protected $opened;
+
 
     /**
      * Constructor.
      *
+     * @param  HtmlBuilder  $html
+     * @param  FormBuilder  $form
      */
     public function __construct(HtmlBuilder $html, FormBuilder $form)
     {
@@ -81,9 +84,10 @@ class BootstrapForm
 
     ### MISC UTILITIES #########################################################
 
+
     /**
-     * Returns the "inheritables" forms settings.
-     * 
+     * Returns the "inheritable" forms settings.
+     *
      * @return Collection
      */
     public function settings()
@@ -91,9 +95,10 @@ class BootstrapForm
         return $this->settings->except(static::RESERVED);
     }
 
+
     /**
      * Returns the Illuminate HtmlBuilder instance.
-     * 
+     *
      * @return HtmlBuilder
      */
     public function htmlBuilder()
@@ -101,9 +106,10 @@ class BootstrapForm
         return $this->html;
     }
 
+
     /**
      * Returns the Illuminate FormBuilder instance.
-     * 
+     *
      * @return FormBuilder
      */
     public function formBuilder()
@@ -113,9 +119,10 @@ class BootstrapForm
 
     ### CONFIGURATION ##########################################################
 
+
     /**
      * Reset form settings and attributes to default configuration.
-     * 
+     *
      */
     protected function resetForm()
     {
@@ -138,10 +145,11 @@ class BootstrapForm
         $this->opened = false;
     }
 
+
     /**
      * Init form with provided option set.
-     * 
-     * @param array $options
+     *
+     * @param  array  $options
      */
     protected function initForm(array $options = [])
     {
@@ -175,14 +183,15 @@ class BootstrapForm
         }
     }
 
+
     /**
      * Init Model related form settings.
-     * 
-     * @param Model $model
+     *
+     * @param  Model  $model
      */
     protected function initModelForm(Model $model)
     {
-        // Adjust form settings based on model existance.
+        // Adjust form settings based on model existence.
         if ($model->exists && $this->update) {
             // Set form method.
             $this->attributes->method = 'PUT';
@@ -210,6 +219,7 @@ class BootstrapForm
 
     ### BUILD FORM ELEMENT #####################################################
 
+
     /**
      * Open a form.
      *
@@ -230,9 +240,10 @@ class BootstrapForm
             return $this->form->model($this->model, $this->attributes->toArray())->toHtml();
         }
 
-        // Otherwise init standart form.
+        // Otherwise init standard form.
         return $this->form->open($this->attributes->toArray())->toHtml();
     }
+
 
     /**
      * Reset and close the form.
@@ -244,6 +255,7 @@ class BootstrapForm
         $this->resetForm();
         return $this->form->close()->toHtml();
     }
+
 
     /**
      * Open a vertical Bootstrap form.
@@ -257,6 +269,7 @@ class BootstrapForm
         return $this->open($options);
     }
 
+
     /**
      * Open an inline Bootstrap form.
      *
@@ -268,6 +281,7 @@ class BootstrapForm
         $options['layout'] = 'inline';
         return $this->open($options);
     }
+
 
     /**
      * Open a horizontal Bootstrap form.
@@ -283,6 +297,7 @@ class BootstrapForm
 
     ### BUILD FORM INPUTS ######################################################
 
+
     /**
      * Create a Bootstrap input by tag.
      *
@@ -290,7 +305,7 @@ class BootstrapForm
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     protected function input($tag, $name, $label = null, $value = null, array $options = [])
@@ -299,13 +314,14 @@ class BootstrapForm
         return Inputs\TextInput::make($name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap text field input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function text($name, $label = null, $value = null, array $options = [])
@@ -313,13 +329,14 @@ class BootstrapForm
         return $this->input('text', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap email field input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function email($name = 'email', $label = null, $value = null, array $options = [])
@@ -327,13 +344,14 @@ class BootstrapForm
         return $this->input('email', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap URL field input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function url($name, $label = null, $value = null, array $options = [])
@@ -341,13 +359,14 @@ class BootstrapForm
         return $this->input('url', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap tel field input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function tel($name, $label = null, $value = null, array $options = [])
@@ -355,13 +374,14 @@ class BootstrapForm
         return $this->input('tel', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap number field input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function number($name, $label = null, $value = null, array $options = [])
@@ -369,13 +389,14 @@ class BootstrapForm
         return $this->input('number', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap date field input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function date($name, $label = null, $value = null, array $options = [])
@@ -383,13 +404,14 @@ class BootstrapForm
         return $this->input('date', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap email time input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function time($name, $label = null, $value = null, array $options = [])
@@ -397,12 +419,13 @@ class BootstrapForm
         return $this->input('time', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap password field input.
      *
      * @param  string  $name
      * @param  string  $label
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function password($name, $label = null, array $options = [])
@@ -410,13 +433,14 @@ class BootstrapForm
         return $this->input('password', $name, $label, null, $options);
     }
 
+
     /**
      * Create a Bootstrap textarea field input.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function textarea($name, $label = null, $value = null, array $options = [])
@@ -424,14 +448,15 @@ class BootstrapForm
         return $this->input('textarea', $name, $label, $value, $options);
     }
 
+
     /**
      * Create a select box field.
      *
      * @param  string  $name
      * @param  string  $label
-     * @param  array   $choices
+     * @param  array  $choices
      * @param  string  $selected
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function select($name, $label = null, $choices = [], $selected = null, array $options = [])
@@ -439,12 +464,13 @@ class BootstrapForm
         return Inputs\SelectInput::make($name, $label, $choices, $selected, $options);
     }
 
+
     /**
      * Create a Boostrap file upload button.
      *
      * @param  string  $name
      * @param  string  $label
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function file($name, $label = null, array $options = [])
@@ -452,13 +478,14 @@ class BootstrapForm
         return Inputs\FileInput::make($name, $label, $options);
     }
 
+
     /**
      * Create a Boostrap file upload button.
      *
      * @param  string  $name
      * @param  string  $label
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function range($name, $label = null, $value = null, array $options = [])
@@ -466,12 +493,13 @@ class BootstrapForm
         return Inputs\RangeInput::make($name, $label, $value, $options);
     }
 
+
     /**
      * Create a hidden field.
      *
      * @param  string  $name
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function hidden($name, $value = null, $options = [])
@@ -483,14 +511,15 @@ class BootstrapForm
         return $this->form->hidden($name, $value, $options);
     }
 
+
     /**
      * Create a Bootstrap checkbox input.
      *
-     * @param  string   $name
-     * @param  string   $label
-     * @param  string   $value
-     * @param  bool     $checked
-     * @param  array    $options
+     * @param  string  $name
+     * @param  string  $label
+     * @param  mixed  $value
+     * @param  bool  $checked
+     * @param  array  $options
      * @return string
      */
     public function checkbox($name, $label = null, $value = 1, $checked = null, array $options = [])
@@ -499,14 +528,15 @@ class BootstrapForm
         return Inputs\CheckInput::make($name, $label, $value, $checked, $options);
     }
 
+
     /**
      * Create a collection of Bootstrap checkboxes.
      *
      * @param  string  $name
      * @param  string  $label
-     * @param  array   $choices
-     * @param  mixed   $checked
-     * @param  array   $options
+     * @param  array  $choices
+     * @param  mixed  $checked
+     * @param  array  $options
      * @return string
      */
     public function checkboxes($name, $label = null, array $choices = [], $checked = null, array $options = [])
@@ -515,14 +545,15 @@ class BootstrapForm
         return Inputs\CheckChoice::make($name, $label, $choices, $checked, $options);
     }
 
+
     /**
      * Create a Bootstrap radio input.
      *
      * @param  string  $name
      * @param  string  $label
-     * @param  string  $value
-     * @param  bool    $checked
-     * @param  array   $options
+     * @param  mixed  $value
+     * @param  bool  $checked
+     * @param  array  $options
      * @return string
      */
     public function radio($name, $label = null, $value = null, $checked = null, array $options = [])
@@ -531,14 +562,15 @@ class BootstrapForm
         return Inputs\CheckInput::make($name, $label, $value, $checked, $options);
     }
 
+
     /**
      * Create a collection of Bootstrap radio inputs.
      *
      * @param  string  $name
      * @param  string  $label
-     * @param  array   $choices
-     * @param  mixed   $checked
-     * @param  array   $options
+     * @param  array  $choices
+     * @param  mixed  $checked
+     * @param  array  $options
      * @return string
      */
     public function radios($name, $label = null, array $choices = [], $checked = null, array $options = [])
@@ -549,12 +581,13 @@ class BootstrapForm
 
     ### BUILD MISC ELEMENTS ####################################################
 
+
     /**
      * Create a Bootstrap label.
      *
      * @param  string  $name
      * @param  string  $value
-     * @param  array   $options
+     * @param  array  $options
      * @return string
      */
     public function label($name, $value = null, array $options = [], $escapeHtml = false)
@@ -562,12 +595,13 @@ class BootstrapForm
         return $this->form->label($name, $value, $options, $escapeHtml);
     }
 
+
     /**
      * Create options for Boostrap styled button.
      *
      * @param  string  $style
-     * @param  mixed   $options
-     * @return string
+     * @param  mixed  $options
+     * @return array
      */
     protected function buttonOption($style, $options)
     {
@@ -579,7 +613,7 @@ class BootstrapForm
             }
 
             if ($this->vspace) {
-                $class .=  $this->vspace . ' ';
+                $class .= $this->vspace . ' ';
             }
         }
 
@@ -592,11 +626,12 @@ class BootstrapForm
         return ['class' => $class . (empty($options) ? $style : $options)];
     }
 
+
     /**
      * Create a Boostrap submit button.
      *
      * @param  string  $value
-     * @param  mixed   $options
+     * @param  mixed  $options
      * @return string
      */
     public function submit($value = null, $options = null)
@@ -604,11 +639,12 @@ class BootstrapForm
         return $this->form->submit($value, $this->buttonOption('primary', $options));
     }
 
+
     /**
      * Create a Boostrap reset button.
      *
      * @param  string  $value
-     * @param  mixed   $options
+     * @param  mixed  $options
      * @return string
      */
     public function reset($value = null, $options = null)
@@ -616,11 +652,12 @@ class BootstrapForm
         return $this->form->reset($value, $this->buttonOption('danger', $options));
     }
 
+
     /**
      * Create a Boostrap button.
      *
      * @param  string  $value
-     * @param  mixed   $options
+     * @param  mixed  $options
      * @return string
      */
     public function button($value = null, $options = null)
@@ -628,12 +665,13 @@ class BootstrapForm
         return $this->form->button($value, $this->buttonOption('primary', $options));
     }
 
+
     /**
      * Create a Boostrap link button.
      *
      * @param  string  $url
      * @param  string  $title
-     * @param  mixed   $options
+     * @param  mixed  $options
      * @return string
      */
     public function link($url, $title = null, $options = null)

@@ -2,8 +2,8 @@
 
 namespace Bgaze\BootstrapForm;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
 
 class BootstrapFormServiceProvider extends ServiceProvider
 {
@@ -14,6 +14,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
      * @var bool
      */
     protected $defer = true;
+
 
     /**
      * Register the service provider.
@@ -29,6 +30,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
         });
     }
 
+
     /**
      * Boot the service provider.
      */
@@ -42,6 +44,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
             $this->registerBladeDirectives();
         }
     }
+
 
     /**
      * Register blade directive.
@@ -62,6 +65,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
             });
         }
     }
+
 
     /**
      * Get the services provided by the provider.

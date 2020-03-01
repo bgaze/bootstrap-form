@@ -12,8 +12,8 @@ class Attributes extends Collection
 
     /**
      * Allow direct access to attributes.
-     * 
-     * @param string $key
+     *
+     * @param  string  $key
      * @return mixed
      */
     public function __get($key)
@@ -21,21 +21,23 @@ class Attributes extends Collection
         return $this->get($key);
     }
 
+
     /**
      * Allow to directly set attributes.
-     * 
-     * @param string $key
-     * @param mixed $value
+     *
+     * @param  string  $key
+     * @param  mixed  $value
      */
     public function __set($key, $value)
     {
         $this->put($key, $value);
     }
 
+
     /**
      * Append HTML class to a set of HTML attribute.
-     * 
-     * @param string $class
+     *
+     * @param  string  $class
      * @return $this
      */
     public function addClass($class)
@@ -54,6 +56,7 @@ class Attributes extends Collection
 
         return $this;
     }
+
 
     /**
      * Get the collection of items as a plain array.

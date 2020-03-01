@@ -9,15 +9,16 @@ trait HasSettings
 
     /**
      * The settings repository.
-     * 
-     * @var Collection 
+     *
+     * @var Collection
      */
     protected $settings;
 
+
     /**
      * Bind any undefined property to the settings repository.
-     * 
-     * @param string $key
+     *
+     * @param  string  $key
      * @return mixed
      */
     public function __get($key)
@@ -25,21 +26,25 @@ trait HasSettings
         return $this->settings->get($key);
     }
 
+
     /**
      * Put any undefined property into the settings repository.
-     * 
-     * @param string $key
-     * @param mixed  $value
+     *
+     * @param  string  $key
+     * @param  mixed  $value
      */
     public function __set($key, $value)
     {
         $this->settings->put($key, $value);
     }
 
+
     /**
      * Flatten arrayed field names to work with the validator, including removing "[]",
      * and converting nested arrays like "foo[bar][baz]" to "foo.bar.baz".
      *
+     * @param  string  $name
+     * @param  string  $separator
      * @return string
      */
     protected function flattenName($name, $separator)

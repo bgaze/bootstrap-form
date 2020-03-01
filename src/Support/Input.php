@@ -2,13 +2,12 @@
 
 namespace Bgaze\BootstrapForm\Support;
 
+use Bgaze\BootstrapForm\Support\Facades\BF;
+use Bgaze\BootstrapForm\Support\Traits\HasSettings;
 use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Bgaze\BootstrapForm\Support\Traits\HasSettings;
-use Bgaze\BootstrapForm\Support\Attributes;
-use BF;
 
 /**
  * Input settings:
@@ -16,19 +15,19 @@ use BF;
  * @property string $errors
  * @property string $name
  * @property string $value
- * @property mixed  $label
+ * @property mixed $label
  * @property string $help
  *
  * Inherited from form:
  *
- * @property string       $layout
- * @property string       $error_bag
- * @property bool         $show_all_errors
- * @property bool         $pull_right
- * @property string       $left_class
- * @property string       $right_class
- * @property string       $spacer
- * @property bool|array   $group
+ * @property string $layout
+ * @property string $error_bag
+ * @property bool $show_all_errors
+ * @property bool $pull_right
+ * @property string $left_class
+ * @property string $right_class
+ * @property string $spacer
+ * @property bool|array $group
  */
 abstract class Input
 {
@@ -70,13 +69,14 @@ abstract class Input
      */
     protected $group_attributes;
 
+
     /**
      * The class constructor.
      *
-     * @param string $name
-     * @param mixed  $label
-     * @param mixed  $value
-     * @param array  $options
+     * @param  string  $name
+     * @param  mixed  $label
+     * @param  mixed  $value
+     * @param  array  $options
      */
     public function __construct($name, $label = null, $value = null, array $options = [])
     {
@@ -92,6 +92,7 @@ abstract class Input
         $this->getErrors();
     }
 
+
     /**
      * Return the input as a HTML string.
      *
@@ -103,6 +104,7 @@ abstract class Input
     }
 
     ### CONFIGURATION ##########################################################
+
 
     /**
      * Get the input default options.
@@ -116,13 +118,14 @@ abstract class Input
         ]);
     }
 
+
     /**
      * Merge provided options with default configuration.
      *
-     * @param string $name
-     * @param mixed  $label
-     * @param mixed  $value
-     * @param array  $options
+     * @param  string  $name
+     * @param  mixed  $label
+     * @param  mixed  $value
+     * @param  array  $options
      */
     protected function configure($name, $label, $value, array $options)
     {
@@ -142,10 +145,11 @@ abstract class Input
         $this->errors = '';
     }
 
+
     /**
      * Set input attributes.
      *
-     * @param array  $options
+     * @param  array  $options
      */
     protected function setInputAttributes(array $options)
     {
@@ -156,10 +160,11 @@ abstract class Input
         }
     }
 
+
     /**
      * Set label attributes.
      *
-     * @param array $options
+     * @param  array  $options
      */
     protected function setLabelAttributes(array $options)
     {
@@ -176,10 +181,11 @@ abstract class Input
         }
     }
 
+
     /**
      * Set group attributes.
      *
-     * @param array $options
+     * @param  array  $options
      */
     protected function setGroupAttributes(array $options)
     {
@@ -205,6 +211,7 @@ abstract class Input
         }
     }
 
+
     /**
      * Get the template to build up error messages.
      */
@@ -212,6 +219,7 @@ abstract class Input
     {
         return '<div class="invalid-feedback">:message</div>';
     }
+
 
     /**
      * Compile inputs errors to and HTML string.
@@ -246,12 +254,14 @@ abstract class Input
 
     ### COMPONENTS #############################################################
 
+
     /**
      * Compile input to a HTML string.
      *
      * @return string
      */
     public abstract function input();
+
 
     /**
      * Decorate the input to get the final Bootstrap format.
@@ -262,6 +272,7 @@ abstract class Input
     {
         return $this->input();
     }
+
 
     /**
      * Compile label to a HTML string.
@@ -277,6 +288,7 @@ abstract class Input
         return $this->form->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
     }
 
+
     /**
      * Compile label to a HTML string.
      *
@@ -290,6 +302,7 @@ abstract class Input
 
         return $this->html->tag('small', $this->help, ['class' => 'form-text'])->toHtml();
     }
+
 
     /**
      * Compile group to a HTML string.
@@ -321,6 +334,7 @@ abstract class Input
         return $this->html->tag('div', $content, $this->group_attributes->toArray())->toHtml();
     }
 
+
     /**
      * Get the "left" part of the form group (label or spacer in "pull right" mode).
      *
@@ -342,6 +356,7 @@ abstract class Input
 
         return $this->label();
     }
+
 
     /**
      * Get the "right" part of the form group (input + errors + help wrapped in a div).

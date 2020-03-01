@@ -4,18 +4,20 @@ namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
 use Bgaze\BootstrapForm\Support\Traits\HasAddons;
+use Illuminate\Support\Collection;
 
 /**
  * Specific settings:
- * 
+ *
  * @property array $choices
- * @property bool  $custom
+ * @property bool $custom
  * @property string $size
  */
 class SelectInput extends Input
 {
 
     use HasAddons;
+
 
     /**
      * Get the input default options.
@@ -32,14 +34,15 @@ class SelectInput extends Input
         ]);
     }
 
+
     /**
      * The class constructor.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param array  $choices
-     * @param mixed  $selected
-     * @param array  $options
+     *
+     * @param  string  $name
+     * @param  mixed  $label
+     * @param  array  $choices
+     * @param  mixed  $selected
+     * @param  array  $options
      */
     public function __construct($name, $label = null, $choices = [], $selected = null, array $options = [])
     {
@@ -47,14 +50,15 @@ class SelectInput extends Input
         $this->choices = $choices;
     }
 
+
     /**
      * Instanciate a SelectInput.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param array  $choices
-     * @param mixed  $selected
-     * @param array  $options
+     *
+     * @param  string  $name
+     * @param  mixed  $label
+     * @param  array  $choices
+     * @param  mixed  $selected
+     * @param  array  $options
      * @return SelectInput
      */
     public static function make($name, $label = null, $choices = [], $selected = null, array $options = [])
@@ -62,10 +66,11 @@ class SelectInput extends Input
         return new static($name, $label, $choices, $selected, $options);
     }
 
+
     /**
      * Set input attributes.
-     * 
-     * @param array  $options 
+     *
+     * @param  array  $options
      */
     protected function setInputAttributes(array $options)
     {
@@ -78,6 +83,7 @@ class SelectInput extends Input
             $this->input_attributes->addClass($class . '-' . $this->size);
         }
     }
+
 
     /**
      * Compile input to a HTML string.

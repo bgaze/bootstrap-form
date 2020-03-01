@@ -6,19 +6,19 @@ use Bgaze\BootstrapForm\Support\Input;
 
 /**
  * Specific settings:
- * 
- * @property bool  $custom
+ *
+ * @property bool $custom
  */
 class RangeInput extends Input
 {
 
     /**
-     * Instanciate a RangeInput.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param mixed  $value
-     * @param array  $options
+     * Instantiate a RangeInput.
+     *
+     * @param  string  $name
+     * @param  mixed  $label
+     * @param  mixed  $value
+     * @param  array  $options
      * @return RangeInput
      */
     public static function make($name, $label = null, $value = null, array $options = [])
@@ -26,10 +26,11 @@ class RangeInput extends Input
         return new static($name, $label, $value, $options);
     }
 
+
     /**
      * Set input attributes.
-     * 
-     * @param array  $options 
+     *
+     * @param  array  $options
      */
     protected function setInputAttributes(array $options)
     {
@@ -41,6 +42,7 @@ class RangeInput extends Input
             $this->input_attributes->addClass('form-control-range');
         }
     }
+
 
     /**
      * Compile input to a HTML string.

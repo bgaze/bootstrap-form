@@ -4,7 +4,7 @@ namespace Bgaze\BootstrapForm\Support\Traits;
 
 /**
  * Specific settings:
- * 
+ *
  * @property mixed $prepend
  * @property mixed $append
  */
@@ -23,9 +23,10 @@ trait HasAddons
         return '<div class="invalid-feedback">:message</div>';
     }
 
+
     /**
      * Build a Bootstrap input group if append or prepend options are provided.
-     * 
+     *
      * @return string
      */
     public function inputGroup()

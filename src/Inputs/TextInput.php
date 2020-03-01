@@ -4,10 +4,11 @@ namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
 use Bgaze\BootstrapForm\Support\Traits\HasAddons;
+use Illuminate\Support\Collection;
 
 /**
  * Specific settings:
- * 
+ *
  * @property string $tag
  * @property string $size
  */
@@ -15,6 +16,7 @@ class TextInput extends Input
 {
 
     use HasAddons;
+
 
     /**
      * Get the input default options.
@@ -33,13 +35,14 @@ class TextInput extends Input
             ]);
     }
 
+
     /**
      * Instanciate a TextInput.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param mixed  $value
-     * @param array  $options
+     *
+     * @param  string  $name
+     * @param  mixed  $label
+     * @param  mixed  $value
+     * @param  array  $options
      * @return TextInput
      */
     public static function make($name, $label = null, $value = null, array $options = [])
@@ -47,10 +50,11 @@ class TextInput extends Input
         return new static($name, $label, $value, $options);
     }
 
+
     /**
      * Set input attributes.
-     * 
-     * @param array  $options 
+     *
+     * @param  array  $options
      */
     protected function setInputAttributes(array $options)
     {
@@ -62,6 +66,7 @@ class TextInput extends Input
             $this->input_attributes->addClass('form-control-' . $this->size);
         }
     }
+
 
     /**
      * Compile input to a HTML string.
