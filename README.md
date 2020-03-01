@@ -1,5 +1,11 @@
 # Bootstrap 4 forms builder for Laravel 5.8+ <!-- omit in toc --> 
 
+[![GitHub license](https://img.shields.io/github/license/bgaze/bootstrap-form)](https://github.com/bgaze/bootstrap-form/blob/master/LICENSE)
+![Maintenance](https://img.shields.io/maintenance/yes/2020)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/bgaze/bootstrap-form)
+[![GitHub stars](https://img.shields.io/github/stars/bgaze/bootstrap-form)](https://github.com/bgaze/bootstrap-form/stargazers)
+![Packagist](https://img.shields.io/packagist/dt/bgaze/bootstrap-form)
+
 <p align="center">
     <img src="./intro.png">
 </p>
@@ -28,7 +34,7 @@ Any contribution or feedback is highly welcomed, please feel free to create a pu
   - [Creating form inputs](#creating-form-inputs)
   - [Common form inputs options](#common-form-inputs-options)
   - [Text inputs](#text-inputs)
-  - [Checkbox & radio](#checkbox--radio)
+  - [Checkbox &amp; radio](#checkbox-amp-radio)
   - [Select input](#select-input)
   - [File input](#file-input)
   - [Range input](#range-input)
