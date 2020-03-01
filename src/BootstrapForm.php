@@ -2,7 +2,6 @@
 
 namespace Bgaze\BootstrapForm;
 
-use Illuminate\Routing\Route;
 use Illuminate\Database\Eloquent\Model;
 use Collective\Html\HtmlBuilder;
 use Collective\Html\FormBuilder;
@@ -191,8 +190,9 @@ class BootstrapForm
             // Set form action.
             if (is_array($this->update)) {
                 $type = Str::contains(Arr::first($this->update), '@') ? 'action' : 'route';
-                $this->attributes->{$type} = $this->update;
-                $this->attributes->{$type}[] = $model->getRouteKey();
+                $update = $this->update;
+                $update[] = $model->getRouteKey();
+                $this->attributes->{$type} = $update;
             } else {
                 $type = Str::contains($this->update, '@') ? 'action' : 'route';
                 $this->attributes->{$type} = [$this->update, $model->getRouteKey()];
