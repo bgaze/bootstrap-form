@@ -442,9 +442,9 @@ class BootstrapForm
      * @param  array  $options
      * @return string
      */
-    public function color($name, $label = null, array $options = [])
+    public function color($name, $label = null, $value = null, array $options = [])
     {
-        return $this->input('color', $name, $label, null, $options);
+        return $this->input('color', $name, $label, $value, $options);
     }
 
 
