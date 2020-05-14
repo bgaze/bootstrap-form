@@ -294,6 +294,7 @@ All the input functions accept following common options in addition to their spe
 + `BF::number()` / `@number()`
 + `BF::date()` / `@date()`
 + `BF::time()` / `@time()`
++ `BF::color()` / `@color()`
 + `BF::textarea()` / `@textarea()`
 + `BF::password()` / `@password()`
 
@@ -627,6 +628,7 @@ Here is the list of available methods and directives:
 | BF::number()      | @number()        | Create a number input                               |
 | BF::date()        | @date()          | Create a date input                                 |
 | BF::time()        | @time()          | Create a time input                                 |
+| BF::color()       | @color()         | Create a color input                                |
 | BF::textarea()    | @textarea()      | Create a textarea                                   |
 | BF::password()    | @password()      | Create a password input                             |
 | BF::file()        | @file()          | Create a file input                                 |
