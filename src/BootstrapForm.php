@@ -435,6 +435,20 @@ class BootstrapForm
 
 
     /**
+     * Create a Bootstrap color field input.
+     *
+     * @param  string  $name
+     * @param  string  $label
+     * @param  array  $options
+     * @return string
+     */
+    public function color($name, $label = null, array $options = [])
+    {
+        return $this->input('color', $name, $label, null, $options);
+    }
+
+
+    /**
      * Create a Bootstrap textarea field input.
      *
      * @param  string  $name
