@@ -53,7 +53,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
     {
         $functions = [
             'open', 'close', 'vertical', 'inline', 'horizontal',
-            'text', 'email', 'url', 'tel', 'number', 'date', 'time', 'textarea', 'password',
+            'text', 'email', 'url', 'tel', 'number', 'date', 'time', 'textarea', 'password','color',
             'file', 'hidden', 'select', 'range',
             'checkbox', 'checkboxes', 'radio', 'radios',
             'label', 'submit', 'reset', 'button', 'link',
