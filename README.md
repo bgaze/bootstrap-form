@@ -16,12 +16,9 @@ Model form binding and automatic error display are supported, as well as most of
 
 Any contribution or feedback is highly welcomed, please feel free to create a pull request or [submit a new issue](https://github.com/bgaze/bootstrap-form/issues/new).
 
-> BF is mainly inspired by [Dwight Watson's](https://github.com/dwightwatson/bootstrap-form) and [Michael Burgin's](https://github.com/realripley00/bootstrap-form) awesome work.  
-> Credits and many thanks to them :-)
-
 ## Documentation 
 
-Full fodumentation, as well as dmos, are available at [https://packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)
+Full documentation and demos are available at [https://packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)
 
 ## Quick start
 
@@ -36,53 +33,25 @@ There are a various configuration options available, publish the configuration f
 ```shell
 php artisan vendor:publish --provider="Bgaze\BootstrapForm\BootstrapFormServiceProvider"
 ```
-
-That's it, you can start to build forms.  
-The `BF` facade provides [many methods](#available-methods-and-directives) to create forms and form inputs.  
-All of them have a Blade directive alias.
-
-In this doc, we'll mainly use blade directives as it is probably the most common way to use BF.  
-Following examples are exactly the same:
+  
+The `BF` facade provides many methods to create forms and inputs:  
 
 ```html
-echo BF::open(['url' => '/login']);
-echo BF::text('test', 'My test field');
-echo BF::close();
+echo BF::open(['url' => '/my/url', 'novalidate' => true])
+echo BF::text('login')
+echo BF::email('email')
+echo BF::checkbox('remember_me', null, 1, null, ['switch' => true, 'inline' => true])
+echo BF::submit('Login')
+echo BF::close()
 ```
 
+Most of them have a Blade directive alias to ease form creation from Blade templates:
+
 ```html
-@open(['url' => '/login'])
-@text('test', 'My test field')
+@open(['url' => '/my/url', 'novalidate' => true])
+    @text('login')
+    @email('email')
+    @checkbox('remember_me', null, 1, null, ['switch' => true, 'inline' => true])
+    @submit('Login')
 @close
-```
-
-They both will produce this HTML code:
-
-```html
-<form method="POST" action="/login" accept-charset="UTF-8" role="form">
-    <input name="_token" type="hidden" value="H4qgr6kk7AlnnkxTbcUKvmEMWiFh8MaNyizdJB91">   
-
-    <div id="test_group" class="form-group">
-        <label for="test">My test field</label>
-        <div>
-            <input id="test" class="form-control" name="test" type="text">
-        </div>
-    </div>
-</form>
-```
-
-Any form error present in the session error bag (`old` function) will be automatically displayed:
-
-```html
-<form method="POST" action="/login" accept-charset="UTF-8" role="form">
-    <input name="_token" type="hidden" value="H4qgr6kk7AlnnkxTbcUKvmEMWiFh8MaNyizdJB91">   
-
-    <div id="test_group" class="is-invalid form-group">
-        <label for="test">My test field</label>
-        <div>
-            <input id="test" class="form-control is-invalid" name="test" type="text">
-            <div class="invalid-feedback">The test field is required.</div>
-        </div>
-    </div>
-</form>
 ```
