@@ -18,7 +18,7 @@ Any contribution or feedback is highly welcomed, please feel free to create a pu
 
 ## Documentation 
 
-Full documentation and demos are available at [https://packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)
+Full documentation and examples are available at [https://packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)
 
 ## Quick start
 
