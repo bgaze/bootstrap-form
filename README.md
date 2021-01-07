@@ -20,6 +20,8 @@ Any contribution or feedback is highly welcomed, please feel free to create a pu
 
 Full documentation and examples are available at [https://packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)
 
+If you use **PhpStorm IDE**, you can also check [this gist](https://gist.github.com/bgaze/1f559782c85511dc2671cdb6b453f0c6) which allow to easily configure **syntax highlighting** and **live templates** for this package's custom Blade directives.
+
 ## Quick start
 
 Simply install the package using Composer:
