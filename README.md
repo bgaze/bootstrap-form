@@ -1,7 +1,7 @@
 # Bootstrap 4 forms builder for Laravel 5.8+ <!-- omit in toc --> 
 
 [![GitHub license](https://img.shields.io/github/license/bgaze/bootstrap-form)](https://github.com/bgaze/bootstrap-form/blob/master/LICENSE)
-![Maintenance](https://img.shields.io/maintenance/yes/2020)
+![Maintenance](https://img.shields.io/maintenance/yes/2021)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/bgaze/bootstrap-form)
 [![GitHub stars](https://img.shields.io/github/stars/bgaze/bootstrap-form)](https://github.com/bgaze/bootstrap-form/stargazers)
 ![Packagist](https://img.shields.io/packagist/dt/bgaze/bootstrap-form)
