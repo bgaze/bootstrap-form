@@ -2,29 +2,26 @@
 
 namespace Bgaze\BootstrapForm\Inputs;
 
+use Bgaze\BootstrapForm\Support\Html\Html;
+use Bgaze\BootstrapForm\Support\Html\HtmlElement;
 use Bgaze\BootstrapForm\Support\Input;
 use Bgaze\BootstrapForm\Support\Traits\HasAddons;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
  * Specific settings:
  *
+ * @property array $value
  * @property array $choices
  * @property bool $custom
  * @property string $size
  */
 class SelectInput extends Input
 {
-
     use HasAddons;
 
-
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
         return parent::defaults()->merge([
             'choices' => [],
@@ -34,45 +31,23 @@ class SelectInput extends Input
         ]);
     }
 
-
-    /**
-     * The class constructor.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  array  $choices
-     * @param  mixed  $selected
-     * @param  array  $options
-     */
-    public function __construct($name, $label = null, $choices = [], $selected = null, array $options = [])
+    public function __construct(string $name, $label = null, array $choices = [], $selected = null, array $options = [])
     {
         parent::__construct($name, $label, $selected, $options);
         $this->choices = $choices;
     }
 
-
-    /**
-     * Instanciate a SelectInput.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  array  $choices
-     * @param  mixed  $selected
-     * @param  array  $options
-     * @return SelectInput
-     */
-    public static function make($name, $label = null, $choices = [], $selected = null, array $options = [])
+    public static function make(string $name, $label = null, array $choices = [], $selected = null, array $options = []): static
     {
         return new static($name, $label, $choices, $selected, $options);
     }
 
+    protected function setValue($value): array
+    {
+        return Arr::wrap(parent::setValue($value));
+    }
 
-    /**
-     * Set input attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
@@ -84,14 +59,29 @@ class SelectInput extends Input
         }
     }
 
-
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
-        return $this->form->select($this->name, $this->choices, $this->value, $this->input_attributes->toArray())->toHtml();
+        $select = Html::select($this->input_attributes->toArray())->attribute('name', $this->name);
+
+        foreach ($this->choices as $key => $value) {
+            if (is_array($value)) {
+                $group = Html::optgroup()->attribute('label', $key)->appendTo($select);
+                foreach ($value as $k => $v) {
+                    $this->makeOption($k, $v)->appendTo($group);
+                }
+            } else {
+                $this->makeOption($key, $value)->appendTo($select);
+            }
+        }
+
+        return $select->toHtml();
+    }
+
+    protected function makeOption($value, $label): HtmlElement
+    {
+        return Html::option()
+            ->attribute('value', $value)
+            ->attribute('selected', in_array($value, $this->value))
+            ->append($label);
     }
 }

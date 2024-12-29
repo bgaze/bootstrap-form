@@ -55,13 +55,13 @@ return [
     | Horizontal forms
     |--------------------------------------------------------------------------
     |
-    | Here you may specify the default options for the forizontal form layout.
+    | Here you may specify the default options for the horizontal form layout.
     |
     */
 
-    // You can add an empty left column to checkboxes, radios and fields without 
+    // You can add an empty left column to checkboxes, radios and fields without
     // label to preserve fields alignment.
-    // Set to false to disable this feature, or set the HTML class to add.
+    // Set false to disable this feature, or set the HTML class you want.
     'pull_right' => 'hidden-md-down col-lg-2 col-xl-3',
 
     // The width of left column (labels).
@@ -80,16 +80,16 @@ return [
     */
 
     // The horizontal blank space between label and field.
-    // Set to false to disable this feature, or set the HTML class to add on labels.
-    // This setting doesn't applies to checkboxes and radios: CSS is needed for that.
+    // Set false to disable this feature, or set the HTML class to add on labels.
+    // This setting doesn't apply to checkboxes and radios: CSS is needed for that.
     'lspace' => 'mr-2',
 
     // The horizontal blank space between form group.
-    // Set to false to disable this feature, or set the HTML class to add on form groups. 
+    // Set false to disable this feature, or set the HTML class to add on form groups.
     'hspace' => 'mr-3',
 
     // The vertical blank space between form group.
-    // Set to false to disable this feature, or set the HTML class to add on form groups. 
+    // Set false to disable this feature, or set the HTML class to add on form groups.
     'vspace' => 'my-1',
 
     /*

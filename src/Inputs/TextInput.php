@@ -2,6 +2,7 @@
 
 namespace Bgaze\BootstrapForm\Inputs;
 
+use Bgaze\BootstrapForm\Support\Html\Html;
 use Bgaze\BootstrapForm\Support\Input;
 use Bgaze\BootstrapForm\Support\Traits\HasAddons;
 use Illuminate\Support\Collection;
@@ -9,54 +10,29 @@ use Illuminate\Support\Collection;
 /**
  * Specific settings:
  *
- * @property string $tag
+ * @property string $type
  * @property string $size
  */
 class TextInput extends Input
 {
-
     use HasAddons;
 
-
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
-        return parent::defaults()
-            ->except('custom')
-            ->merge([
-                'tag' => 'text',
-                'size' => null,
-                'prepend' => false,
-                'append' => false,
-            ]);
+        return parent::defaults()->except('custom')->merge([
+            'type' => 'text',
+            'size' => null,
+            'prepend' => false,
+            'append' => false,
+        ]);
     }
 
-
-    /**
-     * Instanciate a TextInput.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  mixed  $value
-     * @param  array  $options
-     * @return TextInput
-     */
-    public static function make($name, $label = null, $value = null, array $options = [])
+    public static function make(string $name, $label = null, $value = null, array $options = []): static
     {
         return new static($name, $label, $value, $options);
     }
 
-
-    /**
-     * Set input attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
@@ -67,18 +43,18 @@ class TextInput extends Input
         }
     }
 
-
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
-        if ($this->tag === 'password') {
-            return $this->form->password($this->name, $this->input_attributes->toArray())->toHtml();
-        }
+        $input = ($this->type === 'textarea') ? Html::textarea() : Html::input();
 
-        return $this->form->{$this->tag}($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
+        $input->attributes($this->input_attributes->toArray())->attribute('name', $this->name);
+
+        match ($this->type) {
+            'password' => $input->attribute('type', 'password'),
+            'textarea' => $input->append($this->value),
+            default => $input->attributes(['type' => $this->type, 'value' => $this->value]),
+        };
+
+        return $input->toHtml();
     }
 }

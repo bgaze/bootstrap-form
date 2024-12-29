@@ -2,7 +2,9 @@
 
 namespace Bgaze\BootstrapForm\Inputs;
 
+use Bgaze\BootstrapForm\Support\Html\Html;
 use Bgaze\BootstrapForm\Support\Input;
+use Spatie\Html\BaseElement;
 
 /**
  * Specific settings:
@@ -11,28 +13,12 @@ use Bgaze\BootstrapForm\Support\Input;
  */
 class RangeInput extends Input
 {
-
-    /**
-     * Instantiate a RangeInput.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  mixed  $value
-     * @param  array  $options
-     * @return RangeInput
-     */
-    public static function make($name, $label = null, $value = null, array $options = [])
+    public static function make(string $name, $label = null, $value = null, array $options = []): static
     {
         return new static($name, $label, $value, $options);
     }
 
-
-    /**
-     * Set input attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
@@ -43,14 +29,12 @@ class RangeInput extends Input
         }
     }
 
-
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
-        return $this->form->range($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
+        return Html::input($this->input_attributes->toArray())
+            ->attribute('type', 'range')
+            ->attribute('name', $this->name)
+            ->attribute('value', $this->value)
+            ->toHtml();
     }
 }
