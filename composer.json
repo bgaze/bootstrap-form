@@ -14,10 +14,10 @@
         }
     ],
     "require": {
-        "php": ">=7.0",
-        "illuminate/support": ">=5.8",
-        "illuminate/database": ">=5.8",
-        "laravelcollective/html": ">=5.8"
+        "php": ">=7.2.5",
+        "illuminate/support": ">=6.0",
+        "illuminate/database": ">=6.0",
+        "bgaze/laravel-collective-html": "^1.0.0"
     },
     "autoload": {
         "psr-4": {
