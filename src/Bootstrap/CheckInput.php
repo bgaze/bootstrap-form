@@ -1,9 +1,9 @@
 <?php
 
-namespace Bgaze\BootstrapForm\Inputs;
+namespace Bgaze\BootstrapForm\Bootstrap;
 
-use Bgaze\BootstrapForm\Support\Html\Html;
-use Bgaze\BootstrapForm\Support\Input;
+use Bgaze\BootstrapForm\Html\Html;
+use Bgaze\BootstrapForm\Bootstrap\AbstractInput;
 use Illuminate\Support\Collection;
 
 /**
@@ -16,7 +16,7 @@ use Illuminate\Support\Collection;
  * @property bool $custom
  * @property bool $switch
  */
-class CheckInput extends Input
+class CheckInput extends AbstractInput
 {
     protected function defaults(): Collection
     {
@@ -63,14 +63,14 @@ class CheckInput extends Input
 
         $this->label_attributes->addClass($this->custom ? 'custom-control-label' : 'form-check-label');
 
-        if ($this->label === false && !$this->custom) {
+        if ($this->label === false && ! $this->custom) {
             $this->input_attributes->addClass('position-static');
         }
     }
 
     public function input(): string
     {
-        return Html::input($this->input_attributes->toArray())
+        return Html::input($this->input_attributes)
             ->attribute('type', $this->type)
             ->attribute('value', $this->value)
             ->attribute('checked', $this->checked)
@@ -83,7 +83,7 @@ class CheckInput extends Input
             ->append([$this->input(), $this->label()])
             ->addClass($this->custom ? 'custom-control' : 'form-check');
 
-        if ($this->errors && !$this->disable_errors) {
+        if ($this->errors && ! $this->disable_errors) {
             $div->append($this->errors);
         }
 
@@ -107,7 +107,7 @@ class CheckInput extends Input
     public function label(): ?string
     {
         if ($this->label === false && $this->custom) {
-            return Html::label($this->label_attributes->toArray())->attribute('for', $this->input_attributes->id);
+            return Html::label($this->label_attributes)->attribute('for', $this->input_attributes->id);
         }
 
         return parent::label();

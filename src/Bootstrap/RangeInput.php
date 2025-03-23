@@ -1,17 +1,16 @@
 <?php
 
-namespace Bgaze\BootstrapForm\Inputs;
+namespace Bgaze\BootstrapForm\Bootstrap;
 
-use Bgaze\BootstrapForm\Support\Html\Html;
-use Bgaze\BootstrapForm\Support\Input;
-use Spatie\Html\BaseElement;
+use Bgaze\BootstrapForm\Html\Html;
+use Bgaze\BootstrapForm\Bootstrap\AbstractInput;
 
 /**
  * Specific settings:
  *
  * @property bool $custom
  */
-class RangeInput extends Input
+class RangeInput extends AbstractInput
 {
     public static function make(string $name, $label = null, $value = null, array $options = []): static
     {
@@ -31,7 +30,7 @@ class RangeInput extends Input
 
     public function input(): string
     {
-        return Html::input($this->input_attributes->toArray())
+        return Html::input($this->input_attributes)
             ->attribute('type', 'range')
             ->attribute('name', $this->name)
             ->attribute('value', $this->value)

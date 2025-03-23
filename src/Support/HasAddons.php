@@ -1,9 +1,8 @@
 <?php
 
-namespace Bgaze\BootstrapForm\Support\Traits;
+namespace Bgaze\BootstrapForm\Support;
 
-use Bgaze\BootstrapForm\Support\Html\Html;
-use Bgaze\BootstrapForm\Support\Html\HtmlElement;
+use Bgaze\BootstrapForm\Html\Html;
 
 /**
  * @method string input()
@@ -12,9 +11,7 @@ use Bgaze\BootstrapForm\Support\Html\HtmlElement;
  */
 trait HasAddons
 {
-    /**
-     * Build a Bootstrap input group if append or prepend options are provided.
-     */
+
     public function inputGroup(): string
     {
         return $this->buildInputGroup($this->input());

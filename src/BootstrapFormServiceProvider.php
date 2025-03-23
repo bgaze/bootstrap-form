@@ -11,15 +11,14 @@ class BootstrapFormServiceProvider extends ServiceProvider
 
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/config.php', 'bootstrap_form');
+        $this->mergeConfigFrom(__DIR__.'/config/config.php', 'bootstrap_form');
 
-        $this->app->singleton('bootstrap_form', fn($app) => new BootstrapForm());
+        $this->app->singleton('bootstrap_form', fn ($app) => new BootstrapForm);
     }
-
 
     public function boot(): void
     {
-        $this->publishes([__DIR__ . '/config/config.php' => config_path('bootstrap_form.php')], 'config');
+        $this->publishes([__DIR__.'/config/config.php' => config_path('bootstrap_form.php')], 'config');
 
         if (config('bootstrap_form.blade_directives', true)) {
             $this->registerBladeDirectives();
@@ -37,7 +36,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
         ];
 
         foreach ($functions as $f) {
-            Blade::directive($f, fn($expression) => sprintf('<?= BF::%s(%s) ?>', $f, $expression));
+            Blade::directive($f, fn ($expression) => sprintf('<?= BF::%s(%s) ?>', $f, $expression));
         }
     }
 

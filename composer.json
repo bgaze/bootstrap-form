@@ -28,8 +28,8 @@
         "Bgaze\\BootstrapForm\\BootstrapFormServiceProvider"
       ],
       "aliases": {
-        "BF": "Bgaze\\BootstrapForm\\Support\\Facades\\BF",
-        "Html": "Bgaze\\BootstrapForm\\Support\\Html\\Html"
+        "BF": "Bgaze\\BootstrapForm\\Support\\Facade",
+        "Html": "Bgaze\\BootstrapForm\\Html\\Html"
       }
     }
   },

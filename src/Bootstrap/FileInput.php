@@ -1,10 +1,10 @@
 <?php
 
-namespace Bgaze\BootstrapForm\Inputs;
+namespace Bgaze\BootstrapForm\Bootstrap;
 
-use Bgaze\BootstrapForm\Support\Html\Html;
-use Bgaze\BootstrapForm\Support\Input;
-use Bgaze\BootstrapForm\Support\Traits\HasAddons;
+use Bgaze\BootstrapForm\Html\Html;
+use Bgaze\BootstrapForm\Bootstrap\AbstractInput;
+use Bgaze\BootstrapForm\Support\HasAddons;
 use Illuminate\Support\Collection;
 
 /**
@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
  * @property string $text
  * @property string $button
  */
-class FileInput extends Input
+class FileInput extends AbstractInput
 {
     use HasAddons;
 
@@ -52,7 +52,7 @@ class FileInput extends Input
 
     public function input(): string
     {
-        return Html::input($this->input_attributes->toArray())
+        return Html::input($this->input_attributes)
             ->attribute('type', 'file')
             ->attribute('name', $this->name)
             ->attribute('value', $this->value)

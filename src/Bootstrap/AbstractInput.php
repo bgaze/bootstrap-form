@@ -1,13 +1,14 @@
 <?php
 
-namespace Bgaze\BootstrapForm\Support;
+namespace Bgaze\BootstrapForm\Bootstrap;
 
-use Bgaze\BootstrapForm\Support\Facades\BF;
-use Bgaze\BootstrapForm\Support\Html\Attributes;
-use Bgaze\BootstrapForm\Support\Html\Html;
-use Bgaze\BootstrapForm\Support\Traits\HasSettings;
+use Bgaze\BootstrapForm\Html\Attributes;
+use Bgaze\BootstrapForm\Html\Html;
+use Bgaze\BootstrapForm\Support\Facade;
+use Bgaze\BootstrapForm\Support\HasSettings;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Stringable;
@@ -33,7 +34,7 @@ use Stringable;
  * @property ?string $hspace
  * @property ?string $vspace
  */
-abstract class Input implements Htmlable, Stringable, Renderable
+abstract class AbstractInput implements Htmlable, Renderable, Stringable
 {
     use HasSettings;
 
@@ -71,7 +72,7 @@ abstract class Input implements Htmlable, Stringable, Renderable
 
     protected function defaults(): Collection
     {
-        return BF::settings()->merge([
+        return Facade::settings()->merge([
             'help' => false,
         ]);
     }
@@ -99,10 +100,10 @@ abstract class Input implements Htmlable, Stringable, Renderable
 
     protected function setInputAttributes(array $options): void
     {
-        $this->input_attributes = Attributes::make($options)->except($this->settings->keys());
+        $this->input_attributes = Attributes::make(Arr::except($options, $this->settings->keys()));
 
         if (!$this->input_attributes->id) {
-            $this->input_attributes->id = $this->flattenName($this->name, '_');
+            $this->input_attributes->set('id', $this->flattenName($this->name, '_'));
         }
     }
 
@@ -114,13 +115,13 @@ abstract class Input implements Htmlable, Stringable, Renderable
             $this->label = str_replace('_', ' ', Str::ucfirst(Str::lower(Str::title($this->name))));
         }
 
+        $this->label_attributes = Attributes::make();
+
         if (isset($options['label']) && is_array($options['label'])) {
-            $this->label_attributes = Attributes::make($options['label']);
-        } else {
-            $this->label_attributes = Attributes::make();
+            $this->label_attributes->merge($options['label']);
         }
 
-        $this->label_attributes->for = $this->input_attributes->id;
+        $this->label_attributes->set('for', $this->input_attributes->id);
 
         if ($this->layout === 'inline' && $this->lspace) {
             $this->label_attributes->addClass($this->lspace);
@@ -139,29 +140,23 @@ abstract class Input implements Htmlable, Stringable, Renderable
             }
         }
 
+        $this->group_attributes = Attributes::make();
+
         if (is_array($this->group)) {
-            $this->group_attributes = Attributes::make($this->group);
+            $this->group_attributes->merge($this->group);
             $this->group = true;
-        } else {
-            $this->group_attributes = Attributes::make();
         }
 
         if (!$this->group_attributes->id) {
-            $this->group_attributes->id = $this->flattenName($this->name, '_') . '_group';
+            $this->group_attributes->set('id', $this->flattenName($this->name, '_') . '_group');
         }
 
         $this->group_attributes->addClass('form-group');
 
         if ($this->layout === 'horizontal') {
             $this->group_attributes->addClass('row');
-        }
-
-        if ($this->layout === 'inline' && $this->hspace) {
-            $this->group_attributes->addClass($this->hspace);
-        }
-
-        if ($this->layout === 'inline' && $this->vspace) {
-            $this->group_attributes->addClass($this->vspace);
+        } elseif ($this->layout === 'inline') {
+            $this->group_attributes->addClass([$this->hspace => !!$this->hspace, $this->vspace => !!$this->vspace]);
         }
     }
 
@@ -174,8 +169,9 @@ abstract class Input implements Htmlable, Stringable, Renderable
     {
         $this->errors = null;
 
-        if ($errorBag = BF::getSessionStore()->get('errors')?->{$this->error_bag}) {
+        if ($errorBag = Facade::getSessionStore()->get('errors')?->{$this->error_bag}) {
             $field = $this->flattenName($this->name, '.');
+
             if ($errorBag->has($field)) {
                 if ($this->show_all_errors) {
                     $this->errors = implode('', $errorBag->get($field, $this->errorTemplate()));
@@ -200,7 +196,7 @@ abstract class Input implements Htmlable, Stringable, Renderable
 
     public function label(): ?string
     {
-        return ($this->label === false) ? null : Html::label($this->label_attributes->toArray())->append($this->label)->toHtml();
+        return ($this->label === false) ? null : Html::label($this->label_attributes)->append($this->label)->toHtml();
     }
 
     public function help(): ?string
@@ -211,7 +207,7 @@ abstract class Input implements Htmlable, Stringable, Renderable
     public function group(): string
     {
         if ($this->group) {
-            return Html::div($this->group_attributes->toArray())
+            return Html::div($this->group_attributes)
                 ->append([$this->leftGroupColumn(), $this->rightGroupColumn()])
                 ->toHtml();
         }

@@ -1,10 +1,10 @@
 <?php
 
-namespace Bgaze\BootstrapForm\Inputs;
+namespace Bgaze\BootstrapForm\Bootstrap;
 
-use Bgaze\BootstrapForm\Support\Html\Html;
-use Bgaze\BootstrapForm\Support\Input;
-use Bgaze\BootstrapForm\Support\Traits\HasAddons;
+use Bgaze\BootstrapForm\Html\Html;
+use Bgaze\BootstrapForm\Bootstrap\AbstractInput;
+use Bgaze\BootstrapForm\Support\HasAddons;
 use Illuminate\Support\Collection;
 
 /**
@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
  * @property string $type
  * @property string $size
  */
-class TextInput extends Input
+class TextInput extends AbstractInput
 {
     use HasAddons;
 
@@ -39,7 +39,7 @@ class TextInput extends Input
         $this->input_attributes->addClass('form-control');
 
         if ($this->size === 'sm' || $this->size === 'lg') {
-            $this->input_attributes->addClass('form-control-' . $this->size);
+            $this->input_attributes->addClass('form-control-'.$this->size);
         }
     }
 
@@ -47,7 +47,7 @@ class TextInput extends Input
     {
         $input = ($this->type === 'textarea') ? Html::textarea() : Html::input();
 
-        $input->attributes($this->input_attributes->toArray())->attribute('name', $this->name);
+        $input->attributes($this->input_attributes)->attribute('name', $this->name);
 
         match ($this->type) {
             'password' => $input->attribute('type', 'password'),

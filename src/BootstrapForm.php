@@ -2,15 +2,20 @@
 
 namespace Bgaze\BootstrapForm;
 
-use ArrayAccess;
-use Bgaze\BootstrapForm\Support\Html\Attributes;
-use Bgaze\BootstrapForm\Support\Html\Html;
-use Bgaze\BootstrapForm\Support\Traits\HasSettings;
-use Illuminate\Contracts\Session\Session;
+use Bgaze\BootstrapForm\Bootstrap\CheckChoice;
+use Bgaze\BootstrapForm\Bootstrap\CheckInput;
+use Bgaze\BootstrapForm\Bootstrap\FileInput;
+use Bgaze\BootstrapForm\Bootstrap\Form;
+use Bgaze\BootstrapForm\Bootstrap\RangeInput;
+use Bgaze\BootstrapForm\Bootstrap\SelectInput;
+use Bgaze\BootstrapForm\Bootstrap\TextInput;
+use Bgaze\BootstrapForm\Html\Attributes;
+use Bgaze\BootstrapForm\Html\Html;
+use Bgaze\BootstrapForm\Support\HasSettings;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
@@ -42,187 +47,145 @@ class BootstrapForm
     use HasSettings;
     use Macroable;
 
-    /**
-     * Configuration keys that won't be inherited by form inputs.
-     */
-    const RESERVED = ['model', 'url', 'route', 'action', 'update', 'store', 'files'];
+    /** Configuration keys that won't be inherited by form inputs. */
+    public const RESERVED = ['model', 'url', 'route', 'action', 'update', 'store', 'files'];
 
-    /**
-     * The form attribute set.
-     */
-    protected Attributes $attributes;
-
-    /**
-     * Is a form opened ?
-     */
-    protected bool $form = false;
+    protected ?Form $form = null;
 
     public function __construct()
     {
-        $this->resetForm();
+        $this->configure();
     }
 
-    // MISC UTILITIES
+    /** Check if a form is currently opened */
+    public function isFormOpened(): bool
+    {
+        return (bool) $this->form?->isOpened();
+    }
 
-    /**
-     * Get inheritable forms settings.
-     */
+    /** Get inheritable forms settings. */
     public function settings(): Collection
     {
         return $this->settings->except(static::RESERVED);
     }
 
-    /**
-     * Get session store.
-     */
-    public function getSessionStore(): Session
+    /** Get currently opened form. */
+    public function form(): ?Form
     {
-        return Request::session();
+        return $this->form;
     }
 
-
-    // FORM ELEMENT
-
-    protected function resetForm(): void
+    protected function configure(array $options = []): void
     {
+        // Mark form as closed.
+        $this->form = null;
+
         // Set defaults options.
-        $reserved = array_fill_keys(self::RESERVED, null);
-        $this->settings = Collection::make($reserved)
+        $this->settings = Collection::make(array_fill_keys(self::RESERVED, null))
             ->put('error_bag', 'default')
             ->merge(config('bootstrap_form'))
             ->except('blade_directives');
 
         // Force an array for group option.
-        if (!is_array($this->group)) {
+        if (! is_array($this->group)) {
             $this->group = [];
         }
 
-        // Set default attributes.
-        $this->attributes = Attributes::make([
-            'role' => 'form',
-            'accept-charset' => 'utf-8',
-            'method' => 'POST'
-        ]);
+        // Apply provided configuration.
+        if (! empty($options)) {
+            // Merge settings.
+            $this->settings = $this->settings->merge(
+                collect($options)->only($this->settings->keys())->except('group')
+            );
 
-        // Mark form as closed.
-        $this->form = false;
-    }
-
-    protected function getFormAction(): ?string
-    {
-        if ($this->url) {
-            return URL::to($this->url);
-        }
-
-        if ($this->model && !$this->route && !$this->action) {
-            $action = null;
-
-            if ($this->model->exists && $this->update) {
-                $action = [...Arr::wrap($this->update), $this->model->getRouteKey()];
-                $this->attributes->method = 'PUT';
-            } elseif (!$this->model->exists && $this->store) {
-                $action = Arr::wrap($this->store);
-                $this->attributes->method = 'POST';
+            // Manage group option.
+            if (isset($options['group']) && $options['group'] === false) {
+                $this->group = false;
+            } elseif (isset($options['group']) && is_array($options['group'])) {
+                $this->group = array_merge($this->group, $options['group']);
             }
 
-            if ($action) {
-                if (is_array(Arr::first($action)) || Str::contains(Arr::first($action), '@')) {
-                    $this->action = $action;
+            // Ignore model if not an instance of Illuminate\Database\Eloquent\Model
+            if (! $this->model instanceof Model) {
+                $this->model = null;
+            }
+        }
+    }
+
+    // FORM ELEMENT
+
+    /** Open a form. */
+    public function open(array $options = []): string
+    {
+        $this->configure($options);
+
+        $this->form = Form::make(Arr::except($options, $this->settings->keys()));
+
+        if ($this->layout !== 'vertical') {
+            $this->form->addClass('form-'.$this->layout);
+        }
+
+        if ($this->files) {
+            $this->form->attribute('enctype', 'multipart/form-data');
+        }
+
+        if ($this->url) {
+            $this->form->attribute('action', URL::to($this->url));
+        } else {
+            if ($this->model && ! $this->route && ! $this->action) {
+                if ($this->model->exists && $this->update) {
+                    $action = [...Arr::wrap($this->update), $this->model->getRouteKey()];
+                    $this->form->attribute('method', 'PUT');
+                } elseif (! $this->model->exists && $this->store) {
+                    $action = Arr::wrap($this->store);
+                    $this->form->attribute('method', 'POST');
+                }
+
+                if (isset($action)) {
+                    if (is_array(Arr::first($action)) || Str::contains(Arr::first($action), '@')) {
+                        $this->action = $action;
+                    } else {
+                        $this->route = $action;
+                    }
+                }
+            }
+
+            if ($action = $this->route ?: $this->action) {
+                $parameters = Arr::wrap($action);
+                $action = array_shift($parameters);
+
+                if ($this->route) {
+                    $this->form->attribute('action', URL::route($action, $parameters));
                 } else {
-                    $this->route = $action;
+                    $this->form->attribute('action', URL::action($action, $parameters));
                 }
             }
         }
 
-        if ($action = $this->route ?: $this->action) {
-            $parameters = Arr::wrap($action);
-            $action = array_shift($parameters);
-
-            if ($this->route) {
-                return URL::route($action, $parameters);
-            }
-
-            return URL::action($action, $parameters);
-        }
-
-        return null;
+        return $this->form->open();
     }
 
-    /**
-     * Open a form.
-     */
-    public function open(array $options = []): string
-    {
-        // Mark form as opened.
-        $this->form = true;
-
-        // Merge with provided options.
-        $settings = collect($options)->only($this->settings->keys())->except('group');
-        $this->settings = $this->settings->merge($settings);
-
-        // Manage group option.
-        if (isset($options['group']) && $options['group'] === false) {
-            $this->group = false;
-        } elseif (isset($options['group']) && is_array($options['group'])) {
-            $this->group = array_merge($this->group, $options['group']);
-        }
-
-        // Ignore model if not an instance of Illuminate\Database\Eloquent\Model
-        if (!$this->model instanceof Model) {
-            $this->model = null;
-        }
-
-        // Set form attributes.
-        $attributes = collect($options)->except($this->settings->keys())->except('group');
-        $this->attributes = $this->attributes->merge($attributes);
-
-        // Set form class based on form layout.
-        if ($this->layout !== 'vertical') {
-            $this->attributes->addClass('form-' . $this->layout);
-        }
-
-        // Manage enctype
-        if ($this->files) {
-            $this->attributes->enctype = 'multipart/form-data';
-        }
-
-        // Set form action.
-        if ($action = $this->getFormAction()) {
-            $this->attributes->action = $action;
-        }
-
-        return Html::form($this->attributes->toArray())->open();
-    }
-
-    /**
-     * Reset and close the form.
-     */
+    /** Reset and close the form. */
     public function close(): string
     {
-        $this->resetForm();
+        $this->configure();
 
         return Html::form()->close();
     }
 
-    /**
-     * Open a vertical Bootstrap form.
-     */
+    /** Open a vertical Bootstrap form. */
     public function vertical(array $options = []): string
     {
         return $this->open(['layout' => 'vertical'] + $options);
     }
 
-    /**
-     * Open an inline Bootstrap form.
-     */
+    /** Open an inline Bootstrap form. */
     public function inline(array $options = []): string
     {
         return $this->open(['layout' => 'inline'] + $options);
     }
 
-    /**
-     * Open a horizontal Bootstrap form.
-     */
+    /** Open a horizontal Bootstrap form. */
     public function horizontal(array $options = []): string
     {
         return $this->open(['layout' => 'horizontal'] + $options);
@@ -230,191 +193,146 @@ class BootstrapForm
 
     // BUILD FORM INPUTS
 
-    /**
-     * Create a Bootstrap input by tag.
-     */
+    /** Create a Bootstrap input by tag. */
     public function input(string $type, string $name, $label = null, $value = null, array $options = []): string
     {
-        return Inputs\TextInput::make($name, $label, $value, compact('type') + $options)->toHtml();
+        return TextInput::make($name, $label, $value, compact('type') + $options)->toHtml();
     }
 
-    /**
-     * Create a Bootstrap text input.
-     */
+    /** Create a Bootstrap text input. */
     public function text(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('text', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap email input.
-     */
+    /** Create a Bootstrap email input. */
     public function email(string $name = 'email', $label = null, $value = null, array $options = []): string
     {
         return $this->input('email', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap URL input.
-     */
+    /** Create a Bootstrap URL input. */
     public function url(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('url', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap tel input.
-     */
+    /** Create a Bootstrap tel input. */
     public function tel(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('tel', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap number input.
-     */
+    /** Create a Bootstrap number input. */
     public function number(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('number', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap date input.
-     */
+    /** Create a Bootstrap date input. */
     public function date(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('date', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap time input.
-     */
+    /** Create a Bootstrap time input. */
     public function time(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('time', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap password input.
-     */
+    /** Create a Bootstrap password input. */
     public function password(string $name, $label = null, array $options = []): string
     {
         return $this->input('password', $name, $label, null, $options);
     }
 
-    /**
-     * Create a Bootstrap color input.
-     */
+    /** Create a Bootstrap color input. */
     public function color(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('color', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a Bootstrap textarea input.
-     */
+    /** Create a Bootstrap textarea input. */
     public function textarea(string $name, $label = null, $value = null, array $options = []): string
     {
         return $this->input('textarea', $name, $label, $value, $options);
     }
 
-    /**
-     * Create a select box field.
-     */
-    public function select(string $name, $label = null, ArrayAccess|array $choices = [], $selected = null, array $options = []): string
+    /** Create a select box field. */
+    public function select(string $name, $label = null, Arrayable|array $choices = [], $selected = null, array $options = []): string
     {
-        return Inputs\SelectInput::make($name, $label, $choices, $selected, $options)->toHtml();
+        return SelectInput::make($name, $label, $choices, $selected, $options)->toHtml();
     }
 
-    /**
-     * Create a Boostrap file upload button.
-     */
+    /** Create a Boostrap file upload button. */
     public function file(string $name, $label = null, array $options = []): string
     {
-        return Inputs\FileInput::make($name, $label, $options)->toHtml();
+        return FileInput::make($name, $label, $options)->toHtml();
     }
 
-    /**
-     * Create a Boostrap file upload button.
-     */
+    /** Create a Boostrap file upload button. */
     public function range(string $name, $label = null, $value = null, array $options = []): string
     {
-        return Inputs\RangeInput::make($name, $label, $value, $options)->toHtml();
+        return RangeInput::make($name, $label, $value, $options)->toHtml();
     }
 
-    /**
-     * Create a Bootstrap checkbox input.
-     */
+    /** Create a Bootstrap checkbox input. */
     public function checkbox(string $name, $label = null, $value = 1, $checked = null, array $options = []): string
     {
-        return Inputs\CheckInput::make($name, $label, $value, $checked, ['type' => 'checkbox'] + $options)->toHtml();
+        return CheckInput::make($name, $label, $value, $checked, ['type' => 'checkbox'] + $options)->toHtml();
     }
 
-    /**
-     * Create a collection of Bootstrap checkboxes.
-     */
-    public function checkboxes(string $name, $label = null, array $choices = [], $checked = null, array $options = []): string
+    /** Create a collection of Bootstrap checkboxes. */
+    public function checkboxes(string $name, $label = null, Arrayable|array $choices = [], $checked = null, array $options = []): string
     {
-        return Inputs\CheckChoice::make($name, $label, $choices, $checked, ['type' => 'checkbox'] + $options)->toHtml();
+        return CheckChoice::make($name, $label, $choices, $checked, ['type' => 'checkbox'] + $options)->toHtml();
     }
 
-    /**
-     * Create a Bootstrap radio input.
-     */
+    /** Create a Bootstrap radio input. */
     public function radio(string $name, $label = null, $value = null, $checked = null, array $options = []): string
     {
-        return Inputs\CheckInput::make($name, $label, $value, $checked, ['type' => 'radio'] + $options)->toHtml();
+        return CheckInput::make($name, $label, $value, $checked, ['type' => 'radio'] + $options)->toHtml();
     }
 
-    /**
-     * Create a collection of Bootstrap radio inputs.
-     */
-    public function radios(string $name, $label = null, array $choices = [], $checked = null, array $options = []): string
+    /** Create a collection of Bootstrap radio inputs. */
+    public function radios(string $name, $label = null, Arrayable|array $choices = [], $checked = null, array $options = []): string
     {
-        $options['tag'] = 'radio';
-
-        return Inputs\CheckChoice::make($name, $label, $choices, $checked, ['type' => 'radio'] + $options)->toHtml();
+        return CheckChoice::make($name, $label, $choices, $checked, ['type' => 'radio'] + $options)->toHtml();
     }
 
-    /**
-     * Create a hidden field.
-     */
+    /** Create a hidden field. */
     public function hidden(string $name, $value = null, array $options = []): string
     {
-        if (!isset($options['id'])) {
+        if (! isset($options['id'])) {
             $options['id'] = $this->flattenName($name, '_');
         }
 
-
         return Html::input($options)
-            ->attributes([
-                'type' => 'hidden',
-                'name' => $name,
-                'value' => $value
-            ])
+            ->attributes(['type' => 'hidden', 'name' => $name, 'value' => $value])
             ->toHtml();
     }
 
     // MISC
 
-    /**
-     * Create a Bootstrap label.
-     */
+    /** Create a Bootstrap label. */
     public function label(string $for, $content = null, array $options = []): string
     {
         return Html::label($options)->attribute('for', $for)->append($content)->toHtml();
     }
 
-    /**
-     * Create options for Boostrap button.
-     */
-    protected function btn(string $style, array|string|null $options): array
+    /** Create options for Boostrap button. */
+    protected function btn(string $style, array|string|null $options): Attributes
     {
-        $attributes = Attributes::make()
-            ->addClass('btn')
-            ->addClass(sprintf('btn-%s', (!empty($options) && is_string($options)) ? $options : $style));
+        $attributes = Attributes::make(['class' => 'btn']);
 
-        if ($this->form && $this->layout === 'inline') {
+        if (! empty($options) && is_string($options)){
+            $attributes->addClass(sprintf('btn-%s', $options));
+        }else{
+            $attributes->addClass(sprintf('btn-%s', $style));
+        }
+
+        if ($this->isFormOpened() && $this->layout === 'inline') {
             if ($this->hspace) {
                 $attributes->addClass($this->hspace);
             }
@@ -424,36 +342,30 @@ class BootstrapForm
             }
         }
 
-        if (!empty($options) && !is_string($options)) {
-            $attributes = $attributes->merge($options);
+        if (! empty($options) && ! is_string($options)) {
+            $attributes->merge($options);
         }
 
-        return $attributes->toArray();
+        return $attributes;
     }
 
-    /**
-     * Create a Boostrap submit input.
-     */
+    /** Create a Boostrap submit input. */
     public function submit($value = null, array|string|null $options = null): string
     {
         return Html::input($this->btn('primary', $options))
-            ->attributes(['type' => 'submit', 'value' => $value])
+            ->attributes(['type' => 'submit', 'value' => $value ?: false])
             ->toHtml();
     }
 
-    /**
-     * Create a Boostrap reset input.
-     */
+    /** Create a Boostrap reset input. */
     public function reset($value = null, array|string|null $options = null): string
     {
         return Html::input($this->btn('danger', $options))
-            ->attributes(['type' => 'reset', 'value' => $value])
+            ->attributes(['type' => 'reset', 'value' => $value ?: false])
             ->toHtml();
     }
 
-    /**
-     * Create a Boostrap button.
-     */
+    /** Create a Boostrap button. */
     public function button($content = null, array|string|null $options = null): string
     {
         return Html::button(['type' => 'button'])
@@ -462,9 +374,7 @@ class BootstrapForm
             ->toHtml();
     }
 
-    /**
-     * Create a Boostrap link button.
-     */
+    /** Create a Boostrap link button. */
     public function link(string $href, $content = null, array|string|null $options = null): string
     {
         return Html::a($this->btn('primary', $options))
