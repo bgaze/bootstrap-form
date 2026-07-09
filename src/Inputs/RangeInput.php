@@ -36,11 +36,7 @@ class RangeInput extends Input
     {
         parent::setInputAttributes($options);
 
-        if ($this->custom) {
-            $this->input_attributes->addClass('custom-range');
-        } else {
-            $this->input_attributes->addClass('form-control-range');
-        }
+        $this->input_attributes->addClass($this->driver->rangeClass((bool) $this->custom));
     }
 
 

@@ -76,11 +76,10 @@ class SelectInput extends Input
     {
         parent::setInputAttributes($options);
 
-        $class = $this->custom ? 'custom-select' : 'form-control';
-        $this->input_attributes->addClass($class);
+        $this->input_attributes->addClass($this->driver->selectClass((bool) $this->custom));
 
         if ($this->size === 'sm' || $this->size === 'lg') {
-            $this->input_attributes->addClass($class . '-' . $this->size);
+            $this->input_attributes->addClass($this->driver->selectSizeClass((bool) $this->custom, $this->size));
         }
     }
 

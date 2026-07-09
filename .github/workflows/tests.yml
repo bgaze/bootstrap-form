@@ -1,0 +1,42 @@
+name: tests
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.2', '8.3', '8.4']
+        testbench: ['9.*', '10.*']
+        exclude:
+          # Testbench 9 targets Laravel 11; pair it with its well-supported PHP versions.
+          - php: '8.4'
+            testbench: '9.*'
+
+    name: PHP ${{ matrix.php }} - Testbench ${{ matrix.testbench }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: |
+          composer require "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
+          composer update --prefer-dist --no-interaction
+
+      - name: Run tests
+        run: vendor/bin/phpunit

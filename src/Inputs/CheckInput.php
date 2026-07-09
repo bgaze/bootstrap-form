@@ -18,6 +18,14 @@ class CheckInput extends Input
 {
 
     /**
+     * Resolved wrapper/input/label classes and extra input attributes for the control.
+     *
+     * @var array
+     */
+    protected $check_classes = [];
+
+
+    /**
      * Get the input default options.
      *
      * @return Collection
@@ -82,23 +90,31 @@ class CheckInput extends Input
             $this->custom = true;
         }
 
-        $this->input_attributes->addClass($this->custom ? 'custom-control-input' : 'form-check-input');
+        $this->check_classes = $this->driver->checkClasses(
+            $this->tag,
+            (bool) $this->custom,
+            (bool) $this->switch,
+            (bool) $this->inline,
+            $this->label === false
+        );
+
+        $this->input_attributes->addClass($this->check_classes['input']);
+
+        foreach ($this->check_classes['input_attributes'] as $key => $value) {
+            $this->input_attributes->{$key} = $value;
+        }
     }
 
     /**
      * Set label attributes.
-     * 
-     * @param array $options 
+     *
+     * @param array $options
      */
     protected function setLabelAttributes(array $options)
     {
         parent::setLabelAttributes($options);
 
-        $this->label_attributes->addClass($this->custom ? 'custom-control-label' : 'form-check-label');
-
-        if ($this->label === false && !$this->custom) {
-            $this->input_attributes->addClass('position-static');
-        }
+        $this->label_attributes->addClass($this->check_classes['label']);
     }
 
     /**
@@ -126,22 +142,10 @@ class CheckInput extends Input
         }
 
         if ($this->help) {
-            $content .= $this->html->tag('small', $this->help, ['class' => 'form-text']);
+            $content .= $this->html->tag('small', $this->help, ['class' => $this->driver->helpClass()]);
         }
 
-        $class = $this->custom ? 'custom-control' : 'form-check';
-
-        if ($this->inline) {
-            $class .= $this->custom ? ' custom-control-inline' : ' form-check-inline';
-        }
-
-        if ($this->switch) {
-            $class .= ' custom-switch';
-        } elseif ($this->custom) {
-            $class .= " custom-{$this->tag}";
-        }
-
-        return $this->html->tag('div', $content, ['class' => $class])->toHtml();
+        return $this->html->tag('div', $content, ['class' => $this->check_classes['wrapper']])->toHtml();
     }
 
     /**

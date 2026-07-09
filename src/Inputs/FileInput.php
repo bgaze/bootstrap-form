@@ -66,9 +66,13 @@ class FileInput extends Input
     {
         parent::setInputAttributes($options);
 
-        if ($this->custom) {
-            $this->input_attributes->addClass('custom-file-input');
+        if ($this->custom && $this->driver->usesCustomFile()) {
+            $this->input_attributes->addClass($this->driver->customFileInputClass());
         } else {
+            $class = $this->driver->fileInputClass();
+            if ($class !== '') {
+                $this->input_attributes->addClass($class);
+            }
             $this->append = false;
             $this->prepend = false;
         }
@@ -93,20 +97,22 @@ class FileInput extends Input
     {
         // Prepare file input.
         $input = $this->input();
-        if (!$this->custom) {
+
+        // Only versions with a dedicated custom-file markup wrap the input.
+        if (!$this->custom || !$this->driver->usesCustomFile()) {
             return $input;
         }
 
         // Prepare button.
-        $attr = ['class' => 'custom-file-label'];
+        $attr = ['class' => $this->driver->customFileLabelClass()];
         if ($this->button) {
             $attr['data-browse'] = $this->button;
         }
         $button = $this->form->label($this->input_attributes->id, $this->text, $attr, false);
 
-        // Wrap elements.
+        // Wrap into the custom-file block.
         $input = $this->html->tag('div', $input . $button, [
-            'class' => ($this->layout === 'inline') ? 'custom-file w-auto' : 'custom-file'
+            'class' => $this->driver->customFileWrapperClass($this->layout === 'inline'),
         ])->toHtml();
 
         // Check if addons.
@@ -114,24 +120,15 @@ class FileInput extends Input
             return $input;
         }
 
-        // Prepare prepend group.
-        $prepend = '';
-        if ($this->prepend) {
-            $content = is_array($this->prepend) ? implode('', $this->prepend) : $this->prepend;
-            $prepend = $this->html->tag('div', $content, ['class' => 'input-group-prepend']);
-        }
+        // Resolve prepend / append content and let the driver assemble the input group.
+        $prepend = $this->prepend
+            ? (is_array($this->prepend) ? implode('', $this->prepend) : $this->prepend)
+            : '';
 
-        // Prepare append group.
-        $append = '';
-        if ($this->append) {
-            $content = is_array($this->append) ? implode('', $this->append) : $this->append;
-            $append = $this->html->tag('div', $content, ['class' => 'input-group-append']);
-        }
+        $append = $this->append
+            ? (is_array($this->append) ? implode('', $this->append) : $this->append)
+            : '';
 
-        // Prepare group class.
-        $class = 'input-group';
-
-        // Wrap elements.
-        return $this->html->tag('div', $prepend . $input . $append, ['class' => $class])->toHtml();
+        return $this->driver->inputGroup($this->html, $prepend, $input, $append, null);
     }
 }
