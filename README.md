@@ -1,4 +1,4 @@
-# Bootstrap 4 forms builder for Laravel 6+ <!-- omit in toc -->
+# Bootstrap 4 & 5 forms builder for Laravel 6+ <!-- omit in toc -->
 
 [![GitHub license](https://img.shields.io/github/license/bgaze/bootstrap-form)](https://github.com/bgaze/bootstrap-form/blob/master/LICENSE)
 ![Maintenance](https://img.shields.io/maintenance/yes/2030)
@@ -11,7 +11,10 @@
 </p>
 
 This package uses in background [Laravel Collective HTML](https://laravelcollective.com/docs/5.8/html) to simplify
-Bootstrap 4 forms creation into Laravel applications.
+Bootstrap forms creation into Laravel applications.
+
+It renders **Bootstrap 4** markup by default, and supports **Bootstrap 5** as an opt-in (see
+[Bootstrap 5 support](#bootstrap-5-support) below): existing applications are not impacted until they opt in.
 
 Model form binding and automatic error display are supported, as well as most of Bootstrap forms features : form
 layouts, custom fields, input groups, ...
@@ -63,3 +66,48 @@ Most of them have a Blade directive alias to ease form creation from Blade templ
 @submit('Login')
 @close
 ```
+
+## Bootstrap 5 support
+
+Since **v3.0**, the package can render **Bootstrap 5** markup. Bootstrap 4 stays the default, so
+**existing applications are not impacted** until they explicitly opt in.
+
+Enable Bootstrap 5 application wide in the published configuration file:
+
+```php
+// config/bootstrap_form.php
+'bootstrap_version' => 5,
+```
+
+Or opt in for a single form (all its fields inherit the version):
+
+```html
+@open(['url' => '/my/url', 'bootstrap_version' => 5])
+```
+
+Or for a single field:
+
+```html
+@text('login', null, null, ['bootstrap_version' => 5])
+```
+
+**Vertical** and **horizontal** layouts are fully supported. **Inline** forms are best-effort: Bootstrap 5
+reworked the inline layout and it may require additional markup on your side.
+
+The `custom` option (Bootstrap 4 native vs custom controls) is a **no-op** in Bootstrap 5, where custom
+controls were merged into the default styles.
+
+### Upgrading from v2 to v3
+
+v3 is backward compatible **at runtime**: with the default `bootstrap_version` (4), the rendered HTML is
+unchanged. The only breaking change is the **configuration file structure**: the layout options (`custom`,
+`left_class`, `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`) now live under per-version sections.
+
+If you had **published and customized** the configuration file, republish it and move your customizations under
+the `bootstrap4` (and/or `bootstrap5`) key:
+
+```shell
+php artisan vendor:publish --provider="Bgaze\BootstrapForm\BootstrapFormServiceProvider" --force
+```
+
+Applications that never published the configuration file have nothing to do.
