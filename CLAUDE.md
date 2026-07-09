@@ -26,7 +26,8 @@ Public open-source (GitHub / Packagist).
   Laravel 11+ compatibility. Keep it in sync when bumping the supported Laravel range.
 - The `tests/` suite is a **characterization oracle**: it asserts the exact rendered HTML. Any intended markup change
   must update the expected strings in the same commit; an unintended diff there is a regression.
-- GitHub/Packagist package: no application, no staging / `.env`, no CI pipeline. Contribute via PRs on GitHub.
+- GitHub/Packagist package: no application, no staging / `.env`. CI runs the suite via GitHub Actions
+  (`.github/workflows/tests.yml`, matrix PHP × Testbench). Contribute via PRs on GitHub.
 
 ## On-Demand Resources
 
