@@ -4,6 +4,8 @@ namespace Bgaze\BootstrapForm;
 
 use Bgaze\BootstrapForm\Inputs;
 use Bgaze\BootstrapForm\Support\Attributes;
+use Bgaze\BootstrapForm\Support\Drivers\DriverManager;
+use Bgaze\BootstrapForm\Support\Drivers\VersionDriver;
 use Bgaze\BootstrapForm\Support\Traits\HasSettings;
 use Collective\Html\FormBuilder;
 use Collective\Html\HtmlBuilder;
@@ -126,12 +128,19 @@ class BootstrapForm
      */
     protected function resetForm()
     {
-        // Set defaults options.
+        $config = config('bootstrap_form');
+        $version = (int) ($config['bootstrap_version'] ?? 4);
+
+        // Set defaults options: agnostic root settings + the active version layout section.
         $reserved = array_fill_keys(self::RESERVED, null);
         $this->settings = Collection::make($reserved)
             ->put('error_bag', 'default')
-            ->merge(config('bootstrap_form'))
-            ->except('blade_directives');
+            ->merge(Arr::except($config, ['blade_directives', 'bootstrap4', 'bootstrap5']))
+            // "custom" is always a known setting (a no-op in Bootstrap 5) so it is never
+            // mistaken for an HTML attribute, even when absent from the version section.
+            ->put('custom', false)
+            ->merge($this->versionLayout($version))
+            ->put('bootstrap_version', $version);
 
         // Force an array for group option.
         if (!is_array($this->group)) {
@@ -147,12 +156,42 @@ class BootstrapForm
 
 
     /**
+     * Get the layout options declared for a Bootstrap version.
+     *
+     * @param  int  $version
+     * @return array
+     */
+    protected function versionLayout($version)
+    {
+        return config('bootstrap_form.bootstrap' . $version, []);
+    }
+
+
+    /**
+     * Get the driver for the active Bootstrap version.
+     *
+     * @return VersionDriver
+     */
+    public function driver()
+    {
+        return DriverManager::make((int) $this->bootstrap_version);
+    }
+
+
+    /**
      * Init form with provided option set.
      *
      * @param  array  $options
      */
     protected function initForm(array $options = [])
     {
+        // Switch the version layout defaults if the version is overridden at open().
+        if (isset($options['bootstrap_version'])) {
+            $version = (int) $options['bootstrap_version'];
+            $this->settings = $this->settings
+                ->merge($this->versionLayout($version))
+                ->put('bootstrap_version', $version);
+        }
 
         // Merge with provided options.
         $settings = collect($options)->only($this->settings->keys())->except('group');
@@ -170,8 +209,9 @@ class BootstrapForm
         $this->attributes = $this->attributes->merge($attributes);
 
         // Set form class based on form layout.
-        if ($this->layout !== 'vertical') {
-            $this->attributes->addClass('form-' . $this->layout);
+        $layoutClass = $this->driver()->formLayoutClass($this->layout);
+        if ($layoutClass !== '') {
+            $this->attributes->addClass($layoutClass);
         }
 
         // Use explicity passed URL, route or action.
@@ -631,7 +671,7 @@ class BootstrapForm
             }
         }
 
-        $class .= 'btn btn-';
+        $class .= $this->driver()->buttonBaseClass();
 
         if (is_array($options)) {
             return array_merge(['class' => $class . $style], $options);

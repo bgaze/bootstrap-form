@@ -2,6 +2,8 @@
 
 namespace Bgaze\BootstrapForm\Support;
 
+use Bgaze\BootstrapForm\Support\Drivers\DriverManager;
+use Bgaze\BootstrapForm\Support\Drivers\VersionDriver;
 use Bgaze\BootstrapForm\Support\Facades\BF;
 use Bgaze\BootstrapForm\Support\Traits\HasSettings;
 use Collective\Html\FormBuilder;
@@ -33,6 +35,13 @@ abstract class Input
 {
 
     use HasSettings;
+
+    /**
+     * The active Bootstrap version driver.
+     *
+     * @var VersionDriver
+     */
+    protected $driver;
 
     /**
      * Illuminate HtmlBuilder instance.
@@ -143,6 +152,9 @@ abstract class Input
         $this->value = $value;
         $this->label = $label;
         $this->errors = '';
+
+        // Resolve the version driver from the (possibly overridden) settings.
+        $this->driver = DriverManager::make((int) $this->settings->get('bootstrap_version', 4));
     }
 
 
@@ -217,7 +229,7 @@ abstract class Input
      */
     protected function errorTemplate()
     {
-        return '<div class="invalid-feedback">:message</div>';
+        return '<div class="' . $this->driver->feedbackClass(false) . '">:message</div>';
     }
 
 
@@ -248,8 +260,8 @@ abstract class Input
             $this->errors = $errorBag->first($field, $this->errorTemplate());
         }
 
-        $this->input_attributes->addClass('is-invalid');
-        $this->group_attributes->addClass('is-invalid');
+        $this->input_attributes->addClass($this->driver->invalidClass());
+        $this->group_attributes->addClass($this->driver->invalidClass());
     }
 
     ### COMPONENTS #############################################################
@@ -300,7 +312,7 @@ abstract class Input
             return '';
         }
 
-        return $this->html->tag('small', $this->help, ['class' => 'form-text'])->toHtml();
+        return $this->html->tag('small', $this->help, ['class' => $this->driver->helpClass()])->toHtml();
     }
 
 
@@ -315,10 +327,10 @@ abstract class Input
             return $this->inputGroup();
         }
 
-        $this->group_attributes->addClass('form-group');
+        $this->group_attributes->addClass($this->driver->formGroupClass());
 
         if ($this->layout === 'horizontal') {
-            $this->group_attributes->addClass('row');
+            $this->group_attributes->addClass($this->driver->rowClass());
         }
 
         if ($this->layout === 'inline' && $this->hspace) {
@@ -347,7 +359,9 @@ abstract class Input
         }
 
         if ($this->layout === 'horizontal') {
-            $this->label_attributes->addClass('col-form-label')->addClass($this->left_class);
+            $this->label_attributes->addClass($this->driver->colFormLabelClass())->addClass($this->left_class);
+        } elseif ($labelClass = $this->driver->labelClass()) {
+            $this->label_attributes->addClass($labelClass);
         }
 
         if ($this->layout === 'inline' && $this->lspace) {

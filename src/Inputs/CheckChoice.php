@@ -72,7 +72,7 @@ class CheckChoice extends Input
         parent::setLabelAttributes($options);
 
         if ($this->layout === 'horizontal') {
-            $this->label_attributes->addClass('pt-0');
+            $this->label_attributes->addClass($this->driver->checkChoiceLabelClass());
         }
     }
 
@@ -81,7 +81,7 @@ class CheckChoice extends Input
      */
     protected function errorTemplate()
     {
-        return '<div class="invalid-feedback d-block">:message</div>';
+        return '<div class="' . $this->driver->feedbackClass(true) . '">:message</div>';
     }
 
     /**

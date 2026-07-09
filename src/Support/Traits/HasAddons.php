@@ -16,11 +16,7 @@ trait HasAddons
      */
     protected function errorTemplate()
     {
-        if ($this->append || $this->prepend) {
-            return '<div class="invalid-feedback d-block">:message</div>';
-        }
-
-        return '<div class="invalid-feedback">:message</div>';
+        return '<div class="' . $this->driver->feedbackClass((bool) ($this->append || $this->prepend)) . '">:message</div>';
     }
 
 
@@ -36,29 +32,16 @@ trait HasAddons
             return $this->input();
         }
 
-        // Prepare prepend group.
-        $prepend = '';
-        if ($this->prepend) {
-            $content = is_array($this->prepend) ? implode('', $this->prepend) : $this->prepend;
-            $prepend = $this->html->tag('div', $content, ['class' => 'input-group-prepend']);
-        }
+        // Resolve prepend / append content.
+        $prepend = $this->prepend
+            ? (is_array($this->prepend) ? implode('', $this->prepend) : $this->prepend)
+            : '';
 
-        // Prepare append group.
-        $append = '';
-        if ($this->append) {
-            $content = is_array($this->append) ? implode('', $this->append) : $this->append;
-            $append = $this->html->tag('div', $content, ['class' => 'input-group-append']);
-        }
+        $append = $this->append
+            ? (is_array($this->append) ? implode('', $this->append) : $this->append)
+            : '';
 
-        // Prepare group class.
-        $class = 'input-group';
-        if ($this->size === 'sm') {
-            $class .= ' input-group-sm';
-        } elseif ($this->size === 'lg') {
-            $class .= ' input-group-lg';
-        }
-
-        // Wrap elements.
-        return $this->html->tag('div', $prepend . $this->input() . $append, ['class' => $class])->toHtml();
+        // Let the driver assemble the input group (structure differs across versions).
+        return $this->driver->inputGroup($this->html, $prepend, $this->input(), $append, $this->size);
     }
 }

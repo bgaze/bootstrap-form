@@ -1,7 +1,8 @@
 # bgaze/bootstrap-form
 
-Bootstrap 4 forms builder for Laravel 6+. Composer **package** (library, not an app): wraps the
-`bgaze/laravel-collective-html` fork to build Bootstrap 4 forms via a `BF` facade and Blade directives.
+Bootstrap 4/5 forms builder for Laravel 6+. Composer **package** (library, not an app): wraps the
+`bgaze/laravel-collective-html` fork to build forms via a `BF` facade and Blade directives. Renders
+**Bootstrap 4 by default**; Bootstrap 5 is **opt-in** (`bootstrap_version` config, or per form/field).
 Public open-source (GitHub / Packagist).
 
 ## Stack
@@ -19,6 +20,21 @@ Public open-source (GitHub / Packagist).
 - `src/BootstrapForm.php` — builder entry point, backing the `BF` facade (`Bgaze\BootstrapForm\Support\Facades\BF`).
 - `src/Inputs/` — field types (Text, Check, CheckChoice, File, Range, Select).
 - `src/Support/` — `Input`, `Attributes`, traits `HasAddons` / `HasSettings`.
+- `src/Support/Drivers/` — **version drivers**: `VersionDriver` (abstract, shared tokens) + `Bootstrap4Driver` /
+  `Bootstrap5Driver` (version deltas) + `DriverManager` (resolves by version). All Bootstrap component classes and
+  the structural divergences (input-group, custom-file, check/switch) live here — **no Bootstrap class literal exists
+  outside a driver**. `Input` subclasses consume the driver.
+
+## Bootstrap version
+
+- `config/config.php`: `bootstrap_version` (4 | 5, default 4) selects the driver; layout-level, app-tunable options
+  live under version sections `bootstrap4` / `bootstrap5`. Component classes are native/fixed (driver code), not
+  configurable.
+- Resolution: global default ← per-form override (`BF::open(['bootstrap_version' => 5])`) ← per-field override. A
+  per-field override switches the driver (component classes); layout settings stay inherited from the form.
+- `custom` is a Bootstrap 4 concept (native vs custom controls) and is a **no-op in Bootstrap 5** (styles unified).
+  It stays a recognized setting in both versions so it is never emitted as an HTML attribute.
+- Bootstrap 5 inline forms are **best-effort** (B5 reworked inline layout); vertical and horizontal are fully supported.
 
 ## Pitfalls
 

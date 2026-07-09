@@ -60,10 +60,10 @@ class TextInput extends Input
     {
         parent::setInputAttributes($options);
 
-        $this->input_attributes->addClass('form-control');
+        $this->input_attributes->addClass($this->driver->inputClass());
 
         if ($this->size === 'sm' || $this->size === 'lg') {
-            $this->input_attributes->addClass('form-control-' . $this->size);
+            $this->input_attributes->addClass($this->driver->inputSizeClass($this->size));
         }
     }
 
