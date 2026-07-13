@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
@@ -10,33 +12,21 @@ use Illuminate\Support\HtmlString;
  *
  * Single source of truth for attribute serialization — the exact ordering and escaping
  * rules here are what the rendered markup (and its characterization oracle) depend on.
- * Behavior ported verbatim from the former Collective HtmlBuilder (tag/attributes/link).
  */
 class Html
 {
-    /**
-     * The URL generator instance (used by link()).
-     *
-     * @var UrlGenerator|null
-     */
-    protected $url;
-
-    public function __construct(UrlGenerator $url = null)
+    public function __construct(protected readonly ?UrlGenerator $url = null)
     {
-        $this->url = $url;
     }
 
     /**
-     * Build an HTML attribute string from an array.
-     *
-     * @param  array  $attributes
-     * @return string
+     * Build an HTML attribute string from an array (leading space included when non-empty).
      */
-    public function attributes($attributes)
+    public function attributes(array $attributes): string
     {
         $html = [];
 
-        foreach ((array) $attributes as $key => $value) {
+        foreach ($attributes as $key => $value) {
             $element = $this->attributeElement($key, $value);
 
             if (!is_null($element)) {
@@ -47,22 +37,14 @@ class Html
         return count($html) > 0 ? ' ' . implode(' ', $html) : '';
     }
 
-    /**
-     * Build a single attribute element.
-     *
-     * @param  string  $key
-     * @param  mixed  $value
-     * @return string|null
-     */
-    protected function attributeElement($key, $value)
+    protected function attributeElement(int|string $key, mixed $value): ?string
     {
-        // For numeric keys we assume a boolean attribute where the presence of the
-        // attribute represents a true value (e.g. "required").
+        // Numeric keys are bare boolean attributes (e.g. "required").
         if (is_numeric($key)) {
-            return $value;
+            return (string) $value;
         }
 
-        // Treat boolean attributes as HTML properties.
+        // Boolean values are HTML properties (present when true), except "value".
         if (is_bool($value) && $key !== 'value') {
             return $value ? $key : '';
         }
@@ -78,43 +60,19 @@ class Html
         return null;
     }
 
-    /**
-     * Convert an HTML string to entities.
-     *
-     * @param  string  $value
-     * @return string
-     */
-    public function entities($value)
+    public function entities(string $value): string
     {
         return htmlentities($value, ENT_QUOTES, 'UTF-8', false);
     }
 
-    /**
-     * Generate an HTML tag.
-     *
-     * @param  string  $tag
-     * @param  mixed  $content
-     * @param  array  $attributes
-     * @return HtmlString
-     */
-    public function tag($tag, $content, array $attributes = [])
+    public function tag(string $tag, mixed $content, array $attributes = []): HtmlString
     {
         $content = is_array($content) ? implode('', $content) : $content;
 
         return $this->toHtmlString('<' . $tag . $this->attributes($attributes) . '>' . $content . '</' . $tag . '>');
     }
 
-    /**
-     * Generate an HTML link.
-     *
-     * @param  string  $url
-     * @param  string  $title
-     * @param  array  $attributes
-     * @param  bool  $secure
-     * @param  bool  $escape
-     * @return HtmlString
-     */
-    public function link($url, $title = null, $attributes = [], $secure = null, $escape = true)
+    public function link(string $url, string|false|null $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
     {
         $url = $this->url->to($url, [], $secure);
 
@@ -129,13 +87,7 @@ class Html
         return $this->toHtmlString('<a href="' . $this->entities($url) . '"' . $this->attributes($attributes) . '>' . $title . '</a>');
     }
 
-    /**
-     * Wrap a raw string into an HtmlString.
-     *
-     * @param  string  $html
-     * @return HtmlString
-     */
-    protected function toHtmlString($html)
+    protected function toHtmlString(string $html): HtmlString
     {
         return new HtmlString($html);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support;
 
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
@@ -7,61 +9,36 @@ use Illuminate\Support\Collection;
 
 /**
  * Resolves the value / checked / selected state of a field from old input, the request
- * flash and the bound model — the binding logic formerly buried in the Collective
- * FormBuilder, extracted as a single testable concern.
+ * flash and the bound model.
  *
- * Behavior is ported verbatim. The dead paths in the original are dropped (they were
- * unreachable from this package, so removing them is iso):
- *  - considerRequest / request(): never enabled (the accessor that toggled it is gone);
- *  - labels / getIdAttribute fallback: inputs always carry an explicit id.
+ * Ported verbatim from the former Collective FormBuilder, minus its unreachable paths
+ * (considerRequest/request and the labels-based id fallback), which are iso to drop
+ * here: the request feature was never enabled and inputs always carry an explicit id.
  */
 class FieldValue
 {
     /**
-     * @var FormContext
-     */
-    protected $context;
-
-    /**
      * The type of the field currently being resolved (drives old-input array shifting).
-     *
-     * @var string|null
      */
-    protected $type = null;
+    protected ?string $type = null;
 
     /**
      * Per-key accumulator for shifting repeated old-input values.
-     *
-     * @var array
      */
-    protected $payload = [];
+    protected array $payload = [];
 
-    public function __construct(FormContext $context)
+    public function __construct(protected readonly FormContext $context)
     {
-        $this->context = $context;
     }
 
-    /**
-     * Set the type of the field being resolved.
-     *
-     * @param  string  $type
-     * @return $this
-     */
-    public function setType($type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
         return $this;
     }
 
-    /**
-     * Get the value that should be assigned to the field.
-     *
-     * @param  string  $name
-     * @param  mixed  $value
-     * @return mixed
-     */
-    public function value($name, $value = null)
+    public function value(?string $name, mixed $value = null): mixed
     {
         if (is_null($name)) {
             return $value;
@@ -73,6 +50,8 @@ class FieldValue
             return $old;
         }
 
+        // With the ConvertEmptyStringsToNull middleware, a failed submit repopulates
+        // an untouched field as empty rather than from the model.
         if (function_exists('app')) {
             $hasNullMiddleware = app("Illuminate\Contracts\Http\Kernel")
                 ->hasMiddleware(ConvertEmptyStringsToNull::class);
@@ -96,46 +75,39 @@ class FieldValue
         if (!is_null($this->context->getModel())) {
             return $this->modelValue($name);
         }
+
+        return null;
     }
 
-    /**
-     * Get a value from the session's old input.
-     *
-     * @param  string  $name
-     * @return mixed
-     */
-    public function old($name)
+    public function old(string $name): mixed
     {
         $session = $this->context->session();
 
-        if (isset($session)) {
-            $key = $this->transformKey($name);
-            $payload = $session->getOldInput($key);
+        if (!isset($session)) {
+            return null;
+        }
 
-            if (!is_array($payload)) {
-                return $payload;
-            }
+        $key = $this->transformKey($name);
+        $payload = $session->getOldInput($key);
 
-            if (!in_array($this->type, ['select', 'checkbox'])) {
-                if (!isset($this->payload[$key])) {
-                    $this->payload[$key] = collect($payload);
-                }
-
-                if (!empty($this->payload[$key])) {
-                    return $this->payload[$key]->shift();
-                }
-            }
-
+        if (!is_array($payload)) {
             return $payload;
         }
+
+        if (!in_array($this->type, ['select', 'checkbox'])) {
+            if (!isset($this->payload[$key])) {
+                $this->payload[$key] = collect($payload);
+            }
+
+            if (!empty($this->payload[$key])) {
+                return $this->payload[$key]->shift();
+            }
+        }
+
+        return $payload;
     }
 
-    /**
-     * Determine if the old input is empty.
-     *
-     * @return bool
-     */
-    public function oldInputIsEmpty()
+    public function oldInputIsEmpty(): bool
     {
         $session = $this->context->session();
 
@@ -143,17 +115,16 @@ class FieldValue
     }
 
     /**
-     * Determine if the value is selected (for select options).
-     *
-     * @param  mixed  $value
-     * @param  mixed  $selected
-     * @return string|null
+     * Whether an option value is selected. Returns 'selected'|null, or a bool for the
+     * legacy int-value / bool-selected comparison.
      */
-    public function selected($value, $selected)
+    public function selected(mixed $value, mixed $selected): string|bool|null
     {
         if (is_array($selected)) {
             return in_array($value, $selected, true) || in_array((string) $value, $selected, true) ? 'selected' : null;
-        } elseif ($selected instanceof Collection) {
+        }
+
+        if ($selected instanceof Collection) {
             return $selected->contains($value) ? 'selected' : null;
         }
 
@@ -164,35 +135,18 @@ class FieldValue
         return ((string) $value === (string) $selected) ? 'selected' : null;
     }
 
-    /**
-     * Get the checked state for a checkable input.
-     *
-     * @param  string  $type  checkbox | radio
-     * @param  string  $name
-     * @param  mixed  $value
-     * @param  bool  $checked
-     * @return bool
-     */
-    public function checked($type, $name, $value, $checked)
+    public function checked(string $type, string $name, mixed $value, mixed $checked): bool
     {
         $this->type = $type;
 
-        switch ($type) {
-            case 'checkbox':
-                return $this->getCheckboxCheckedState($name, $value, $checked);
-
-            case 'radio':
-                return $this->getRadioCheckedState($name, $value, $checked);
-
-            default:
-                return $this->compareValues($name, $value);
-        }
+        return match ($type) {
+            'checkbox' => $this->getCheckboxCheckedState($name, $value, $checked),
+            'radio' => $this->getRadioCheckedState($name, $value, $checked),
+            default => $this->compareValues($name, $value),
+        };
     }
 
-    /**
-     * Get the checked state for a checkbox input.
-     */
-    protected function getCheckboxCheckedState($name, $value, $checked)
+    protected function getCheckboxCheckedState(string $name, mixed $value, mixed $checked): bool
     {
         $session = $this->context->session();
 
@@ -201,73 +155,54 @@ class FieldValue
         }
 
         if ($this->missingOldAndModel($name)) {
-            return $checked;
+            return (bool) $checked;
         }
 
         $posted = $this->value($name, $checked);
 
         if (is_array($posted)) {
             return in_array($value, $posted);
-        } elseif ($posted instanceof Collection) {
-            return $posted->contains('id', $value);
-        } else {
-            return (bool) $posted;
         }
+
+        if ($posted instanceof Collection) {
+            return $posted->contains('id', $value);
+        }
+
+        return (bool) $posted;
     }
 
-    /**
-     * Get the checked state for a radio input.
-     */
-    protected function getRadioCheckedState($name, $value, $checked)
+    protected function getRadioCheckedState(string $name, mixed $value, mixed $checked): bool
     {
         if ($this->missingOldAndModel($name)) {
-            return $checked;
+            return (bool) $checked;
         }
 
         return $this->compareValues($name, $value);
     }
 
-    /**
-     * Loosely compare the field value to the given value (model casting friendly).
-     */
-    protected function compareValues($name, $value)
+    protected function compareValues(string $name, mixed $value): bool
     {
         return $this->value($name) == $value;
     }
 
-    /**
-     * Determine if neither old input nor model input exist for a key.
-     */
-    protected function missingOldAndModel($name)
+    protected function missingOldAndModel(string $name): bool
     {
         return is_null($this->old($name)) && is_null($this->modelValue($name));
     }
 
-    /**
-     * Get the model value that should be assigned to the field.
-     *
-     * @param  string  $name
-     * @return mixed
-     */
-    protected function modelValue($name)
+    protected function modelValue(string $name): mixed
     {
         $key = $this->transformKey($name);
         $model = $this->context->getModel();
 
-        if ((is_string($model) || is_object($model)) && method_exists($model, 'getFormValue')) {
+        if (is_object($model) && method_exists($model, 'getFormValue')) {
             return $model->getFormValue($key);
         }
 
         return data_get($model, $key);
     }
 
-    /**
-     * Transform key from array to dot syntax.
-     *
-     * @param  string  $key
-     * @return string
-     */
-    public function transformKey($key)
+    public function transformKey(string $key): string
     {
         return str_replace(['.', '[]', '[', ']'], ['_', '', '.', ''], $key);
     }

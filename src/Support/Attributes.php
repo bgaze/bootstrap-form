@@ -1,67 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support;
 
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 /**
  * A small ordered HTML attribute bag.
  *
- * Deliberately NOT a Collection subclass: it exposes only the handful of operations
- * the package needs, and insertion order is significant (it drives the rendered
- * attribute order the characterization oracle depends on).
+ * Deliberately not a Collection subclass: it exposes only the operations the package
+ * needs, and insertion order is significant (it drives the rendered attribute order the
+ * characterization oracle depends on).
  *
  * The LITERAL_PREFIX escape hatch lets a caller emit an HTML attribute whose name
  * collides with an internal setting (e.g. `size`): a key written `~size` bypasses the
  * settings filter and the prefix is stripped at render time (toArray) to emit `size`.
- * Only render-time conversion (toArray) strips it; raw access (all) keeps it, so the
- * escape survives intermediate merges (e.g. building a checkbox collection's children).
+ * Only toArray strips it; all() keeps it raw so the escape survives intermediate merges
+ * (e.g. building a checkbox collection's children).
+ *
+ * @implements Arrayable<string, mixed>
  */
 class Attributes implements Arrayable
 {
     /**
      * Prefix marking a literal HTML attribute that must escape the settings filter.
      */
-    const LITERAL_PREFIX = '~';
+    public const LITERAL_PREFIX = '~';
 
-    /**
-     * @var array
-     */
-    protected $items = [];
-
-    public function __construct($items = [])
+    public function __construct(protected array $items = [])
     {
-        $this->items = $this->getArrayableItems($items);
     }
 
-    /**
-     * @param  mixed  $items
-     * @return static
-     */
-    public static function make($items = [])
+    public static function make(array $items = []): static
     {
         return new static($items);
     }
 
-    public function __get($key)
+    public function __get(string $key): mixed
     {
         return $this->items[$key] ?? null;
     }
 
-    public function __set($key, $value)
+    public function __set(string $key, mixed $value): void
     {
         $this->items[$key] = $value;
     }
 
     /**
      * Append one or more classes, de-duplicating while preserving order.
-     *
-     * @param  string  $class
-     * @return $this
      */
-    public function addClass($class)
+    public function addClass(string $class): static
     {
         if (empty(trim($class))) {
             return $this;
@@ -80,50 +69,30 @@ class Attributes implements Arrayable
     }
 
     /**
-     * Return a new bag without the given keys (raw keys, order preserved).
-     *
-     * @param  mixed  $keys
-     * @return static
+     * Merge the given items (existing keys keep their position); returns a new bag.
      */
-    public function except($keys)
+    public function merge(array $items): static
     {
-        $keys = $keys instanceof Collection ? $keys->all() : (array) $keys;
-
-        return new static(Arr::except($this->items, $keys));
-    }
-
-    /**
-     * Return a new bag merged with the given items (existing keys keep their position).
-     *
-     * @param  mixed  $items
-     * @return static
-     */
-    public function merge($items)
-    {
-        return new static(array_merge($this->items, $this->getArrayableItems($items)));
+        return new static(array_merge($this->items, $items));
     }
 
     /**
      * Raw items, with the literal prefix left intact (for intermediate merges).
-     *
-     * @return array
      */
-    public function all()
+    public function all(): array
     {
         return $this->items;
     }
 
     /**
      * Render-ready attributes: the literal prefix is stripped here (and only here).
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         $array = [];
 
         foreach ($this->items as $key => $value) {
-            if (is_string($key) && substr($key, 0, 1) === self::LITERAL_PREFIX) {
+            if (is_string($key) && str_starts_with($key, self::LITERAL_PREFIX)) {
                 $key = substr($key, 1);
             }
 
@@ -131,32 +100,5 @@ class Attributes implements Arrayable
         }
 
         return $array;
-    }
-
-    /**
-     * Normalize any supported input into a plain items array (prefix left intact).
-     *
-     * @param  mixed  $items
-     * @return array
-     */
-    protected function getArrayableItems($items)
-    {
-        if (is_array($items)) {
-            return $items;
-        }
-
-        if ($items instanceof self) {
-            return $items->all();
-        }
-
-        if ($items instanceof Collection) {
-            return $items->all();
-        }
-
-        if ($items instanceof Arrayable) {
-            return $items->toArray();
-        }
-
-        return (array) $items;
     }
 }
