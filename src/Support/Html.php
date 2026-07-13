@@ -29,7 +29,9 @@ class Html
         foreach ($attributes as $key => $value) {
             $element = $this->attributeElement($key, $value);
 
-            if (!is_null($element)) {
+            // Skip nulls (absent) and empty strings (e.g. a disabled boolean attribute),
+            // so a dropped attribute never leaves a stray double space in the output.
+            if (!is_null($element) && $element !== '') {
                 $html[] = $element;
             }
         }

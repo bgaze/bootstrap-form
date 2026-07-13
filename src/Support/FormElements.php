@@ -87,17 +87,20 @@ class FormElements
 
     ### LABEL ##################################################################
 
-    public function label(string $name, mixed $value = null, array $options = [], bool $escape_html = true): HtmlString
+    public function label(string|false|null $name, mixed $value = null, array $options = [], bool $escape_html = true): HtmlString
     {
         $options = $this->html->attributes($options);
 
-        $value = $this->formatLabel($name, $value);
+        $value = $this->formatLabel((string) $name, $value);
 
         if ($escape_html) {
             $value = $this->html->entities($value);
         }
 
-        return $this->toHtmlString('<label for="' . $name . '"' . $options . '>' . $value . '</label>');
+        // A disabled/empty target (input id === false) yields a label with no "for".
+        $for = ($name === false || $name === null || $name === '') ? '' : ' for="' . $name . '"';
+
+        return $this->toHtmlString('<label' . $for . $options . '>' . $value . '</label>');
     }
 
     protected function formatLabel(string $name, mixed $value): string
@@ -115,7 +118,7 @@ class FormElements
             $options['name'] = $name;
         }
 
-        $id = $this->getIdAttribute($options);
+        $id = $options['id'] ?? null;
 
         if (!in_array($type, self::SKIP_VALUE_TYPES)) {
             $value = $this->value->value($name, $value);
@@ -206,7 +209,7 @@ class FormElements
 
         $options = $this->setTextAreaSize($options);
 
-        $options['id'] = $this->getIdAttribute($options);
+        $options['id'] = $options['id'] ?? null;
 
         $value = (string) $this->value->value($name, $value);
 
@@ -243,7 +246,7 @@ class FormElements
 
         $selected = $this->value->value($name, $selected);
 
-        $selectAttributes['id'] = $this->getIdAttribute($selectAttributes);
+        $selectAttributes['id'] = $selectAttributes['id'] ?? null;
 
         if (!isset($selectAttributes['name'])) {
             $selectAttributes['name'] = $name;
@@ -366,14 +369,6 @@ class FormElements
     }
 
     ### HELPERS ################################################################
-
-    /**
-     * Inputs always carry an explicit id here, so this just returns it (or null).
-     */
-    protected function getIdAttribute(array $attributes): mixed
-    {
-        return $attributes['id'] ?? null;
-    }
 
     protected function getMethod(string $method): string
     {

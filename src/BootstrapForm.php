@@ -333,7 +333,10 @@ class BootstrapForm
 
     public function hidden(string $name, mixed $value = null, array $options = []): HtmlString
     {
-        if (!isset($options['id'])) {
+        $id = $options['id'] ?? null;
+
+        // Same id policy as inputs: false disables, null / '' / blank generates.
+        if ($id !== false && (is_null($id) || trim((string) $id) === '')) {
             $options['id'] = $this->flattenName($name, '_');
         }
 

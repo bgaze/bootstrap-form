@@ -95,7 +95,10 @@ abstract class Input
     {
         $this->input_attributes = Attributes::make(Options::attributes($options, $this->settings->keys()));
 
-        if (!$this->input_attributes->id) {
+        $id = $this->input_attributes->id;
+
+        // id => false disables the attribute; null / '' / whitespace-only triggers generation.
+        if ($id !== false && (is_null($id) || trim((string) $id) === '')) {
             $this->input_attributes->id = $this->flattenName($this->name, '_');
         }
     }

@@ -22,6 +22,7 @@ class GoldenSnapshotTest extends TestCase
             // Text family (Bootstrap 4)
             'text.simple', 'text.value', 'text.help', 'text.size_sm', 'text.prepend_append',
             'text.email', 'text.number', 'text.date', 'text.color',
+            'text.id_false', 'text.id_explicit',
             'textarea', 'password', 'hidden',
             // Select
             'select.native', 'select.custom', 'select.size_lg', 'select.selected',
@@ -81,6 +82,8 @@ class GoldenSnapshotTest extends TestCase
             case 'text.number': return (string) BF::number('qty');
             case 'text.date': return (string) BF::date('day');
             case 'text.color': return (string) BF::color('hue');
+            case 'text.id_false': return (string) BF::text('field', 'My label', null, ['id' => false]);
+            case 'text.id_explicit': return (string) BF::text('field', null, null, ['id' => 'custom_id']);
             case 'textarea': return (string) BF::textarea('bio');
             case 'password': return (string) BF::password('secret');
             case 'hidden': return (string) BF::hidden('token_field', 'abc');
