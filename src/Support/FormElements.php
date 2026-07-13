@@ -184,6 +184,39 @@ class FormElements
         return $this->input('time', $name, $value, $options);
     }
 
+    public function datetimeLocal(string $name, mixed $value = null, array $options = []): HtmlString
+    {
+        if ($value instanceof DateTime) {
+            $value = $value->format('Y-m-d\TH:i');
+        }
+
+        return $this->input('datetime-local', $name, $value, $options);
+    }
+
+    public function month(string $name, mixed $value = null, array $options = []): HtmlString
+    {
+        if ($value instanceof DateTime) {
+            $value = $value->format('Y-m');
+        }
+
+        return $this->input('month', $name, $value, $options);
+    }
+
+    public function week(string $name, mixed $value = null, array $options = []): HtmlString
+    {
+        if ($value instanceof DateTime) {
+            // HTML week value uses the ISO-8601 week-year and week number (e.g. 2026-W03).
+            $value = $value->format('o-\WW');
+        }
+
+        return $this->input('week', $name, $value, $options);
+    }
+
+    public function search(string $name, mixed $value = null, array $options = []): HtmlString
+    {
+        return $this->input('search', $name, $value, $options);
+    }
+
     public function url(string $name, mixed $value = null, array $options = []): HtmlString
     {
         return $this->input('url', $name, $value, $options);

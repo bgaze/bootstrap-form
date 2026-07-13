@@ -301,6 +301,26 @@ class BootstrapForm
         return $this->input('time', $name, $label, $value, $options);
     }
 
+    public function datetimeLocal(string $name, mixed $label = null, mixed $value = null, array $options = []): Input
+    {
+        return $this->input('datetimeLocal', $name, $label, $value, $options);
+    }
+
+    public function month(string $name, mixed $label = null, mixed $value = null, array $options = []): Input
+    {
+        return $this->input('month', $name, $label, $value, $options);
+    }
+
+    public function week(string $name, mixed $label = null, mixed $value = null, array $options = []): Input
+    {
+        return $this->input('week', $name, $label, $value, $options);
+    }
+
+    public function search(string $name, mixed $label = null, mixed $value = null, array $options = []): Input
+    {
+        return $this->input('search', $name, $label, $value, $options);
+    }
+
     public function password(string $name, mixed $label = null, array $options = []): Input
     {
         return $this->input('password', $name, $label, null, $options);
