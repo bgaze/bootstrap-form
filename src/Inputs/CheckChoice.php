@@ -56,6 +56,15 @@ class CheckChoice extends Input
         return true;
     }
 
+    /**
+     * A collection renders several controls, so there is no single input to carry the
+     * aria-describedby / aria-invalid wiring (each child manages its own state).
+     */
+    protected function hasSingleInput(): bool
+    {
+        return false;
+    }
+
     public function input(): string
     {
         $inputs = '';

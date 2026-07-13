@@ -43,8 +43,8 @@ class Bootstrap5Test extends TestCase
     public function test_text_help(): void
     {
         $expected = '<div id="login-group" class="mb-3"><label for="login" class="form-label">Login</label>'
-            . '<div><input id="login" class="form-control" name="login" type="text">'
-            . '<small class="form-text">Some help</small></div></div>';
+            . '<div><input id="login" class="form-control" aria-describedby="login-help" name="login" type="text">'
+            . '<small id="login-help" class="form-text">Some help</small></div></div>';
 
         $this->assertSame($expected, (string) BF::text('login', null, null, ['help' => 'Some help']));
     }
@@ -241,8 +241,8 @@ class Bootstrap5Test extends TestCase
         $this->withErrors(['login' => ['The login field is required.']]);
 
         $expected = '<div id="login-group" class="is-invalid mb-3"><label for="login" class="form-label">Login</label>'
-            . '<div><input id="login" class="form-control is-invalid" name="login" type="text">'
-            . '<div class="invalid-feedback">The login field is required.</div></div></div>';
+            . '<div><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text">'
+            . '<div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>';
 
         $this->assertSame($expected, (string) BF::text('login'));
     }

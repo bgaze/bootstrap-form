@@ -40,7 +40,7 @@ class GoldenSnapshotTest extends TestCase
             // Bootstrap 5 (per-field override)
             'b5.text', 'b5.checkbox', 'b5.switch', 'b5.select', 'b5.file', 'b5.range', 'b5.error',
             // Validation errors
-            'error.text', 'error.checkboxes',
+            'error.text', 'error.checkboxes', 'error.help_describedby',
             // Value binding
             'old.text', 'old.select', 'old.checkbox', 'model.text', 'model.checkbox',
         ];
@@ -148,6 +148,9 @@ class GoldenSnapshotTest extends TestCase
             case 'error.checkboxes':
                 $this->withErrors(['roles' => ['Pick a role.']]);
                 return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor']);
+            case 'error.help_describedby':
+                $this->withErrors(['login' => ['The login field is required.']]);
+                return (string) BF::text('login', null, null, ['help' => 'Some help']);
 
             // Value binding
             case 'old.text':

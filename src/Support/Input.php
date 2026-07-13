@@ -59,6 +59,7 @@ abstract class Input
         $this->setLabelAttributes($options);
         $this->setGroupAttributes($options);
         $this->getErrors();
+        $this->setAriaAttributes();
     }
 
     public function __toString(): string
@@ -144,7 +145,76 @@ abstract class Input
 
     protected function errorTemplate(): string
     {
-        return '<div class="' . $this->driver->feedbackClass($this->feedbackIsBlock()) . '">:message</div>';
+        return '<div class="' . $this->driver->feedbackClass($this->feedbackIsBlock()) . '"' . $this->feedbackId('error') . '>:message</div>';
+    }
+
+    /**
+     * The generated id of the field, or null when it carries no id (disabled).
+     */
+    protected function fieldId(): ?string
+    {
+        $id = $this->input_attributes->id;
+
+        return (is_string($id) && $id !== '') ? $id : null;
+    }
+
+    /**
+     * An ` id="{fieldId}-{suffix}"` fragment for a feedback/help element, or '' when the
+     * field has no id to derive from.
+     */
+    protected function feedbackId(string $suffix): string
+    {
+        $id = $this->fieldId();
+
+        return is_null($id) ? '' : ' id="' . $id . '-' . $suffix . '"';
+    }
+
+    /**
+     * Whether this field's validation feedback is actually rendered (drives the
+     * aria-describedby error reference). Choice children disable their own feedback.
+     */
+    protected function errorsAreRendered(): bool
+    {
+        return $this->errors !== '';
+    }
+
+    /**
+     * Whether the field renders as a single describable control. Choice collections
+     * render several inputs, so there is no single element to wire aria attributes to.
+     */
+    protected function hasSingleInput(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Link the input to its help / error text (aria-describedby) and flag it invalid,
+     * for accessible screen-reader association. No-op when the field has no id or is a
+     * multi-input collection.
+     */
+    protected function setAriaAttributes(): void
+    {
+        if (!$this->hasSingleInput() || is_null($this->fieldId())) {
+            return;
+        }
+
+        $describedby = [];
+
+        if ($this->errorsAreRendered()) {
+            $describedby[] = $this->fieldId() . '-error';
+        }
+
+        if ($this->help !== false) {
+            $describedby[] = $this->fieldId() . '-help';
+        }
+
+        if ($describedby !== []) {
+            $this->input_attributes->{'aria-describedby'} = implode(' ', $describedby);
+        }
+
+        if ($this->errors !== '') {
+            $this->input_attributes->{'aria-invalid'} = 'true';
+        }
     }
 
     /**
@@ -213,7 +283,13 @@ abstract class Input
             return '';
         }
 
-        return $this->html->tag('small', $this->help, ['class' => $this->driver->helpClass()])->toHtml();
+        $attributes = [];
+        if (!is_null($this->fieldId())) {
+            $attributes['id'] = $this->fieldId() . '-help';
+        }
+        $attributes['class'] = $this->driver->helpClass();
+
+        return $this->html->tag('small', $this->help, $attributes)->toHtml();
     }
 
     public function group(): string

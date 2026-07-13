@@ -90,9 +90,9 @@ class CheckInputTest extends TestCase
         $this->withErrors(['login' => ['The login field is required.']]);
 
         $expected = '<div id="login-group" class="is-invalid form-group"><label for="login">Login</label><div>'
-            . '<div class="form-check"><input id="login-a" class="is-invalid form-check-input" name="login" type="checkbox" value="a">'
+            . '<div class="form-check"><input id="login-a" class="is-invalid form-check-input" aria-invalid="true" name="login" type="checkbox" value="a">'
             . '<label for="login-a" class="form-check-label">A</label></div>'
-            . '<div class="invalid-feedback d-block">The login field is required.</div></div></div>';
+            . '<div class="invalid-feedback d-block" id="login-error">The login field is required.</div></div></div>';
 
         $this->assertSame($expected, (string) BF::checkboxes('login', null, ['a' => 'A']));
     }

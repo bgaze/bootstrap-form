@@ -99,10 +99,19 @@ class CheckInput extends Input
         }
 
         if ($this->help) {
-            $content .= $this->html->tag('small', $this->help, ['class' => $this->driver->helpClass()])->toHtml();
+            $content .= $this->help();
         }
 
         return $this->html->tag('div', $content, ['class' => $this->check_classes['wrapper']])->toHtml();
+    }
+
+    /**
+     * A choice child disables its own feedback (rendered once at the collection level),
+     * so it must not advertise an error target it does not render.
+     */
+    protected function errorsAreRendered(): bool
+    {
+        return $this->errors !== '' && !$this->disable_errors;
     }
 
     public function label(): string

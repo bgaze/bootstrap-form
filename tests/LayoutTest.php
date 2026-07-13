@@ -60,8 +60,8 @@ class LayoutTest extends TestCase
 
         $expected = '<div id="login-group" class="is-invalid form-group row">'
             . '<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
-            . '<div class="col"><input id="login" class="form-control is-invalid" name="login" type="text">'
-            . '<div class="invalid-feedback">The login field is required.</div></div></div>';
+            . '<div class="col"><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text">'
+            . '<div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>';
 
         $this->assertSame($expected, $html);
     }
