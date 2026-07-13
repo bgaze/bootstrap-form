@@ -2,40 +2,61 @@
 
 namespace Bgaze\BootstrapForm\Support;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 /**
- * Customize Collection class to ease HTML attributes set manipulation.
+ * A small ordered HTML attribute bag.
+ *
+ * Deliberately NOT a Collection subclass: it exposes only the handful of operations
+ * the package needs, and insertion order is significant (it drives the rendered
+ * attribute order the characterization oracle depends on).
+ *
+ * The LITERAL_PREFIX escape hatch lets a caller emit an HTML attribute whose name
+ * collides with an internal setting (e.g. `size`): a key written `~size` bypasses the
+ * settings filter and the prefix is stripped at render time (toArray) to emit `size`.
+ * Only render-time conversion (toArray) strips it; raw access (all) keeps it, so the
+ * escape survives intermediate merges (e.g. building a checkbox collection's children).
  */
-class Attributes extends Collection
+class Attributes implements Arrayable
 {
+    /**
+     * Prefix marking a literal HTML attribute that must escape the settings filter.
+     */
+    const LITERAL_PREFIX = '~';
 
     /**
-     * Allow direct access to attributes.
-     *
-     * @param  string  $key
-     * @return mixed
+     * @var array
      */
+    protected $items = [];
+
+    public function __construct($items = [])
+    {
+        $this->items = $this->getArrayableItems($items);
+    }
+
+    /**
+     * @param  mixed  $items
+     * @return static
+     */
+    public static function make($items = [])
+    {
+        return new static($items);
+    }
+
     public function __get($key)
     {
-        return $this->get($key);
+        return $this->items[$key] ?? null;
     }
 
-
-    /**
-     * Allow to directly set attributes.
-     *
-     * @param  string  $key
-     * @param  mixed  $value
-     */
     public function __set($key, $value)
     {
-        $this->put($key, $value);
+        $this->items[$key] = $value;
     }
 
-
     /**
-     * Append HTML class to a set of HTML attribute.
+     * Append one or more classes, de-duplicating while preserving order.
      *
      * @param  string  $class
      * @return $this
@@ -48,6 +69,7 @@ class Attributes extends Collection
 
         if (is_null($this->class)) {
             $this->class = $class;
+
             return $this;
         }
 
@@ -57,9 +79,42 @@ class Attributes extends Collection
         return $this;
     }
 
+    /**
+     * Return a new bag without the given keys (raw keys, order preserved).
+     *
+     * @param  mixed  $keys
+     * @return static
+     */
+    public function except($keys)
+    {
+        $keys = $keys instanceof Collection ? $keys->all() : (array) $keys;
+
+        return new static(Arr::except($this->items, $keys));
+    }
 
     /**
-     * Get the collection of items as a plain array.
+     * Return a new bag merged with the given items (existing keys keep their position).
+     *
+     * @param  mixed  $items
+     * @return static
+     */
+    public function merge($items)
+    {
+        return new static(array_merge($this->items, $this->getArrayableItems($items)));
+    }
+
+    /**
+     * Raw items, with the literal prefix left intact (for intermediate merges).
+     *
+     * @return array
+     */
+    public function all()
+    {
+        return $this->items;
+    }
+
+    /**
+     * Render-ready attributes: the literal prefix is stripped here (and only here).
      *
      * @return array
      */
@@ -67,13 +122,41 @@ class Attributes extends Collection
     {
         $array = [];
 
-        foreach (parent::toArray() as $key => $value) {
-            if (substr($key, 0, 1) === '~') {
+        foreach ($this->items as $key => $value) {
+            if (is_string($key) && substr($key, 0, 1) === self::LITERAL_PREFIX) {
                 $key = substr($key, 1);
             }
+
             $array[$key] = $value;
         }
 
         return $array;
+    }
+
+    /**
+     * Normalize any supported input into a plain items array (prefix left intact).
+     *
+     * @param  mixed  $items
+     * @return array
+     */
+    protected function getArrayableItems($items)
+    {
+        if (is_array($items)) {
+            return $items;
+        }
+
+        if ($items instanceof self) {
+            return $items->all();
+        }
+
+        if ($items instanceof Collection) {
+            return $items->all();
+        }
+
+        if ($items instanceof Arrayable) {
+            return $items->toArray();
+        }
+
+        return (array) $items;
     }
 }

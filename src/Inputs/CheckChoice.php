@@ -98,7 +98,9 @@ class CheckChoice extends Input
 
             $options = $this->settings
                 ->except(['choices', 'name', 'value', 'label'])
-                ->merge($this->input_attributes)
+                // all(): raw items — keep any LITERAL_PREFIX ('~') intact so the
+                // escape survives into each generated child control.
+                ->merge($this->input_attributes->all())
                 ->merge([
                     'layout' => 'vertical',
                     'disable_errors' => true,
