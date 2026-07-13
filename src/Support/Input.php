@@ -140,10 +140,7 @@ abstract class Input
         $this->settings = static::defaults();
 
         // Merge with provided configuration.
-        $settings = collect($options)
-            ->only($this->settings->keys())
-            ->except('group');
-        $this->settings = $this->settings->merge($settings);
+        $this->settings = $this->settings->merge(Options::settings($options, $this->settings->keys()));
 
         // Add reserved values.
         $this->name = $name;
@@ -163,7 +160,7 @@ abstract class Input
      */
     protected function setInputAttributes(array $options)
     {
-        $this->input_attributes = Attributes::make($options)->except($this->settings->keys());
+        $this->input_attributes = Attributes::make(Options::attributes($options, $this->settings->keys()));
 
         if (!$this->input_attributes->id) {
             $this->input_attributes->id = $this->flattenName($this->name, '_');

@@ -10,6 +10,7 @@ use Bgaze\BootstrapForm\Support\FieldValue;
 use Bgaze\BootstrapForm\Support\FormContext;
 use Bgaze\BootstrapForm\Support\FormElements;
 use Bgaze\BootstrapForm\Support\Html;
+use Bgaze\BootstrapForm\Support\Options;
 use Bgaze\BootstrapForm\Support\Traits\HasSettings;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -236,8 +237,7 @@ class BootstrapForm
         }
 
         // Merge with provided options.
-        $settings = collect($options)->only($this->settings->keys())->except('group');
-        $this->settings = $this->settings->merge($settings);
+        $this->settings = $this->settings->merge(Options::settings($options, $this->settings->keys()));
 
         // Manage group option.
         if (isset($options['group']) && $options['group'] === false) {
@@ -247,8 +247,7 @@ class BootstrapForm
         }
 
         // Set form attributes.
-        $attributes = collect($options)->except($this->settings->keys())->except('group');
-        $this->attributes = $this->attributes->merge($attributes);
+        $this->attributes = $this->attributes->merge(Options::attributes($options, $this->settings->keys()));
 
         // Set form class based on form layout.
         $layoutClass = $this->driver()->formLayoutClass($this->layout);
