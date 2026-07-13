@@ -48,4 +48,14 @@ abstract class TestCase extends BaseTestCase
 
         $this->app['session.store']->put('errors', $viewBag);
     }
+
+    /**
+     * Flash old input into the session to exercise field re-population.
+     *
+     * @param  array  $input  field => value(s)
+     */
+    protected function withOldInput(array $input): void
+    {
+        $this->app['session.store']->flashInput($input);
+    }
 }
