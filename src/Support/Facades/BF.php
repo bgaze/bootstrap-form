@@ -1,20 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 class BF extends Facade
 {
-
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     */
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
         return 'bootstrap_form';
     }
-
 }
