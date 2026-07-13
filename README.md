@@ -10,8 +10,8 @@
     <img src="./intro.png" alt="Bootstrap 4 forms builder for Laravel 6+">
 </p>
 
-This package uses in background [Laravel Collective HTML](https://laravelcollective.com/docs/5.8/html) to simplify
-Bootstrap forms creation into Laravel applications.
+This package simplifies Bootstrap forms creation in Laravel applications, rendering all markup through its own
+lightweight HTML/form layer (no third-party form/HTML dependency).
 
 It renders **Bootstrap 4** markup by default, and supports **Bootstrap 5** as an opt-in (see
 [Bootstrap 5 support](#bootstrap-5-support) below): existing applications are not impacted until they opt in.
