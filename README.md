@@ -1,4 +1,4 @@
-# Bootstrap 4 & 5 forms builder for Laravel 11+ <!-- omit in toc -->
+# Bootstrap 4 & 5 forms builder for Laravel 12+ <!-- omit in toc -->
 
 [![GitHub license](https://img.shields.io/github/license/bgaze/bootstrap-form)](https://github.com/bgaze/bootstrap-form/blob/master/LICENSE)
 ![Maintenance](https://img.shields.io/maintenance/yes/2030)

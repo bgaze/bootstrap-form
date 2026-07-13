@@ -1,6 +1,6 @@
 # bgaze/bootstrap-form
 
-Bootstrap 4/5 forms builder for Laravel 11+. Composer **package** (library, not an app): builds forms via a
+Bootstrap 4/5 forms builder for Laravel 12+. Composer **package** (library, not an app): builds forms via a
 `BF` facade and Blade directives, rendering HTML through its **own owned renderer** (no third-party form/HTML
 dependency). Renders **Bootstrap 4 by default**; Bootstrap 5 is **opt-in** (`bootstrap_version` config, or per
 form/field). Public open-source (GitHub / Packagist).
@@ -14,7 +14,7 @@ form/field). Public open-source (GitHub / Packagist).
 | Item      | Value                                                       |
 |-----------|-------------------------------------------------------------|
 | Language  | PHP ≥ 8.2 (`declare(strict_types=1)`, native types)          |
-| Framework | Laravel 11 / 12 (illuminate/* `^11.0 \|\| ^12.0`)             |
+| Framework | Laravel 12 (illuminate/* `^12.0`)                            |
 | Autoload  | PSR-4 `Bgaze\BootstrapForm\` → `src/`                        |
 | Tests     | PHPUnit 11 + Orchestra Testbench — byte-exact HTML characterization suite in `tests/` (`vendor/bin/phpunit`) |
 

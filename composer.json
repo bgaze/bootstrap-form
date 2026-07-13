@@ -1,6 +1,6 @@
 {
     "name": "bgaze/bootstrap-form",
-    "description": "Bootstrap 4 & 5 forms builder for Laravel 11+",
+    "description": "Bootstrap 4 & 5 forms builder for Laravel 12+",
     "keywords": [
         "laravel",
         "form",
@@ -15,12 +15,12 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/support": "^11.0 || ^12.0",
-        "illuminate/database": "^11.0 || ^12.0",
-        "illuminate/routing": "^11.0 || ^12.0",
-        "illuminate/session": "^11.0 || ^12.0",
-        "illuminate/view": "^11.0 || ^12.0",
-        "illuminate/http": "^11.0 || ^12.0"
+        "illuminate/support": "^12.0",
+        "illuminate/database": "^12.0",
+        "illuminate/routing": "^12.0",
+        "illuminate/session": "^12.0",
+        "illuminate/view": "^12.0",
+        "illuminate/http": "^12.0"
     },
     "autoload": {
         "psr-4": {
@@ -45,7 +45,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require-dev": {
-        "orchestra/testbench": "^9.0 || ^10.0",
+        "orchestra/testbench": "^10.0",
         "phpunit/phpunit": "^11.0"
     }
 }
