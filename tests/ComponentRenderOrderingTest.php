@@ -6,28 +6,32 @@ use BF;
 use Illuminate\Support\Facades\Blade;
 
 /**
- * Spike: proves the render-ordering mechanism of the stateful <x-bf::form> component.
+ * The render-ordering invariant of the stateful <x-bf::form> component.
  *
- * The builder is stateful; fields read the form state at render time. Blade buffers the
- * slot (fields) BEFORE the form view renders, so the state must be set in withAttributes().
- * If ordering were wrong, fields would render with the default (Bootstrap 4) state instead
- * of the form's overridden state.
+ * The builder is stateful; fields read the form state at render time. Blade buffers the slot
+ * (fields) before the parent renders, so the form must establish its state in withAttributes()
+ * (which runs before the slot). If ordering were wrong, fields would render with the default
+ * (Bootstrap 4) state instead of the form's overridden state.
  */
-class ComponentSpikeTest extends TestCase
+class ComponentRenderOrderingTest extends TestCase
 {
+    private function render(string $template): string
+    {
+        return trim(Blade::render($template));
+    }
+
     public function test_standalone_field_matches_facade(): void
     {
-        $component = trim(Blade::render('<x-bf::text name="login"/>'));
-        $facade = (string) BF::text('login');
-
-        $this->assertSame($facade, $component);
+        $this->assertSame(
+            (string) BF::text('login'),
+            $this->render('<x-bf::text name="login"/>')
+        );
     }
 
     public function test_field_inside_form_inherits_bootstrap5(): void
     {
-        $html = Blade::render('<x-bf::form url="/foo" bootstrap_version="5"><x-bf::text name="login"/></x-bf::form>');
+        $html = $this->render('<x-bf::form url="/foo" bootstrap_version="5"><x-bf::text name="login"/></x-bf::form>');
 
-        // The <form> wraps the field.
         $this->assertStringContainsString('<form', $html);
         $this->assertStringContainsString('</form>', $html);
 
@@ -39,7 +43,7 @@ class ComponentSpikeTest extends TestCase
 
     public function test_field_inside_form_inherits_horizontal_layout(): void
     {
-        $html = Blade::render('<x-bf::form url="/foo" layout="horizontal"><x-bf::text name="login"/></x-bf::form>');
+        $html = $this->render('<x-bf::form url="/foo" layout="horizontal"><x-bf::text name="login"/></x-bf::form>');
 
         $this->assertStringContainsString('form-group row', $html);
         $this->assertStringContainsString('col-form-label', $html);
