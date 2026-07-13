@@ -91,6 +91,6 @@ class SelectInput extends Input
      */
     public function input()
     {
-        return $this->form->select($this->name, $this->choices, $this->value, $this->input_attributes->toArray())->toHtml();
+        return $this->elements->select($this->name, $this->choices, $this->value, $this->input_attributes->toArray())->toHtml();
     }
 }

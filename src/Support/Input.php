@@ -6,8 +6,6 @@ use Bgaze\BootstrapForm\Support\Drivers\DriverManager;
 use Bgaze\BootstrapForm\Support\Drivers\VersionDriver;
 use Bgaze\BootstrapForm\Support\Facades\BF;
 use Bgaze\BootstrapForm\Support\Traits\HasSettings;
-use Collective\Html\FormBuilder;
-use Collective\Html\HtmlBuilder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -44,18 +42,18 @@ abstract class Input
     protected $driver;
 
     /**
-     * Illuminate HtmlBuilder instance.
+     * HTML serialization primitive.
      *
-     * @var HtmlBuilder
+     * @var Html
      */
     protected $html;
 
     /**
-     * Illuminate FormBuilder instance.
+     * Form/element renderer.
      *
-     * @var FormBuilder
+     * @var FormElements
      */
-    protected $form;
+    protected $elements;
 
     /**
      * The input attributes repository.
@@ -89,9 +87,9 @@ abstract class Input
      */
     public function __construct($name, $label = null, $value = null, array $options = [])
     {
-        // Resolve html builders.
-        $this->html = BF::htmlBuilder();
-        $this->form = BF::formBuilder();
+        // Resolve renderers from the active form.
+        $this->html = BF::html();
+        $this->elements = BF::elements();
 
         // Get field configuration.
         $this->configure($name, $label, $value, $options);
@@ -239,7 +237,7 @@ abstract class Input
      */
     protected function getErrors()
     {
-        $errors = $this->form->getSessionStore()->get('errors');
+        $errors = BF::context()->session()->get('errors');
         if (empty($errors)) {
             return;
         }
@@ -297,7 +295,7 @@ abstract class Input
             return '';
         }
 
-        return $this->form->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
+        return $this->elements->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
     }
 
 

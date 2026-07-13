@@ -76,9 +76,9 @@ class TextInput extends Input
     public function input()
     {
         if ($this->tag === 'password') {
-            return $this->form->password($this->name, $this->input_attributes->toArray())->toHtml();
+            return $this->elements->password($this->name, $this->input_attributes->toArray())->toHtml();
         }
 
-        return $this->form->{$this->tag}($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
+        return $this->elements->{$this->tag}($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
     }
 }

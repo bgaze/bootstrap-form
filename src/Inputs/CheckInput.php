@@ -124,7 +124,7 @@ class CheckInput extends Input
      */
     public function input()
     {
-        return $this->form->{$this->tag}($this->name, $this->value, $this->checked, $this->input_attributes->toArray())->toHtml();
+        return $this->elements->{$this->tag}($this->name, $this->value, $this->checked, $this->input_attributes->toArray())->toHtml();
     }
 
     /**
@@ -156,14 +156,14 @@ class CheckInput extends Input
     public function label()
     {
         if ($this->label === false && $this->custom) {
-            return sprintf($this->form->label($this->input_attributes->id, '%s', $this->label_attributes->toArray(), false), '');
+            return sprintf($this->elements->label($this->input_attributes->id, '%s', $this->label_attributes->toArray(), false), '');
         }
 
         if ($this->label === false) {
             return '';
         }
 
-        return $this->form->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
+        return $this->elements->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
     }
 
     /**

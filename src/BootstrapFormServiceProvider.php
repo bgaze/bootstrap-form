@@ -2,6 +2,10 @@
 
 namespace Bgaze\BootstrapForm;
 
+use Bgaze\BootstrapForm\Support\FieldValue;
+use Bgaze\BootstrapForm\Support\FormContext;
+use Bgaze\BootstrapForm\Support\FormElements;
+use Bgaze\BootstrapForm\Support\Html;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,7 +30,18 @@ class BootstrapFormServiceProvider extends ServiceProvider
 
         // Register service.
         $this->app->singleton('bootstrap_form', function ($app) {
-            return new BootstrapForm($app['html'], $app['form']);
+            $context = new FormContext(
+                $app['url'],
+                $app['view'],
+                $app['session.store'],
+                $app['session.store']->token()
+            );
+
+            $html = new Html($app['url']);
+            $fieldValue = new FieldValue($context);
+            $elements = new FormElements($html, $fieldValue, $context);
+
+            return new BootstrapForm($html, $elements, $fieldValue, $context);
         });
     }
 

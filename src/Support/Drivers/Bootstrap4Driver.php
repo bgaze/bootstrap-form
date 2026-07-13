@@ -2,7 +2,7 @@
 
 namespace Bgaze\BootstrapForm\Support\Drivers;
 
-use Collective\Html\HtmlBuilder;
+use Bgaze\BootstrapForm\Support\Html;
 
 /**
  * Bootstrap 4 class vocabulary and structural rendering.
@@ -90,7 +90,7 @@ class Bootstrap4Driver extends VersionDriver
     /**
      * {@inheritdoc}
      */
-    public function inputGroup(HtmlBuilder $html, $prepend, $input, $append, $size)
+    public function inputGroup(Html $html, $prepend, $input, $append, $size)
     {
         $prependHtml = ($prepend !== '')
             ? $html->tag('div', $prepend, ['class' => 'input-group-prepend'])->toHtml()

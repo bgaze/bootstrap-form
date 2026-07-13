@@ -17,7 +17,10 @@
         "php": ">=7.2.5",
         "illuminate/support": ">=6.0",
         "illuminate/database": ">=6.0",
-        "bgaze/laravel-collective-html": "^1.0.0"
+        "illuminate/routing": ">=6.0",
+        "illuminate/session": ">=6.0",
+        "illuminate/view": ">=6.0",
+        "illuminate/http": ">=6.0"
     },
     "autoload": {
         "psr-4": {

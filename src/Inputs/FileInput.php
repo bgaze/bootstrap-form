@@ -85,7 +85,7 @@ class FileInput extends Input
      */
     public function input()
     {
-        return $this->form->file($this->name, $this->input_attributes->toArray())->toHtml();
+        return $this->elements->file($this->name, $this->input_attributes->toArray())->toHtml();
     }
 
     /**
@@ -108,7 +108,7 @@ class FileInput extends Input
         if ($this->button) {
             $attr['data-browse'] = $this->button;
         }
-        $button = $this->form->label($this->input_attributes->id, $this->text, $attr, false);
+        $button = $this->elements->label($this->input_attributes->id, $this->text, $attr, false);
 
         // Wrap into the custom-file block.
         $input = $this->html->tag('div', $input . $button, [

@@ -2,7 +2,7 @@
 
 namespace Bgaze\BootstrapForm\Support\Drivers;
 
-use Collective\Html\HtmlBuilder;
+use Bgaze\BootstrapForm\Support\Html;
 
 /**
  * Bootstrap 5 class vocabulary and structural rendering.
@@ -97,7 +97,7 @@ class Bootstrap5Driver extends VersionDriver
      * Bootstrap 5 removed the .input-group-prepend / .input-group-append wrappers:
      * addons sit as direct children of the input group.
      */
-    public function inputGroup(HtmlBuilder $html, $prepend, $input, $append, $size)
+    public function inputGroup(Html $html, $prepend, $input, $append, $size)
     {
         return $html->tag('div', $prepend . $input . $append, [
             'class' => $this->inputGroupClass($size),

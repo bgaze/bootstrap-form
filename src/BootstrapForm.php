@@ -6,9 +6,11 @@ use Bgaze\BootstrapForm\Inputs;
 use Bgaze\BootstrapForm\Support\Attributes;
 use Bgaze\BootstrapForm\Support\Drivers\DriverManager;
 use Bgaze\BootstrapForm\Support\Drivers\VersionDriver;
+use Bgaze\BootstrapForm\Support\FieldValue;
+use Bgaze\BootstrapForm\Support\FormContext;
+use Bgaze\BootstrapForm\Support\FormElements;
+use Bgaze\BootstrapForm\Support\Html;
 use Bgaze\BootstrapForm\Support\Traits\HasSettings;
-use Collective\Html\FormBuilder;
-use Collective\Html\HtmlBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -43,18 +45,32 @@ class BootstrapForm
     const RESERVED = ['model', 'url', 'route', 'action', 'update', 'store'];
 
     /**
-     * Illuminate HtmlBuilder instance.
+     * HTML serialization primitive.
      *
-     * @var HtmlBuilder
+     * @var Html
      */
     protected $html;
 
     /**
-     * Illuminate FormBuilder instance.
+     * Form/element renderer.
      *
-     * @var FormBuilder
+     * @var FormElements
      */
-    protected $form;
+    protected $elements;
+
+    /**
+     * Field value binding resolver.
+     *
+     * @var FieldValue
+     */
+    protected $fieldValue;
+
+    /**
+     * Per-form binding context.
+     *
+     * @var FormContext
+     */
+    protected $context;
 
     /**
      * The form attribute set.
@@ -74,13 +90,17 @@ class BootstrapForm
     /**
      * Constructor.
      *
-     * @param  HtmlBuilder  $html
-     * @param  FormBuilder  $form
+     * @param  Html  $html
+     * @param  FormElements  $elements
+     * @param  FieldValue  $fieldValue
+     * @param  FormContext  $context
      */
-    public function __construct(HtmlBuilder $html, FormBuilder $form)
+    public function __construct(Html $html, FormElements $elements, FieldValue $fieldValue, FormContext $context)
     {
         $this->html = $html;
-        $this->form = $form;
+        $this->elements = $elements;
+        $this->fieldValue = $fieldValue;
+        $this->context = $context;
         $this->resetForm();
     }
 
@@ -99,24 +119,46 @@ class BootstrapForm
 
 
     /**
-     * Returns the Illuminate HtmlBuilder instance.
+     * Returns the HTML serialization primitive.
      *
-     * @return HtmlBuilder
+     * @return Html
      */
-    public function htmlBuilder()
+    public function html()
     {
         return $this->html;
     }
 
 
     /**
-     * Returns the Illuminate FormBuilder instance.
+     * Returns the form/element renderer.
      *
-     * @return FormBuilder
+     * @return FormElements
      */
-    public function formBuilder()
+    public function elements()
     {
-        return $this->form;
+        return $this->elements;
+    }
+
+
+    /**
+     * Returns the field value binding resolver.
+     *
+     * @return FieldValue
+     */
+    public function fieldValue()
+    {
+        return $this->fieldValue;
+    }
+
+
+    /**
+     * Returns the per-form binding context.
+     *
+     * @return FormContext
+     */
+    public function context()
+    {
+        return $this->context;
     }
 
     ### CONFIGURATION ##########################################################
@@ -277,11 +319,11 @@ class BootstrapForm
         // If model, open model form.
         if ($this->model instanceof Model) {
             $this->initModelForm($this->model);
-            return $this->form->model($this->model, $this->attributes->toArray())->toHtml();
+            return $this->elements->model($this->model, $this->attributes->toArray())->toHtml();
         }
 
         // Otherwise init standard form.
-        return $this->form->open($this->attributes->toArray())->toHtml();
+        return $this->elements->open($this->attributes->toArray())->toHtml();
     }
 
 
@@ -293,7 +335,7 @@ class BootstrapForm
     public function close()
     {
         $this->resetForm();
-        return $this->form->close()->toHtml();
+        return $this->elements->close()->toHtml();
     }
 
 
@@ -562,7 +604,7 @@ class BootstrapForm
             $options['id'] = $this->flattenName($name, '_');
         }
 
-        return $this->form->hidden($name, $value, $options);
+        return $this->elements->hidden($name, $value, $options);
     }
 
 
@@ -646,7 +688,7 @@ class BootstrapForm
      */
     public function label($name, $value = null, array $options = [], $escapeHtml = false)
     {
-        return $this->form->label($name, $value, $options, $escapeHtml);
+        return $this->elements->label($name, $value, $options, $escapeHtml);
     }
 
 
@@ -690,7 +732,7 @@ class BootstrapForm
      */
     public function submit($value = null, $options = null)
     {
-        return $this->form->submit($value, $this->buttonOption('primary', $options));
+        return $this->elements->submit($value, $this->buttonOption('primary', $options));
     }
 
 
@@ -703,7 +745,7 @@ class BootstrapForm
      */
     public function reset($value = null, $options = null)
     {
-        return $this->form->reset($value, $this->buttonOption('danger', $options));
+        return $this->elements->reset($value, $this->buttonOption('danger', $options));
     }
 
 
@@ -716,7 +758,7 @@ class BootstrapForm
      */
     public function button($value = null, $options = null)
     {
-        return $this->form->button($value, $this->buttonOption('primary', $options));
+        return $this->elements->button($value, $this->buttonOption('primary', $options));
     }
 
 

@@ -2,7 +2,7 @@
 
 namespace Bgaze\BootstrapForm\Support\Drivers;
 
-use Collective\Html\HtmlBuilder;
+use Bgaze\BootstrapForm\Support\Html;
 
 /**
  * Provides the Bootstrap class vocabulary and the structural rendering that differs
@@ -155,13 +155,13 @@ abstract class VersionDriver
     /**
      * Wrap an input with its prepend / append addons into an input group.
      *
-     * @param  HtmlBuilder  $html
+     * @param  Html  $html
      * @param  string  $prepend  Prepend content (empty string when none).
      * @param  string  $input  The input HTML.
      * @param  string  $append  Append content (empty string when none).
      * @param  string|null  $size  "sm" | "lg" | null
      */
-    abstract public function inputGroup(HtmlBuilder $html, $prepend, $input, $append, $size);
+    abstract public function inputGroup(Html $html, $prepend, $input, $append, $size);
 
     /**
      * Whether the version renders custom-styled file inputs (dedicated markup).

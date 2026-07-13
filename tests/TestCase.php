@@ -3,9 +3,6 @@
 namespace Bgaze\BootstrapForm\Tests;
 
 use Bgaze\BootstrapForm\BootstrapFormServiceProvider;
-use Collective\Html\FormFacade;
-use Collective\Html\HtmlFacade;
-use Collective\Html\HtmlServiceProvider;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -13,25 +10,22 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * Register the package (and its HTML/Form dependency) providers.
+     * Register the package provider.
      */
     protected function getPackageProviders($app)
     {
         return [
-            HtmlServiceProvider::class,
             BootstrapFormServiceProvider::class,
         ];
     }
 
     /**
-     * Register the package facade aliases.
+     * Register the package facade alias.
      */
     protected function getPackageAliases($app)
     {
         return [
             'BF' => \Bgaze\BootstrapForm\Support\Facades\BF::class,
-            'Form' => FormFacade::class,
-            'Html' => HtmlFacade::class,
         ];
     }
 

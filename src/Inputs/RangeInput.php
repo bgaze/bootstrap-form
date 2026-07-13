@@ -47,6 +47,6 @@ class RangeInput extends Input
      */
     public function input()
     {
-        return $this->form->range($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
+        return $this->elements->range($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
     }
 }
