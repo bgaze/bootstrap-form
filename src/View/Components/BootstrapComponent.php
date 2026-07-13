@@ -49,4 +49,17 @@ abstract class BootstrapComponent extends Component
     {
         return $this->render();
     }
+
+    /**
+     * The rendered default slot, or null when empty — for components whose value/label can be
+     * provided either as an attribute or as slot content (buttons, link, label).
+     *
+     * @param  array<string, mixed>  $data
+     */
+    protected function slotContent(array $data): ?string
+    {
+        $slot = isset($data['slot']) ? (string) $data['slot'] : '';
+
+        return $slot !== '' ? $slot : null;
+    }
 }
