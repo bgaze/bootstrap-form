@@ -24,14 +24,16 @@ trait HasAddons
     public function inputGroup(): string
     {
         if (!$this->append && !$this->prepend) {
-            return $this->input();
+            return $this->controlBody();
         }
 
         // Let the driver assemble the input group (structure differs across versions).
+        // controlBody() yields the floating-wrapped control when the floating layout is
+        // active, so .form-floating nests correctly inside .input-group.
         return $this->driver->inputGroup(
             $this->html,
             $this->resolveAddon($this->prepend),
-            $this->input(),
+            $this->controlBody(),
             $this->resolveAddon($this->append),
             $this->size,
         );

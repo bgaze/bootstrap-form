@@ -39,7 +39,8 @@ class Bootstrap4Driver extends VersionDriver
 
     public function formLayoutClass(string $layout): string
     {
-        return $layout === 'vertical' ? '' : 'form-' . $layout;
+        // Bootstrap 4 has no floating-label layout: it degrades to vertical (no class).
+        return in_array($layout, ['vertical', 'floating']) ? '' : 'form-' . $layout;
     }
 
     public function checkClasses(string $tag, bool $custom, bool $switch, bool $inline, bool $labelless): array

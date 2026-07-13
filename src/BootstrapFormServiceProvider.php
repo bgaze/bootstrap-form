@@ -55,7 +55,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
     protected function registerBladeDirectives(): void
     {
         $functions = [
-            'open', 'close', 'vertical', 'inline', 'horizontal',
+            'open', 'close', 'vertical', 'inline', 'horizontal', 'floating',
             'text', 'email', 'url', 'tel', 'number', 'date', 'time', 'datetimeLocal', 'month', 'week', 'search',
             'textarea', 'password', 'color',
             'file', 'hidden', 'select', 'range',

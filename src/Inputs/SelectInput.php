@@ -55,4 +55,18 @@ class SelectInput extends Input
     {
         return $this->elements->select($this->name, $this->choices, $this->value, $this->input_attributes->toArray())->toHtml();
     }
+
+    protected function isFloatable(): bool
+    {
+        return true;
+    }
+
+    /**
+     * A floating <select> does not use the placeholder attribute (that would create a
+     * blank <option>); the label floats without it.
+     */
+    protected function floatingNeedsPlaceholder(): bool
+    {
+        return false;
+    }
 }

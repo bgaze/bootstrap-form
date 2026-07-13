@@ -254,6 +254,17 @@ class BootstrapForm
         return $this->open($options);
     }
 
+    /**
+     * Open a form using the Bootstrap 5 floating-label layout (degrades to vertical on
+     * Bootstrap 4 and for non-floatable fields).
+     */
+    public function floating(array $options = []): string
+    {
+        $options['layout'] = 'floating';
+
+        return $this->open($options);
+    }
+
     ### BUILD FORM INPUTS ######################################################
 
     /**

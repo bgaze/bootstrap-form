@@ -83,6 +83,20 @@ class Bootstrap5Driver extends VersionDriver
         ])->toHtml();
     }
 
+    public function supportsFloating(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Floating labels: the control comes first, the label after, inside a .form-floating
+     * wrapper (the label floats over the control when it is empty and unfocused).
+     */
+    public function floatingGroup(Html $html, string $input, string $label): string
+    {
+        return $html->tag('div', $input . $label, ['class' => 'form-floating'])->toHtml();
+    }
+
     public function usesCustomFile(): bool
     {
         return false;

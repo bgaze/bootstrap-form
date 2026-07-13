@@ -39,6 +39,8 @@ class GoldenSnapshotTest extends TestCase
             'layout.h_text', 'layout.i_text', 'layout.h_checkbox',
             // Bootstrap 5 (per-field override)
             'b5.text', 'b5.checkbox', 'b5.switch', 'b5.select', 'b5.file', 'b5.range', 'b5.error',
+            // Floating labels (4th layout, Bootstrap 5)
+            'float.text', 'float.select', 'float.textarea', 'float.addon', 'float.checkbox', 'float.b4_degrades',
             // Validation errors
             'error.text', 'error.checkboxes', 'error.help_describedby',
             // Valid feedback (opt-in)
@@ -142,6 +144,14 @@ class GoldenSnapshotTest extends TestCase
             case 'b5.error':
                 $this->withErrors(['login' => ['The login field is required.']]);
                 return (string) BF::text('login', null, null, ['bootstrap_version' => 5]);
+
+            // Floating labels (4th layout, Bootstrap 5)
+            case 'float.text': return (string) BF::text('email', 'Email address', null, ['bootstrap_version' => 5, 'layout' => 'floating']);
+            case 'float.select': return (string) BF::select('country', 'Country', ['fr' => 'France'], null, ['bootstrap_version' => 5, 'layout' => 'floating']);
+            case 'float.textarea': return (string) BF::textarea('bio', 'Bio', null, ['bootstrap_version' => 5, 'layout' => 'floating']);
+            case 'float.addon': return (string) BF::text('amount', 'Amount', null, ['bootstrap_version' => 5, 'layout' => 'floating', 'prepend' => '$']);
+            case 'float.checkbox': return (string) BF::checkbox('accept', 'Accept', 1, null, ['bootstrap_version' => 5, 'layout' => 'floating']);
+            case 'float.b4_degrades': return (string) BF::text('email', 'Email address', null, ['layout' => 'floating']);
 
             // Validation errors
             case 'error.text':

@@ -327,7 +327,50 @@ abstract class Input
      */
     public function inputGroup(): string
     {
-        return $this->input();
+        return $this->controlBody();
+    }
+
+    /**
+     * The core control markup placed in the group's input area: the bare input, or — in
+     * the floating layout — the input wrapped with its label in a .form-floating block.
+     */
+    protected function controlBody(): string
+    {
+        if (!$this->isFloating()) {
+            return $this->input();
+        }
+
+        if ($this->floatingNeedsPlaceholder() && is_null($this->input_attributes->placeholder)) {
+            $this->input_attributes->placeholder = ' ';
+        }
+
+        return $this->driver->floatingGroup($this->html, $this->input(), $this->label());
+    }
+
+    /**
+     * Whether the field renders in the floating-label layout (a floatable field, the
+     * floating layout selected, and a driver that supports it).
+     */
+    protected function isFloating(): bool
+    {
+        return $this->layout === 'floating' && $this->isFloatable() && $this->driver->supportsFloating();
+    }
+
+    /**
+     * Whether this field type can render as a floating-label control.
+     */
+    protected function isFloatable(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Whether a placeholder must be injected for the floating CSS to work (text-like
+     * controls); overridden to false where it is unnecessary or harmful (e.g. selects).
+     */
+    protected function floatingNeedsPlaceholder(): bool
+    {
+        return true;
     }
 
     public function label(): string
@@ -384,6 +427,11 @@ abstract class Input
      */
     protected function leftGroupColumn(): string
     {
+        // In the floating layout the label lives inside the .form-floating wrapper.
+        if ($this->isFloating()) {
+            return '';
+        }
+
         if ($this->layout === 'horizontal' && $this->pull_right && !$this->label) {
             return $this->html->tag('div', '', ['class' => $this->left_class])->toHtml();
         }

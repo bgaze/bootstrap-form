@@ -127,6 +127,25 @@ abstract class VersionDriver
 
     abstract public function customFileWrapperClass(bool $inline): string;
 
+    /**
+     * Whether this version supports floating labels (the .form-floating component).
+     * When false, the "floating" layout degrades to vertical rendering.
+     */
+    public function supportsFloating(): bool
+    {
+        return false;
+    }
+
+    /**
+     * Wrap a floatable control and its label into the version's floating-label markup.
+     * The base (no floating support) is never reached via the floating layout; it just
+     * returns the control followed by its label defensively.
+     */
+    public function floatingGroup(Html $html, string $input, string $label): string
+    {
+        return $input . $label;
+    }
+
     ### SHARED HELPERS #########################################################
 
     protected function inputGroupClass(?string $size): string

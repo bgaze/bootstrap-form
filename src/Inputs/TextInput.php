@@ -54,4 +54,9 @@ class TextInput extends Input
 
         return $this->elements->{$this->tag}($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
     }
+
+    protected function isFloatable(): bool
+    {
+        return true;
+    }
 }
