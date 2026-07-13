@@ -12,11 +12,13 @@ trait HasAddons
 {
 
     /**
-     * Get the template to build up error messages.
+     * Force block display of validation feedback when the input is wrapped in a group.
+     *
+     * @return bool
      */
-    protected function errorTemplate()
+    protected function feedbackIsBlock()
     {
-        return '<div class="' . $this->driver->feedbackClass((bool) ($this->append || $this->prepend)) . '">:message</div>';
+        return (bool) ($this->append || $this->prepend);
     }
 
 
@@ -32,16 +34,29 @@ trait HasAddons
             return $this->input();
         }
 
-        // Resolve prepend / append content.
-        $prepend = $this->prepend
-            ? (is_array($this->prepend) ? implode('', $this->prepend) : $this->prepend)
-            : '';
-
-        $append = $this->append
-            ? (is_array($this->append) ? implode('', $this->append) : $this->append)
-            : '';
-
         // Let the driver assemble the input group (structure differs across versions).
-        return $this->driver->inputGroup($this->html, $prepend, $this->input(), $append, $this->size);
+        return $this->driver->inputGroup(
+            $this->html,
+            $this->resolveAddon($this->prepend),
+            $this->input(),
+            $this->resolveAddon($this->append),
+            $this->size
+        );
+    }
+
+
+    /**
+     * Flatten a prepend / append option (string or array) to a string ('' when empty).
+     *
+     * @param  mixed  $addon
+     * @return string
+     */
+    protected function resolveAddon($addon)
+    {
+        if (!$addon) {
+            return '';
+        }
+
+        return is_array($addon) ? implode('', $addon) : $addon;
     }
 }

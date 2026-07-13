@@ -120,15 +120,13 @@ class FileInput extends Input
             return $input;
         }
 
-        // Resolve prepend / append content and let the driver assemble the input group.
-        $prepend = $this->prepend
-            ? (is_array($this->prepend) ? implode('', $this->prepend) : $this->prepend)
-            : '';
-
-        $append = $this->append
-            ? (is_array($this->append) ? implode('', $this->append) : $this->append)
-            : '';
-
-        return $this->driver->inputGroup($this->html, $prepend, $input, $append, null);
+        // Let the driver assemble the input group.
+        return $this->driver->inputGroup(
+            $this->html,
+            $this->resolveAddon($this->prepend),
+            $input,
+            $this->resolveAddon($this->append),
+            null
+        );
     }
 }

@@ -224,7 +224,19 @@ abstract class Input
      */
     protected function errorTemplate()
     {
-        return '<div class="' . $this->driver->feedbackClass(false) . '">:message</div>';
+        return '<div class="' . $this->driver->feedbackClass($this->feedbackIsBlock()) . '">:message</div>';
+    }
+
+
+    /**
+     * Whether the validation feedback must be forced to display as a block.
+     * Overridden where the layout requires it (input groups, choice collections).
+     *
+     * @return bool
+     */
+    protected function feedbackIsBlock()
+    {
+        return false;
     }
 
 

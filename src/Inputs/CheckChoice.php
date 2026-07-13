@@ -77,11 +77,13 @@ class CheckChoice extends Input
     }
 
     /**
-     * Get the template to build up error messages.
+     * Choice collections always render their validation feedback as a block.
+     *
+     * @return bool
      */
-    protected function errorTemplate()
+    protected function feedbackIsBlock()
     {
-        return '<div class="' . $this->driver->feedbackClass(true) . '">:message</div>';
+        return true;
     }
 
     /**
