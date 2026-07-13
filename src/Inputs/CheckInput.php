@@ -96,6 +96,7 @@ class CheckInput extends Input
 
         if (!$this->disable_errors) {
             $content .= $this->errors;
+            $content .= $this->validFeedback();
         }
 
         if ($this->help) {
@@ -107,11 +108,11 @@ class CheckInput extends Input
 
     /**
      * A choice child disables its own feedback (rendered once at the collection level),
-     * so it must not advertise an error target it does not render.
+     * so it must not advertise an error/valid target it does not render.
      */
-    protected function errorsAreRendered(): bool
+    protected function rendersOwnFeedback(): bool
     {
-        return $this->errors !== '' && !$this->disable_errors;
+        return !$this->disable_errors;
     }
 
     public function label(): string

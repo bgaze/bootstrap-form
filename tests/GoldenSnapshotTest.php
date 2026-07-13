@@ -41,6 +41,8 @@ class GoldenSnapshotTest extends TestCase
             'b5.text', 'b5.checkbox', 'b5.switch', 'b5.select', 'b5.file', 'b5.range', 'b5.error',
             // Validation errors
             'error.text', 'error.checkboxes', 'error.help_describedby',
+            // Valid feedback (opt-in)
+            'valid.text', 'valid.text_success', 'valid.checkboxes',
             // Value binding
             'old.text', 'old.select', 'old.checkbox', 'model.text', 'model.checkbox',
         ];
@@ -151,6 +153,17 @@ class GoldenSnapshotTest extends TestCase
             case 'error.help_describedby':
                 $this->withErrors(['login' => ['The login field is required.']]);
                 return (string) BF::text('login', null, null, ['help' => 'Some help']);
+
+            // Valid feedback (a bag exists on another field, this one is untouched)
+            case 'valid.text':
+                $this->withErrors(['other' => ['err']]);
+                return (string) BF::text('login', null, null, ['show_valid_feedback' => true]);
+            case 'valid.text_success':
+                $this->withErrors(['other' => ['err']]);
+                return (string) BF::text('login', null, null, ['show_valid_feedback' => true, 'success' => 'Looks good!']);
+            case 'valid.checkboxes':
+                $this->withErrors(['other' => ['err']]);
+                return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin'], null, ['show_valid_feedback' => true, 'success' => 'Nice']);
 
             // Value binding
             case 'old.text':

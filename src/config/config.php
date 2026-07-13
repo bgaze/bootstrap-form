@@ -67,6 +67,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Valid feedback
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, after a submission that failed validation (an error bag is
+    | present), fields that carry no error of their own are marked valid
+    | (is-valid). Provide a per-field "success" option to also render a
+    | valid-feedback message. Disabled by default.
+    |
+    */
+
+    'show_valid_feedback' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Bootstrap 4 layout options
     |--------------------------------------------------------------------------
     |

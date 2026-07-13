@@ -47,6 +47,11 @@ abstract class Input
 
     protected Attributes $group_attributes;
 
+    /**
+     * Whether the field is in a "valid" state (submitted, no error, feature enabled).
+     */
+    protected bool $isValid = false;
+
     public function __construct(string $name, mixed $label = null, mixed $value = null, array $options = [])
     {
         // Resolve renderers from the active form.
@@ -73,6 +78,7 @@ abstract class Input
     {
         return BF::settings()->merge([
             'help' => false,
+            'success' => false,
         ]);
     }
 
@@ -170,12 +176,46 @@ abstract class Input
     }
 
     /**
-     * Whether this field's validation feedback is actually rendered (drives the
-     * aria-describedby error reference). Choice children disable their own feedback.
+     * Whether the field renders its own validation feedback. Choice children disable it
+     * (feedback is rendered once at the collection level).
+     */
+    protected function rendersOwnFeedback(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Whether an error message is actually rendered for this field (drives the
+     * aria-describedby error reference).
      */
     protected function errorsAreRendered(): bool
     {
-        return $this->errors !== '';
+        return $this->errors !== '' && $this->rendersOwnFeedback();
+    }
+
+    /**
+     * Whether a valid-feedback message is actually rendered for this field.
+     */
+    protected function validFeedbackIsRendered(): bool
+    {
+        return $this->isValid && $this->success !== false && $this->rendersOwnFeedback();
+    }
+
+    /**
+     * The valid-feedback markup, or '' when there is no success message to render.
+     */
+    protected function validFeedback(): string
+    {
+        if (!$this->validFeedbackIsRendered()) {
+            return '';
+        }
+
+        $attributes = ['class' => $this->driver->validFeedbackClass($this->feedbackIsBlock())];
+        if (!is_null($this->fieldId())) {
+            $attributes['id'] = $this->fieldId() . '-valid';
+        }
+
+        return $this->html->tag('div', $this->success, $attributes)->toHtml();
     }
 
     /**
@@ -202,6 +242,8 @@ abstract class Input
 
         if ($this->errorsAreRendered()) {
             $describedby[] = $this->fieldId() . '-error';
+        } elseif ($this->validFeedbackIsRendered()) {
+            $describedby[] = $this->fieldId() . '-valid';
         }
 
         if ($this->help !== false) {
@@ -214,6 +256,8 @@ abstract class Input
 
         if ($this->errors !== '') {
             $this->input_attributes->{'aria-invalid'} = 'true';
+        } elseif ($this->isValid) {
+            $this->input_attributes->{'aria-invalid'} = 'false';
         }
     }
 
@@ -243,6 +287,9 @@ abstract class Input
 
         $field = $this->flattenName($this->name, '.');
         if (!$errorBag->has($field)) {
+            // The form was submitted (a bag exists) and no error concerns this field.
+            $this->setValidState();
+
             return;
         }
 
@@ -254,6 +301,21 @@ abstract class Input
 
         $this->input_attributes->addClass($this->driver->invalidClass());
         $this->group_attributes->addClass($this->driver->invalidClass());
+    }
+
+    /**
+     * Flag the field (and its group) valid, when the valid-feedback feature is enabled.
+     * Mutually exclusive with the error state: only reached when the field has no error.
+     */
+    protected function setValidState(): void
+    {
+        if (!$this->show_valid_feedback) {
+            return;
+        }
+
+        $this->isValid = true;
+        $this->input_attributes->addClass($this->driver->validClass());
+        $this->group_attributes->addClass($this->driver->validClass());
     }
 
     ### COMPONENTS #############################################################
@@ -346,6 +408,7 @@ abstract class Input
     {
         $content = $this->inputGroup();
         $content .= $this->errors;
+        $content .= $this->validFeedback();
         $content .= $this->help();
 
         $attributes = Attributes::make();

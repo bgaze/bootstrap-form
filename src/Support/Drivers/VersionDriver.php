@@ -56,6 +56,19 @@ abstract class VersionDriver
         return 'is-invalid';
     }
 
+    public function validClass(): string
+    {
+        return 'is-valid';
+    }
+
+    /**
+     * @param  bool  $block  Force display (used with input groups and choice collections).
+     */
+    public function validFeedbackClass(bool $block): string
+    {
+        return $block ? 'valid-feedback d-block' : 'valid-feedback';
+    }
+
     public function buttonBaseClass(): string
     {
         return 'btn btn-';
