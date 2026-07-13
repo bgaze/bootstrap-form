@@ -21,6 +21,7 @@ class FormContext
         protected readonly Factory $view,
         protected readonly Session $session,
         protected readonly ?string $csrfToken,
+        protected readonly bool $convertsEmptyStringsToNull = false,
     ) {
     }
 
@@ -42,6 +43,15 @@ class FormContext
     public function csrfToken(): ?string
     {
         return $this->csrfToken;
+    }
+
+    /**
+     * Whether the app runs the ConvertEmptyStringsToNull middleware (resolved once at
+     * bind time): drives the empty-repopulation rule in {@see FieldValue::value()}.
+     */
+    public function convertsEmptyStringsToNull(): bool
+    {
+        return $this->convertsEmptyStringsToNull;
     }
 
     public function setModel(mixed $model): static

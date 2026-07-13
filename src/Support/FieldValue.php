@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bgaze\BootstrapForm\Support;
 
-use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Support\Collection;
 
 /**
@@ -51,15 +50,12 @@ class FieldValue
         }
 
         // With the ConvertEmptyStringsToNull middleware, a failed submit repopulates
-        // an untouched field as empty rather than from the model.
-        if (function_exists('app')) {
-            $hasNullMiddleware = app("Illuminate\Contracts\Http\Kernel")
-                ->hasMiddleware(ConvertEmptyStringsToNull::class);
-
+        // an untouched field as empty rather than from the model. The middleware presence
+        // is resolved once at bind time (see FormContext), not per field.
+        if ($this->context->convertsEmptyStringsToNull()) {
             $errors = $this->context->view()->shared('errors');
 
-            if ($hasNullMiddleware
-                && is_null($old)
+            if (is_null($old)
                 && is_null($value)
                 && !is_null($errors)
                 && count(is_countable($errors) ? $errors : []) > 0

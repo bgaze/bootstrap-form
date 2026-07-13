@@ -15,7 +15,7 @@ use Illuminate\Support\HtmlString;
  */
 class Html
 {
-    public function __construct(protected readonly ?UrlGenerator $url = null)
+    public function __construct(protected readonly UrlGenerator $url)
     {
     }
 

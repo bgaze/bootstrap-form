@@ -8,6 +8,9 @@ use Bgaze\BootstrapForm\Support\FieldValue;
 use Bgaze\BootstrapForm\Support\FormContext;
 use Bgaze\BootstrapForm\Support\FormElements;
 use Bgaze\BootstrapForm\Support\Html;
+use Illuminate\Contracts\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Http\Kernel as FoundationHttpKernel;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -18,11 +21,18 @@ class BootstrapFormServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/config/config.php', 'bootstrap_form');
 
         $this->app->singleton('bootstrap_form', function ($app) {
+            // Resolve the ConvertEmptyStringsToNull middleware presence once (stable per
+            // request) instead of scanning the kernel on every field value resolution.
+            $kernel = $app->bound(HttpKernel::class) ? $app->make(HttpKernel::class) : null;
+            $convertsEmptyStrings = $kernel instanceof FoundationHttpKernel
+                && $kernel->hasMiddleware(ConvertEmptyStringsToNull::class);
+
             $context = new FormContext(
                 $app['url'],
                 $app['view'],
                 $app['session.store'],
                 $app['session.store']->token(),
+                $convertsEmptyStrings,
             );
 
             $html = new Html($app['url']);
