@@ -15,6 +15,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Blade components
+    |--------------------------------------------------------------------------
+    |
+    | Here you may specify if the Blade x-components must be enabled. When true,
+    | the "bf" component namespace is registered, exposing tags such as
+    | <x-bf::text/>, <x-bf::form/>, etc. The BF facade and Blade directives
+    | remain available regardless of this setting.
+    |
+    */
+
+    'components' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Bootstrap version
     |--------------------------------------------------------------------------
     |

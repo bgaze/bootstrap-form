@@ -50,6 +50,10 @@ class BootstrapFormServiceProvider extends ServiceProvider
         if (config('bootstrap_form.blade_directives', true)) {
             $this->registerBladeDirectives();
         }
+
+        if (config('bootstrap_form.components', true)) {
+            Blade::componentNamespace('Bgaze\\BootstrapForm\\View\\Components', 'bf');
+        }
     }
 
     protected function registerBladeDirectives(): void
