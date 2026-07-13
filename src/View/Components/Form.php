@@ -5,27 +5,24 @@ declare(strict_types=1);
 namespace Bgaze\BootstrapForm\View\Components;
 
 use Bgaze\BootstrapForm\Support\Facades\BF;
-use Closure;
-use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\HtmlString;
-use Illuminate\View\Component;
 
 /**
  * The <x-bf::form> component.
  *
  * The builder is stateful: BF::open() mutates the shared form state that inner field
  * components read at render time. Blade buffers the default slot (the fields) between
- * withAttributes() and renderComponent(), so the form state must be established in
+ * withAttributes() and the closure evaluation, so the form state must be established in
  * withAttributes() — the earliest hook where the attribute bag is populated and which still
- * runs BEFORE the slot is rendered.
- *
- * Rendering stays pure PHP (no Blade view): render() returns a closure that, evaluated by
- * renderComponent() with the buffered slot, yields an Htmlable wrapping open + slot + close.
- * resolveView() returns that closure as-is to bypass the default resolver, which would
- * otherwise recompile a returned string as a Blade template.
+ * runs BEFORE the slot is rendered. renderHtml() then wraps the buffered slot; close()
+ * resets the state once the slot has been assembled.
  */
-class Form extends Component
+class Form extends BootstrapComponent
 {
+    /**
+     * Boolean layout shortcuts: <x-bf::form horizontal> is sugar for layout="horizontal".
+     */
+    private const LAYOUT_SHORTCUTS = ['vertical', 'horizontal', 'inline', 'floating'];
+
     /**
      * The captured <form ...> open tag (built once the attribute bag is known).
      */
@@ -36,35 +33,34 @@ class Form extends Component
         parent::withAttributes($attributes);
 
         // Establish the form state before the slot (fields) is buffered.
-        $this->openTag = BF::open($this->buildOptions());
+        $this->openTag = BF::open($this->bootstrapOptions());
 
         return $this;
     }
 
     /**
-     * Map the component attribute bag to the BF::open() options array.
-     *
-     * PoC scope: pass the raw attributes through. Attribute normalization (kebab->snake,
-     * label:/group:/input: prefixes) is wired in the shared resolver trait later.
+     * @return array<string, mixed>
      */
-    protected function buildOptions(): array
+    protected function bootstrapOptions(): array
     {
-        return $this->attributes->getAttributes();
+        $options = parent::bootstrapOptions();
+
+        // Resolve boolean layout shortcuts to the layout setting, and never let them leak as
+        // HTML attributes on the <form> tag.
+        foreach (self::LAYOUT_SHORTCUTS as $layout) {
+            if (($options[$layout] ?? null) === true) {
+                $options['layout'] = $layout;
+            }
+
+            unset($options[$layout]);
+        }
+
+        return $options;
     }
 
-    public function render(): Closure
+    protected function renderHtml(array $data): string
     {
-        // $data carries the already-buffered slot (the fields, rendered against the state set
-        // in withAttributes()). close() resets the state once the slot has been assembled.
-        return fn (array $data): Htmlable => new HtmlString($this->openTag.$data['slot'].BF::close());
-    }
-
-    /**
-     * Return the render closure untouched so renderComponent() emits its Htmlable result
-     * as-is. The default resolver would recompile a string return as Blade — avoided here.
-     */
-    public function resolveView(): Closure
-    {
-        return $this->render();
+        // $data['slot'] holds the fields, already rendered against the state set above.
+        return $this->openTag.$data['slot'].BF::close();
     }
 }
