@@ -29,7 +29,7 @@ class Bootstrap4Driver extends VersionDriver
 
     public function selectSizeClass(bool $custom, string $size): string
     {
-        return ($custom ? 'custom-select' : 'form-control') . '-' . $size;
+        return ($custom ? 'custom-select' : 'form-control').'-'.$size;
     }
 
     public function rangeClass(bool $custom): string
@@ -40,13 +40,13 @@ class Bootstrap4Driver extends VersionDriver
     public function formLayoutClass(string $layout): string
     {
         // Bootstrap 4 has no floating-label layout: it degrades to vertical (no class).
-        return in_array($layout, ['vertical', 'floating']) ? '' : 'form-' . $layout;
+        return in_array($layout, ['vertical', 'floating']) ? '' : 'form-'.$layout;
     }
 
     public function checkClasses(string $tag, bool $custom, bool $switch, bool $inline, bool $labelless): array
     {
         $input = $custom ? 'custom-control-input' : 'form-check-input';
-        if ($labelless && !$custom) {
+        if ($labelless && ! $custom) {
             $input .= ' position-static';
         }
 
@@ -78,7 +78,7 @@ class Bootstrap4Driver extends VersionDriver
             ? $html->tag('div', $append, ['class' => 'input-group-append'])->toHtml()
             : '';
 
-        return $html->tag('div', $prependHtml . $input . $appendHtml, [
+        return $html->tag('div', $prependHtml.$input.$appendHtml, [
             'class' => $this->inputGroupClass($size),
         ])->toHtml();
     }

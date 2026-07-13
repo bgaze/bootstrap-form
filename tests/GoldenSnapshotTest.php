@@ -57,10 +57,10 @@ class GoldenSnapshotTest extends TestCase
     {
         $actual = $this->render($name);
 
-        $path = __DIR__ . '/golden/' . $name . '.html';
+        $path = __DIR__.'/golden/'.$name.'.html';
 
-        if (getenv('UPDATE_GOLDEN') || !is_file($path)) {
-            if (!is_dir(dirname($path))) {
+        if (getenv('UPDATE_GOLDEN') || ! is_file($path)) {
+            if (! is_dir(dirname($path))) {
                 mkdir(dirname($path), 0777, true);
             }
             file_put_contents($path, $actual);
@@ -97,7 +97,7 @@ class GoldenSnapshotTest extends TestCase
             case 'password': return (string) BF::password('secret');
             case 'hidden': return (string) BF::hidden('token_field', 'abc');
 
-            // Select
+                // Select
             case 'select.native': return (string) BF::select('sel', null, $choices);
             case 'select.custom': return (string) BF::select('sel', null, $choices, null, ['custom' => true]);
             case 'select.size_lg': return (string) BF::select('sel', null, $choices, null, ['size' => 'lg']);
@@ -106,13 +106,13 @@ class GoldenSnapshotTest extends TestCase
             case 'select.optgroup': return (string) BF::select('sel', null, ['G1' => ['a' => 'A', 'b' => 'B'], 'G2' => ['c' => 'C']]);
             case 'select.collection_selected': return (string) BF::select('sel', null, $choices, collect(['b', 'c']), ['multiple' => true]);
 
-            // File / range
+                // File / range
             case 'file.native': return (string) BF::file('doc');
             case 'file.custom': return (string) BF::file('doc', null, ['custom' => true]);
             case 'range.native': return (string) BF::range('vol');
             case 'range.custom': return (string) BF::range('vol', null, null, ['custom' => true]);
 
-            // Checkables
+                // Checkables
             case 'check.checkbox': return (string) BF::checkbox('accept', 'Accept', 1);
             case 'check.custom': return (string) BF::checkbox('accept', 'Accept', 1, null, ['custom' => true]);
             case 'check.switch': return (string) BF::checkbox('accept', 'Accept', 1, null, ['switch' => true]);
@@ -122,19 +122,31 @@ class GoldenSnapshotTest extends TestCase
             case 'check.checkboxes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor']);
             case 'check.radios': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', 'f' => 'Female']);
 
-            // Misc elements
+                // Misc elements
             case 'el.submit': return (string) BF::submit('Save');
             case 'el.reset': return (string) BF::reset('Reset');
             case 'el.button': return (string) BF::button('Go');
             case 'el.link': return (string) BF::link('/home', 'Home');
             case 'el.label': return (string) BF::label('field', 'My label');
 
-            // Layouts
-            case 'layout.h_text': BF::horizontal(['url' => '/x']); $h = (string) BF::text('login'); BF::close(); return $h;
-            case 'layout.i_text': BF::inline(['url' => '/x']); $h = (string) BF::text('login'); BF::close(); return $h;
-            case 'layout.h_checkbox': BF::horizontal(['url' => '/x']); $h = (string) BF::checkbox('accept', 'Accept', 1); BF::close(); return $h;
+                // Layouts
+            case 'layout.h_text': BF::horizontal(['url' => '/x']);
+                $h = (string) BF::text('login');
+                BF::close();
 
-            // Bootstrap 5 (per-field override)
+                return $h;
+            case 'layout.i_text': BF::inline(['url' => '/x']);
+                $h = (string) BF::text('login');
+                BF::close();
+
+                return $h;
+            case 'layout.h_checkbox': BF::horizontal(['url' => '/x']);
+                $h = (string) BF::checkbox('accept', 'Accept', 1);
+                BF::close();
+
+                return $h;
+
+                // Bootstrap 5 (per-field override)
             case 'b5.text': return (string) BF::text('login', null, null, ['bootstrap_version' => 5]);
             case 'b5.checkbox': return (string) BF::checkbox('accept', 'Accept', 1, null, ['bootstrap_version' => 5]);
             case 'b5.switch': return (string) BF::checkbox('accept', 'Accept', 1, null, ['bootstrap_version' => 5, 'switch' => true]);
@@ -143,9 +155,10 @@ class GoldenSnapshotTest extends TestCase
             case 'b5.range': return (string) BF::range('vol', null, null, ['bootstrap_version' => 5]);
             case 'b5.error':
                 $this->withErrors(['login' => ['The login field is required.']]);
+
                 return (string) BF::text('login', null, null, ['bootstrap_version' => 5]);
 
-            // Floating labels (4th layout, Bootstrap 5)
+                // Floating labels (4th layout, Bootstrap 5)
             case 'float.text': return (string) BF::text('email', 'Email address', null, ['bootstrap_version' => 5, 'layout' => 'floating']);
             case 'float.select': return (string) BF::select('country', 'Country', ['fr' => 'France'], null, ['bootstrap_version' => 5, 'layout' => 'floating']);
             case 'float.textarea': return (string) BF::textarea('bio', 'Bio', null, ['bootstrap_version' => 5, 'layout' => 'floating']);
@@ -153,44 +166,59 @@ class GoldenSnapshotTest extends TestCase
             case 'float.checkbox': return (string) BF::checkbox('accept', 'Accept', 1, null, ['bootstrap_version' => 5, 'layout' => 'floating']);
             case 'float.b4_degrades': return (string) BF::text('email', 'Email address', null, ['layout' => 'floating']);
 
-            // Validation errors
+                // Validation errors
             case 'error.text':
                 $this->withErrors(['login' => ['The login field is required.']]);
+
                 return (string) BF::text('login');
             case 'error.checkboxes':
                 $this->withErrors(['roles' => ['Pick a role.']]);
+
                 return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor']);
             case 'error.help_describedby':
                 $this->withErrors(['login' => ['The login field is required.']]);
+
                 return (string) BF::text('login', null, null, ['help' => 'Some help']);
 
-            // Valid feedback (a bag exists on another field, this one is untouched)
+                // Valid feedback (a bag exists on another field, this one is untouched)
             case 'valid.text':
                 $this->withErrors(['other' => ['err']]);
+
                 return (string) BF::text('login', null, null, ['show_valid_feedback' => true]);
             case 'valid.text_success':
                 $this->withErrors(['other' => ['err']]);
+
                 return (string) BF::text('login', null, null, ['show_valid_feedback' => true, 'success' => 'Looks good!']);
             case 'valid.checkboxes':
                 $this->withErrors(['other' => ['err']]);
+
                 return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin'], null, ['show_valid_feedback' => true, 'success' => 'Nice']);
 
-            // Value binding
+                // Value binding
             case 'old.text':
                 $this->withOldInput(['login' => 'old']);
+
                 return (string) BF::text('login');
             case 'old.select':
                 $this->withOldInput(['sel' => 'b']);
+
                 return (string) BF::select('sel', null, $choices);
             case 'old.checkbox':
                 $this->withOldInput(['accept' => '1']);
+
                 return (string) BF::checkbox('accept', 'Accept', 1);
             case 'model.text':
                 BF::open(['model' => new GoldenUser(['login' => 'jdoe']), 'url' => '/x']);
-                $h = (string) BF::text('login'); BF::close(); return $h;
+                $h = (string) BF::text('login');
+                BF::close();
+
+                return $h;
             case 'model.checkbox':
                 BF::open(['model' => new GoldenUser(['accept' => 1]), 'url' => '/x']);
-                $h = (string) BF::checkbox('accept', 'Accept', 1); BF::close(); return $h;
+                $h = (string) BF::checkbox('accept', 'Accept', 1);
+                BF::close();
+
+                return $h;
         }
 
         $this->fail("Unknown fixture: {$name}");
@@ -200,5 +228,6 @@ class GoldenSnapshotTest extends TestCase
 class GoldenUser extends Model
 {
     protected $guarded = [];
+
     public $timestamps = false;
 }

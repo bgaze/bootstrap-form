@@ -11,10 +11,12 @@ use Illuminate\Support\Collection;
  * Specific settings:
  *
  * @property string $tag
- * @property array  $choices
- * @property bool   $inline
- * @property bool   $custom
- * @property bool   $switch
+ * @property array $choices
+ * @property bool $inline
+ * @property bool $custom
+ * @property bool $switch
+ *
+ * @phpstan-consistent-constructor
  */
 class CheckChoice extends Input
 {
@@ -82,7 +84,7 @@ class CheckChoice extends Input
                     'disable_errors' => true,
                     'group' => false,
                     'help' => false,
-                    'id' => $this->flattenName($this->name, '-') . '-' . $value,
+                    'id' => $this->flattenName($this->name, '-').'-'.$value,
                 ])
                 ->toArray();
 

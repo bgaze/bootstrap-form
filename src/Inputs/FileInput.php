@@ -11,9 +11,11 @@ use Illuminate\Support\Collection;
 /**
  * Specific settings:
  *
- * @property bool    $custom
- * @property string  $text
- * @property string  $button
+ * @property bool $custom
+ * @property string $text
+ * @property string $button
+ *
+ * @phpstan-consistent-constructor
  */
 class FileInput extends Input
 {
@@ -65,7 +67,7 @@ class FileInput extends Input
         $input = $this->input();
 
         // Only versions with a dedicated custom-file markup wrap the input.
-        if (!$this->custom || !$this->driver->usesCustomFile()) {
+        if (! $this->custom || ! $this->driver->usesCustomFile()) {
             return $input;
         }
 
@@ -77,11 +79,11 @@ class FileInput extends Input
         $button = $this->elements->label($this->input_attributes->id, $this->text, $attr, false);
 
         // Wrap into the custom-file block.
-        $input = $this->html->tag('div', $input . $button, [
+        $input = $this->html->tag('div', $input.$button, [
             'class' => $this->driver->customFileWrapperClass($this->layout === 'inline'),
         ])->toHtml();
 
-        if (!$this->append && !$this->prepend) {
+        if (! $this->append && ! $this->prepend) {
             return $input;
         }
 

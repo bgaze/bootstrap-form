@@ -18,7 +18,7 @@ class LiteralAttributeTest extends TestCase
     {
         // `size` is a package setting (sm|lg); `~size` forces the literal HTML attribute.
         $expected = '<div id="login-group" class="form-group"><label for="login">Login</label>'
-            . '<div><input size="5" id="login" class="form-control" name="login" type="text"></div></div>';
+            .'<div><input size="5" id="login" class="form-control" name="login" type="text"></div></div>';
 
         $this->assertSame($expected, (string) BF::text('login', null, null, ['~size' => 5]));
     }
@@ -26,9 +26,9 @@ class LiteralAttributeTest extends TestCase
     public function test_tilde_survives_into_checkbox_collection_children(): void
     {
         $expected = '<div id="roles-group" class="form-group"><label for="roles">Roles</label><div>'
-            . '<div class="form-check"><input data-x="y" id="roles-a" class="form-check-input" name="roles" type="checkbox" value="a"><label for="roles-a" class="form-check-label">A</label></div>'
-            . '<div class="form-check"><input data-x="y" id="roles-b" class="form-check-input" name="roles" type="checkbox" value="b"><label for="roles-b" class="form-check-label">B</label></div>'
-            . '</div></div>';
+            .'<div class="form-check"><input data-x="y" id="roles-a" class="form-check-input" name="roles" type="checkbox" value="a"><label for="roles-a" class="form-check-label">A</label></div>'
+            .'<div class="form-check"><input data-x="y" id="roles-b" class="form-check-input" name="roles" type="checkbox" value="b"><label for="roles-b" class="form-check-label">B</label></div>'
+            .'</div></div>';
 
         $this->assertSame($expected, (string) BF::checkboxes('roles', 'Roles', ['a' => 'A', 'b' => 'B'], null, ['~data-x' => 'y']));
     }

@@ -37,3 +37,28 @@ jobs:
 
       - name: Run tests
         run: vendor/bin/phpunit
+
+  static:
+    runs-on: ubuntu-latest
+
+    name: Static analysis (PHPStan + Pint)
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring
+          coverage: none
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction
+
+      - name: Check code style (Pint)
+        run: vendor/bin/pint --test
+
+      - name: Static analysis (PHPStan)
+        run: vendor/bin/phpstan analyse --no-progress

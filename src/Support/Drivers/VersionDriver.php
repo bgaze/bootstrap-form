@@ -16,7 +16,7 @@ use Bgaze\BootstrapForm\Support\Html;
  */
 abstract class VersionDriver
 {
-    ### SHARED TOKENS (identical across Bootstrap versions) #####################
+    // ## SHARED TOKENS (identical across Bootstrap versions) #####################
 
     public function inputClass(): string
     {
@@ -25,7 +25,7 @@ abstract class VersionDriver
 
     public function inputSizeClass(string $size): string
     {
-        return 'form-control-' . $size;
+        return 'form-control-'.$size;
     }
 
     public function colClass(): string
@@ -84,7 +84,7 @@ abstract class VersionDriver
         return 'pt-0';
     }
 
-    ### VERSION DELTAS #########################################################
+    // ## VERSION DELTAS #########################################################
 
     abstract public function formGroupClass(): string;
 
@@ -143,10 +143,10 @@ abstract class VersionDriver
      */
     public function floatingGroup(Html $html, string $input, string $label): string
     {
-        return $input . $label;
+        return $input.$label;
     }
 
-    ### SHARED HELPERS #########################################################
+    // ## SHARED HELPERS #########################################################
 
     protected function inputGroupClass(?string $size): string
     {

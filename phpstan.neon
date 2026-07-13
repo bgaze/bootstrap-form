@@ -1,0 +1,12 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+
+    # Attributes is a dynamic HTML-attribute bag (arbitrary keys via __get/__set),
+    # so model it as a universal object crate rather than annotating every attribute.
+    universalObjectCratesClasses:
+        - Bgaze\BootstrapForm\Support\Attributes

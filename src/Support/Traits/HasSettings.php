@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 
 trait HasSettings
 {
+    /** @var Collection<string, mixed> */
     protected Collection $settings;
 
     /**
@@ -33,8 +34,8 @@ trait HasSettings
     protected function flattenName(string $name, string $separator): string
     {
         return preg_replace_callback("/\[(.*)\\]/U", function ($matches) use ($separator) {
-            if (!empty($matches[1]) || $matches[1] === '0') {
-                return $separator . $matches[1];
+            if (! empty($matches[1]) || $matches[1] === '0') {
+                return $separator.$matches[1];
             }
         }, $name);
     }

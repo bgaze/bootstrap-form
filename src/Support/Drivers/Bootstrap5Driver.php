@@ -32,7 +32,7 @@ class Bootstrap5Driver extends VersionDriver
 
     public function selectSizeClass(bool $custom, string $size): string
     {
-        return 'form-select-' . $size;
+        return 'form-select-'.$size;
     }
 
     public function rangeClass(bool $custom): string
@@ -78,7 +78,7 @@ class Bootstrap5Driver extends VersionDriver
      */
     public function inputGroup(Html $html, string $prepend, string $input, string $append, ?string $size): string
     {
-        return $html->tag('div', $prepend . $input . $append, [
+        return $html->tag('div', $prepend.$input.$append, [
             'class' => $this->inputGroupClass($size),
         ])->toHtml();
     }
@@ -94,7 +94,7 @@ class Bootstrap5Driver extends VersionDriver
      */
     public function floatingGroup(Html $html, string $input, string $label): string
     {
-        return $html->tag('div', $input . $label, ['class' => 'form-floating'])->toHtml();
+        return $html->tag('div', $input.$label, ['class' => 'form-floating'])->toHtml();
     }
 
     public function usesCustomFile(): bool

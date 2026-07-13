@@ -35,7 +35,7 @@ class Bootstrap5Test extends TestCase
     public function test_text_uses_mb3_and_form_label(): void
     {
         $expected = '<div id="login-group" class="mb-3"><label for="login" class="form-label">Login</label>'
-            . '<div><input id="login" class="form-control" name="login" type="text"></div></div>';
+            .'<div><input id="login" class="form-control" name="login" type="text"></div></div>';
 
         $this->assertSame($expected, (string) BF::text('login'));
     }
@@ -43,8 +43,8 @@ class Bootstrap5Test extends TestCase
     public function test_text_help(): void
     {
         $expected = '<div id="login-group" class="mb-3"><label for="login" class="form-label">Login</label>'
-            . '<div><input id="login" class="form-control" aria-describedby="login-help" name="login" type="text">'
-            . '<small id="login-help" class="form-text">Some help</small></div></div>';
+            .'<div><input id="login" class="form-control" aria-describedby="login-help" name="login" type="text">'
+            .'<small id="login-help" class="form-text">Some help</small></div></div>';
 
         $this->assertSame($expected, (string) BF::text('login', null, null, ['help' => 'Some help']));
     }
@@ -52,7 +52,7 @@ class Bootstrap5Test extends TestCase
     public function test_text_size_small(): void
     {
         $expected = '<div id="login-group" class="mb-3"><label for="login" class="form-label">Login</label>'
-            . '<div><input id="login" class="form-control form-control-sm" name="login" type="text"></div></div>';
+            .'<div><input id="login" class="form-control form-control-sm" name="login" type="text"></div></div>';
 
         $this->assertSame($expected, (string) BF::text('login', null, null, ['size' => 'sm']));
     }
@@ -60,9 +60,9 @@ class Bootstrap5Test extends TestCase
     public function test_input_group_has_no_prepend_append_wrappers(): void
     {
         $expected = '<div id="amount-group" class="mb-3"><label for="amount" class="form-label">Amount</label>'
-            . '<div><div class="input-group"><span class="input-group-text">$</span>'
-            . '<input id="amount" class="form-control" name="amount" type="text">'
-            . '<span class="input-group-text">.00</span></div></div></div>';
+            .'<div><div class="input-group"><span class="input-group-text">$</span>'
+            .'<input id="amount" class="form-control" name="amount" type="text">'
+            .'<span class="input-group-text">.00</span></div></div></div>';
 
         $html = (string) BF::text('amount', null, null, [
             'prepend' => '<span class="input-group-text">$</span>',
@@ -77,7 +77,7 @@ class Bootstrap5Test extends TestCase
     public function test_textarea(): void
     {
         $expected = '<div id="bio-group" class="mb-3"><label for="bio" class="form-label">Bio</label>'
-            . '<div><textarea id="bio" class="form-control" name="bio" cols="50" rows="10"></textarea></div></div>';
+            .'<div><textarea id="bio" class="form-control" name="bio" cols="50" rows="10"></textarea></div></div>';
 
         $this->assertSame($expected, (string) BF::textarea('bio'));
     }
@@ -85,8 +85,8 @@ class Bootstrap5Test extends TestCase
     public function test_select_uses_form_select(): void
     {
         $expected = '<div id="country-group" class="mb-3"><label for="country" class="form-label">Country</label>'
-            . '<div><select id="country" class="form-select" name="country">'
-            . '<option value="fr">France</option></select></div></div>';
+            .'<div><select id="country" class="form-select" name="country">'
+            .'<option value="fr">France</option></select></div></div>';
 
         $this->assertSame($expected, (string) BF::select('country', null, ['fr' => 'France']));
     }
@@ -103,8 +103,8 @@ class Bootstrap5Test extends TestCase
     public function test_select_size_large(): void
     {
         $expected = '<div id="country-group" class="mb-3"><label for="country" class="form-label">Country</label>'
-            . '<div><select id="country" class="form-select form-select-lg" name="country">'
-            . '<option value="fr">France</option></select></div></div>';
+            .'<div><select id="country" class="form-select form-select-lg" name="country">'
+            .'<option value="fr">France</option></select></div></div>';
 
         $this->assertSame($expected, (string) BF::select('country', null, ['fr' => 'France'], null, ['size' => 'lg']));
     }
@@ -112,8 +112,8 @@ class Bootstrap5Test extends TestCase
     public function test_checkbox_basic(): void
     {
         $expected = '<div id="remember-group" class="mb-3"><div><div class="form-check">'
-            . '<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
-            . '<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
+            .'<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
+            .'<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
 
         $this->assertSame($expected, (string) BF::checkbox('remember', 'Remember me'));
     }
@@ -130,8 +130,8 @@ class Bootstrap5Test extends TestCase
     public function test_switch_uses_form_switch_and_role(): void
     {
         $expected = '<div id="remember-group" class="mb-3"><div><div class="form-check form-switch">'
-            . '<input id="remember" class="form-check-input" role="switch" name="remember" type="checkbox" value="1">'
-            . '<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
+            .'<input id="remember" class="form-check-input" role="switch" name="remember" type="checkbox" value="1">'
+            .'<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
 
         $this->assertSame($expected, (string) BF::checkbox('remember', 'Remember me', 1, null, ['switch' => true]));
     }
@@ -139,8 +139,8 @@ class Bootstrap5Test extends TestCase
     public function test_checkbox_inline(): void
     {
         $expected = '<div id="remember-group" class="mb-3"><div><div class="form-check form-check-inline">'
-            . '<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
-            . '<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
+            .'<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
+            .'<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
 
         $this->assertSame($expected, (string) BF::checkbox('remember', 'Remember me', 1, null, ['inline' => true]));
     }
@@ -148,8 +148,8 @@ class Bootstrap5Test extends TestCase
     public function test_checkbox_label_false(): void
     {
         $expected = '<div id="remember-group" class="mb-3"><div><div class="form-check">'
-            . '<input id="remember" class="form-check-input position-static" name="remember" type="checkbox" value="1">'
-            . '</div></div></div>';
+            .'<input id="remember" class="form-check-input position-static" name="remember" type="checkbox" value="1">'
+            .'</div></div></div>';
 
         $this->assertSame($expected, (string) BF::checkbox('remember', false));
     }
@@ -157,10 +157,10 @@ class Bootstrap5Test extends TestCase
     public function test_radios_collection(): void
     {
         $expected = '<div id="tags-group" class="mb-3"><label for="tags" class="form-label">Tags</label><div>'
-            . '<div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a">'
-            . '<label for="tags-a" class="form-check-label">A</label></div>'
-            . '<div class="form-check"><input id="tags-b" class="form-check-input" name="tags" type="checkbox" value="b">'
-            . '<label for="tags-b" class="form-check-label">B</label></div></div></div>';
+            .'<div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a">'
+            .'<label for="tags-a" class="form-check-label">A</label></div>'
+            .'<div class="form-check"><input id="tags-b" class="form-check-input" name="tags" type="checkbox" value="b">'
+            .'<label for="tags-b" class="form-check-label">B</label></div></div></div>';
 
         $this->assertSame($expected, (string) BF::checkboxes('tags', null, ['a' => 'A', 'b' => 'B']));
     }
@@ -168,7 +168,7 @@ class Bootstrap5Test extends TestCase
     public function test_file_uses_form_control(): void
     {
         $expected = '<div id="avatar-group" class="mb-3"><label for="avatar" class="form-label">Avatar</label>'
-            . '<div><input id="avatar" class="form-control" name="avatar" type="file"></div></div>';
+            .'<div><input id="avatar" class="form-control" name="avatar" type="file"></div></div>';
 
         $this->assertSame($expected, (string) BF::file('avatar'));
     }
@@ -185,7 +185,7 @@ class Bootstrap5Test extends TestCase
     public function test_range_uses_form_range(): void
     {
         $expected = '<div id="volume-group" class="mb-3"><label for="volume" class="form-label">Volume</label>'
-            . '<div><input id="volume" class="form-range" name="volume" type="range"></div></div>';
+            .'<div><input id="volume" class="form-range" name="volume" type="range"></div></div>';
 
         $this->assertSame($expected, (string) BF::range('volume'));
     }
@@ -202,8 +202,8 @@ class Bootstrap5Test extends TestCase
         BF::close();
 
         $expected = '<div id="login-group" class="mb-3 row">'
-            . '<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
-            . '<div class="col"><input id="login" class="form-control" name="login" type="text"></div></div>';
+            .'<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
+            .'<div class="col"><input id="login" class="form-control" name="login" type="text"></div></div>';
 
         $this->assertSame($expected, $html);
     }
@@ -215,10 +215,10 @@ class Bootstrap5Test extends TestCase
         BF::close();
 
         $expected = '<div id="remember-group" class="mb-3 row">'
-            . '<div class="col-lg-2 col-xl-3"></div>'
-            . '<div class="col"><div class="form-check">'
-            . '<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
-            . '<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
+            .'<div class="col-lg-2 col-xl-3"></div>'
+            .'<div class="col"><div class="form-check">'
+            .'<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
+            .'<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
 
         $this->assertSame($expected, $html);
     }
@@ -230,8 +230,8 @@ class Bootstrap5Test extends TestCase
         BF::close();
 
         $expected = '<div id="login-group" class="mb-3 me-3 my-1">'
-            . '<label for="login" class="form-label me-2">Login</label>'
-            . '<div><input id="login" class="form-control" name="login" type="text"></div></div>';
+            .'<label for="login" class="form-label me-2">Login</label>'
+            .'<div><input id="login" class="form-control" name="login" type="text"></div></div>';
 
         $this->assertSame($expected, $html);
     }
@@ -241,8 +241,8 @@ class Bootstrap5Test extends TestCase
         $this->withErrors(['login' => ['The login field is required.']]);
 
         $expected = '<div id="login-group" class="is-invalid mb-3"><label for="login" class="form-label">Login</label>'
-            . '<div><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text">'
-            . '<div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>';
+            .'<div><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text">'
+            .'<div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>';
 
         $this->assertSame($expected, (string) BF::text('login'));
     }

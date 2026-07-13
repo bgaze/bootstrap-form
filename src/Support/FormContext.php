@@ -22,8 +22,7 @@ class FormContext
         protected readonly Session $session,
         protected readonly ?string $csrfToken,
         protected readonly bool $convertsEmptyStringsToNull = false,
-    ) {
-    }
+    ) {}
 
     public function url(): UrlGenerator
     {

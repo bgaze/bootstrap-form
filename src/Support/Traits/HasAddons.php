@@ -23,7 +23,7 @@ trait HasAddons
      */
     public function inputGroup(): string
     {
-        if (!$this->append && !$this->prepend) {
+        if (! $this->append && ! $this->prepend) {
             return $this->controlBody();
         }
 
@@ -44,7 +44,7 @@ trait HasAddons
      */
     protected function resolveAddon(mixed $addon): string
     {
-        if (!$addon) {
+        if (! $addon) {
             return '';
         }
 

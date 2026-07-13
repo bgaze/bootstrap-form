@@ -14,6 +14,8 @@ use Illuminate\Support\Collection;
  * @property array $choices
  * @property bool $custom
  * @property string $size
+ *
+ * @phpstan-consistent-constructor
  */
 class SelectInput extends Input
 {

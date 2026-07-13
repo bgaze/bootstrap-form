@@ -11,20 +11,23 @@ use Illuminate\Support\Collection;
  * Specific settings:
  *
  * @property string $tag
- * @property bool   $disable_errors
- * @property bool   $checked
- * @property bool   $inline
- * @property bool   $custom
- * @property bool   $switch
+ * @property bool $disable_errors
+ * @property bool $checked
+ * @property bool $inline
+ * @property bool $custom
+ * @property bool $switch
+ *
+ * @phpstan-consistent-constructor
  */
 class CheckInput extends Input
 {
     /**
-     * Resolved wrapper/input/label classes and extra input attributes for the control.
+     * Resolved wrapper/input/label classes and extra input attributes for the control
+     * (populated in setInputAttributes).
      *
      * @var array{wrapper: string, input: string, label: string, input_attributes: array}
      */
-    protected array $check_classes = [];
+    protected array $check_classes = ['wrapper' => '', 'input' => '', 'label' => '', 'input_attributes' => []];
 
     protected function defaults(): Collection
     {
@@ -94,7 +97,7 @@ class CheckInput extends Input
         $content = $this->input();
         $content .= $this->label();
 
-        if (!$this->disable_errors) {
+        if (! $this->disable_errors) {
             $content .= $this->errors;
             $content .= $this->validFeedback();
         }
@@ -112,7 +115,7 @@ class CheckInput extends Input
      */
     protected function rendersOwnFeedback(): bool
     {
-        return !$this->disable_errors;
+        return ! $this->disable_errors;
     }
 
     public function label(): string

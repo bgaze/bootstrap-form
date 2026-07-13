@@ -26,9 +26,7 @@ class FieldValue
      */
     protected array $payload = [];
 
-    public function __construct(protected readonly FormContext $context)
-    {
-    }
+    public function __construct(protected readonly FormContext $context) {}
 
     public function setType(string $type): static
     {
@@ -45,7 +43,7 @@ class FieldValue
 
         $old = $this->old($name);
 
-        if (!is_null($old) && $name !== '_method') {
+        if (! is_null($old) && $name !== '_method') {
             return $old;
         }
 
@@ -57,18 +55,18 @@ class FieldValue
 
             if (is_null($old)
                 && is_null($value)
-                && !is_null($errors)
+                && ! is_null($errors)
                 && count(is_countable($errors) ? $errors : []) > 0
             ) {
                 return null;
             }
         }
 
-        if (!is_null($value)) {
+        if (! is_null($value)) {
             return $value;
         }
 
-        if (!is_null($this->context->getModel())) {
+        if (! is_null($this->context->getModel())) {
             return $this->modelValue($name);
         }
 
@@ -79,23 +77,19 @@ class FieldValue
     {
         $session = $this->context->session();
 
-        if (!isset($session)) {
-            return null;
-        }
-
         $key = $this->transformKey($name);
         $payload = $session->getOldInput($key);
 
-        if (!is_array($payload)) {
+        if (! is_array($payload)) {
             return $payload;
         }
 
-        if (!in_array($this->type, ['select', 'checkbox'])) {
-            if (!isset($this->payload[$key])) {
+        if (! in_array($this->type, ['select', 'checkbox'])) {
+            if (! isset($this->payload[$key])) {
                 $this->payload[$key] = collect($payload);
             }
 
-            if (!empty($this->payload[$key])) {
+            if (! empty($this->payload[$key])) {
                 return $this->payload[$key]->shift();
             }
         }
@@ -105,9 +99,7 @@ class FieldValue
 
     public function oldInputIsEmpty(): bool
     {
-        $session = $this->context->session();
-
-        return isset($session) && count((array) $session->getOldInput()) === 0;
+        return count((array) $this->context->session()->getOldInput()) === 0;
     }
 
     /**
@@ -144,9 +136,7 @@ class FieldValue
 
     protected function getCheckboxCheckedState(string $name, mixed $value, mixed $checked): bool
     {
-        $session = $this->context->session();
-
-        if (isset($session) && !$this->oldInputIsEmpty() && is_null($this->old($name))) {
+        if (! $this->oldInputIsEmpty() && is_null($this->old($name))) {
             return false;
         }
 

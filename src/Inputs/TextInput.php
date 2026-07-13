@@ -13,6 +13,8 @@ use Illuminate\Support\Collection;
  *
  * @property string $tag
  * @property string $size
+ *
+ * @phpstan-consistent-constructor
  */
 class TextInput extends Input
 {

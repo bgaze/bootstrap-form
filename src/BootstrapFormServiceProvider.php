@@ -18,7 +18,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/config/config.php', 'bootstrap_form');
+        $this->mergeConfigFrom(__DIR__.'/config/config.php', 'bootstrap_form');
 
         $this->app->singleton('bootstrap_form', function ($app) {
             // Resolve the ConvertEmptyStringsToNull middleware presence once (stable per
@@ -45,7 +45,7 @@ class BootstrapFormServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->publishes([__DIR__ . '/config/config.php' => config_path('bootstrap_form.php')], 'config');
+        $this->publishes([__DIR__.'/config/config.php' => config_path('bootstrap_form.php')], 'config');
 
         if (config('bootstrap_form.blade_directives', true)) {
             $this->registerBladeDirectives();

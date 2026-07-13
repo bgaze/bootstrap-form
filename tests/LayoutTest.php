@@ -16,8 +16,8 @@ class LayoutTest extends TestCase
         BF::close();
 
         $expected = '<div id="login-group" class="form-group row">'
-            . '<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
-            . '<div class="col"><input id="login" class="form-control" name="login" type="text"></div></div>';
+            .'<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
+            .'<div class="col"><input id="login" class="form-control" name="login" type="text"></div></div>';
 
         $this->assertSame($expected, $html);
     }
@@ -29,10 +29,10 @@ class LayoutTest extends TestCase
         BF::close();
 
         $expected = '<div id="remember-group" class="form-group row">'
-            . '<div class="col-lg-2 col-xl-3"></div>'
-            . '<div class="col"><div class="form-check">'
-            . '<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
-            . '<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
+            .'<div class="col-lg-2 col-xl-3"></div>'
+            .'<div class="col"><div class="form-check">'
+            .'<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
+            .'<label for="remember" class="form-check-label">Remember me</label></div></div></div>';
 
         $this->assertSame($expected, $html);
     }
@@ -44,8 +44,8 @@ class LayoutTest extends TestCase
         BF::close();
 
         $expected = '<div id="login-group" class="form-group mr-3 my-1">'
-            . '<label for="login" class="mr-2">Login</label>'
-            . '<div><input id="login" class="form-control" name="login" type="text"></div></div>';
+            .'<label for="login" class="mr-2">Login</label>'
+            .'<div><input id="login" class="form-control" name="login" type="text"></div></div>';
 
         $this->assertSame($expected, $html);
     }
@@ -59,9 +59,9 @@ class LayoutTest extends TestCase
         BF::close();
 
         $expected = '<div id="login-group" class="is-invalid form-group row">'
-            . '<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
-            . '<div class="col"><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text">'
-            . '<div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>';
+            .'<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
+            .'<div class="col"><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text">'
+            .'<div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>';
 
         $this->assertSame($expected, $html);
     }

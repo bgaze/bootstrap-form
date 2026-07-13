@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bgaze\BootstrapForm;
 
-use Bgaze\BootstrapForm\Inputs;
 use Bgaze\BootstrapForm\Support\Attributes;
 use Bgaze\BootstrapForm\Support\Drivers\DriverManager;
 use Bgaze\BootstrapForm\Support\Drivers\VersionDriver;
@@ -23,25 +22,31 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Traits\Macroable;
 
 /**
- * Form configuration:
+ * Form configuration (dynamic settings accessed via HasSettings):
  *
- * @property Model $model
+ * @property mixed $model
  * @property string $error_bag
- * @property string $url
- * @property string $route
- * @property string $action
- * @property string $store
- * @property string $update
+ * @property string|array $url
+ * @property string|array $route
+ * @property string|array $action
+ * @property string|array $store
+ * @property string|array $update
  * @property string $layout
+ * @property int $bootstrap_version
+ * @property bool $custom
  * @property string $left_class
  * @property string $right_class
+ * @property string|false $hspace
+ * @property string|false $vspace
+ * @property string|false $lspace
  * @property bool $show_all_errors
- * @property array $group
+ * @property bool $show_valid_feedback
+ * @property bool|array $group
  */
 class BootstrapForm
 {
-    use Macroable;
     use HasSettings;
+    use Macroable;
 
     /**
      * Configuration keys that won't be inherited by form inputs.
@@ -67,7 +72,7 @@ class BootstrapForm
         $this->resetForm();
     }
 
-    ### MISC UTILITIES #########################################################
+    // ## MISC UTILITIES #########################################################
 
     /**
      * Returns the "inheritable" forms settings.
@@ -97,7 +102,7 @@ class BootstrapForm
         return $this->context;
     }
 
-    ### CONFIGURATION ##########################################################
+    // ## CONFIGURATION ##########################################################
 
     /**
      * Reset form settings and attributes to default configuration.
@@ -108,17 +113,19 @@ class BootstrapForm
         $version = (int) ($config['bootstrap_version'] ?? 4);
 
         // Default options: agnostic root settings + the active version layout section.
-        $reserved = array_fill_keys(self::RESERVED, null);
-        $this->settings = Collection::make($reserved)
-            ->put('error_bag', 'default')
-            ->merge(Arr::except($config, ['blade_directives', 'bootstrap4', 'bootstrap5']))
-            // "custom" is always a known setting (a no-op in Bootstrap 5) so it is never
-            // mistaken for an HTML attribute, even when absent from the version section.
-            ->put('custom', false)
-            ->merge($this->versionLayout($version))
-            ->put('bootstrap_version', $version);
+        // Assembled as a plain (heterogeneous) array, then wrapped once.
+        $settings = array_fill_keys(self::RESERVED, null);
+        $settings['error_bag'] = 'default';
+        $settings = array_merge($settings, Arr::except($config, ['blade_directives', 'bootstrap4', 'bootstrap5']));
+        // "custom" is always a known setting (a no-op in Bootstrap 5) so it is never
+        // mistaken for an HTML attribute, even when absent from the version section.
+        $settings['custom'] = false;
+        $settings = array_merge($settings, $this->versionLayout($version));
+        $settings['bootstrap_version'] = $version;
 
-        if (!is_array($this->group)) {
+        $this->settings = Collection::make($settings);
+
+        if (! is_array($this->group)) {
             $this->group = [];
         }
 
@@ -131,7 +138,7 @@ class BootstrapForm
      */
     protected function versionLayout(int $version): array
     {
-        return config('bootstrap_form.bootstrap' . $version, []);
+        return config('bootstrap_form.bootstrap'.$version, []);
     }
 
     /**
@@ -201,7 +208,7 @@ class BootstrapForm
                 $type = Str::contains($this->update, '@') ? 'action' : 'route';
                 $this->attributes->{$type} = [$this->update, $model->getRouteKey()];
             }
-        } elseif (!$model->exists && $this->store) {
+        } elseif (! $model->exists && $this->store) {
             $this->attributes->method = 'POST';
 
             $name = is_array($this->store) ? Arr::first($this->store) : $this->store;
@@ -210,7 +217,7 @@ class BootstrapForm
         }
     }
 
-    ### BUILD FORM ELEMENT #####################################################
+    // ## BUILD FORM ELEMENT #####################################################
 
     public function open(array $options = []): string
     {
@@ -265,7 +272,7 @@ class BootstrapForm
         return $this->open($options);
     }
 
-    ### BUILD FORM INPUTS ######################################################
+    // ## BUILD FORM INPUTS ######################################################
 
     /**
      * Create a Bootstrap input by tag.
@@ -402,7 +409,7 @@ class BootstrapForm
         return Inputs\CheckChoice::make($name, $label, $choices, $checked, $options);
     }
 
-    ### BUILD MISC ELEMENTS ####################################################
+    // ## BUILD MISC ELEMENTS ####################################################
 
     public function label(string $name, mixed $value = null, array $options = [], bool $escapeHtml = false): HtmlString
     {
@@ -418,21 +425,21 @@ class BootstrapForm
 
         if ($this->opened && $this->layout === 'inline') {
             if ($this->hspace) {
-                $class .= $this->hspace . ' ';
+                $class .= $this->hspace.' ';
             }
 
             if ($this->vspace) {
-                $class .= $this->vspace . ' ';
+                $class .= $this->vspace.' ';
             }
         }
 
         $class .= $this->driver()->buttonBaseClass();
 
         if (is_array($options)) {
-            return array_merge(['class' => $class . $style], $options);
+            return array_merge(['class' => $class.$style], $options);
         }
 
-        return ['class' => $class . (empty($options) ? $style : $options)];
+        return ['class' => $class.(empty($options) ? $style : $options)];
     }
 
     public function submit(mixed $value = null, mixed $options = null): HtmlString

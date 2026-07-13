@@ -38,10 +38,9 @@ class FormElements
         protected readonly Html $html,
         protected readonly FieldValue $value,
         protected readonly FormContext $context,
-    ) {
-    }
+    ) {}
 
-    ### FORM OPEN / CLOSE ######################################################
+    // ## FORM OPEN / CLOSE ######################################################
 
     public function open(array $options = []): HtmlString
     {
@@ -61,7 +60,7 @@ class FormElements
 
         $attributes = array_merge($attributes, Arr::except($options, self::RESERVED));
 
-        return $this->toHtmlString('<form' . $this->html->attributes($attributes) . '>' . $append);
+        return $this->toHtmlString('<form'.$this->html->attributes($attributes).'>'.$append);
     }
 
     public function model(mixed $model, array $options = []): HtmlString
@@ -80,12 +79,12 @@ class FormElements
 
     public function token(): HtmlString
     {
-        $token = !empty($this->context->csrfToken()) ? $this->context->csrfToken() : $this->context->session()->token();
+        $token = ! empty($this->context->csrfToken()) ? $this->context->csrfToken() : $this->context->session()->token();
 
         return $this->hidden('_token', $token);
     }
 
-    ### LABEL ##################################################################
+    // ## LABEL ##################################################################
 
     public function label(string|false|null $name, mixed $value = null, array $options = [], bool $escape_html = true): HtmlString
     {
@@ -98,9 +97,9 @@ class FormElements
         }
 
         // A disabled/empty target (input id === false) yields a label with no "for".
-        $for = ($name === false || $name === null || $name === '') ? '' : ' for="' . $name . '"';
+        $for = ($name === false || $name === null || $name === '') ? '' : ' for="'.$name.'"';
 
-        return $this->toHtmlString('<label' . $for . $options . '>' . $value . '</label>');
+        return $this->toHtmlString('<label'.$for.$options.'>'.$value.'</label>');
     }
 
     protected function formatLabel(string $name, mixed $value): string
@@ -108,19 +107,19 @@ class FormElements
         return $value ?: ucwords(str_replace('_', ' ', $name));
     }
 
-    ### INPUTS #################################################################
+    // ## INPUTS #################################################################
 
     public function input(string $type, ?string $name, mixed $value = null, array $options = []): HtmlString
     {
         $this->value->setType($type);
 
-        if (!isset($options['name'])) {
+        if (! isset($options['name'])) {
             $options['name'] = $name;
         }
 
         $id = $options['id'] ?? null;
 
-        if (!in_array($type, self::SKIP_VALUE_TYPES)) {
+        if (! in_array($type, self::SKIP_VALUE_TYPES)) {
             $value = $this->value->value($name, $value);
         }
 
@@ -128,7 +127,7 @@ class FormElements
         // already present): this fixes the rendered attribute order.
         $options = array_merge($options, compact('type', 'value', 'id'));
 
-        return $this->toHtmlString('<input' . $this->html->attributes($options) . '>');
+        return $this->toHtmlString('<input'.$this->html->attributes($options).'>');
     }
 
     public function text(string $name, mixed $value = null, array $options = []): HtmlString
@@ -236,7 +235,7 @@ class FormElements
     {
         $this->value->setType('textarea');
 
-        if (!isset($options['name'])) {
+        if (! isset($options['name'])) {
             $options['name'] = $name;
         }
 
@@ -248,7 +247,7 @@ class FormElements
 
         unset($options['size']);
 
-        return $this->toHtmlString('<textarea' . $this->html->attributes($options) . '>' . e($value, false) . '</textarea>');
+        return $this->toHtmlString('<textarea'.$this->html->attributes($options).'>'.e($value, false).'</textarea>');
     }
 
     protected function setTextAreaSize(array $options): array
@@ -265,7 +264,7 @@ class FormElements
         return array_merge($options, compact('cols', 'rows'));
     }
 
-    ### SELECT #################################################################
+    // ## SELECT #################################################################
 
     public function select(
         string $name,
@@ -281,7 +280,7 @@ class FormElements
 
         $selectAttributes['id'] = $selectAttributes['id'] ?? null;
 
-        if (!isset($selectAttributes['name'])) {
+        if (! isset($selectAttributes['name'])) {
             $selectAttributes['name'] = $name;
         }
 
@@ -304,7 +303,7 @@ class FormElements
 
         $selectAttributes = $this->html->attributes($selectAttributes);
 
-        return $this->toHtmlString("<select{$selectAttributes}>" . implode('', $html) . '</select>');
+        return $this->toHtmlString("<select{$selectAttributes}>".implode('', $html).'</select>');
     }
 
     public function getSelectOption(mixed $display, mixed $value, mixed $selected, array $attributes = [], array $optgroupAttributes = []): HtmlString
@@ -327,11 +326,11 @@ class FormElements
             if (is_iterable($display)) {
                 $html[] = $this->optionGroup($display, $value, $selected, $attributes, $optionAttributes, $level + 5);
             } else {
-                $html[] = $this->option($space . $display, $value, $selected, $optionAttributes);
+                $html[] = $this->option($space.$display, $value, $selected, $optionAttributes);
             }
         }
 
-        return $this->toHtmlString('<optgroup label="' . e($space . $label, false) . '"' . $this->html->attributes($attributes) . '>' . implode('', $html) . '</optgroup>');
+        return $this->toHtmlString('<optgroup label="'.e($space.$label, false).'"'.$this->html->attributes($attributes).'>'.implode('', $html).'</optgroup>');
     }
 
     protected function option(mixed $display, mixed $value, mixed $selected, array $attributes = []): HtmlString
@@ -340,10 +339,10 @@ class FormElements
 
         $options = array_merge(['value' => $value, 'selected' => $selected], $attributes);
 
-        $string = '<option' . $this->html->attributes($options) . '>';
+        $string = '<option'.$this->html->attributes($options).'>';
 
         if ($display !== null) {
-            $string .= e($display, false) . '</option>';
+            $string .= e($display, false).'</option>';
         }
 
         return $this->toHtmlString($string);
@@ -356,10 +355,10 @@ class FormElements
             'value' => '',
         ];
 
-        return $this->toHtmlString('<option' . $this->html->attributes($options) . '>' . e($display, false) . '</option>');
+        return $this->toHtmlString('<option'.$this->html->attributes($options).'>'.e($display, false).'</option>');
     }
 
-    ### CHECKABLES #############################################################
+    // ## CHECKABLES #############################################################
 
     public function checkbox(string $name, mixed $value = 1, mixed $checked = null, array $options = []): HtmlString
     {
@@ -380,7 +379,7 @@ class FormElements
         return $this->input($type, $name, $value, $options);
     }
 
-    ### BUTTONS ################################################################
+    // ## BUTTONS ################################################################
 
     public function reset(mixed $value, array $attributes = []): HtmlString
     {
@@ -394,14 +393,14 @@ class FormElements
 
     public function button(mixed $value = null, array $options = []): HtmlString
     {
-        if (!array_key_exists('type', $options)) {
+        if (! array_key_exists('type', $options)) {
             $options['type'] = 'button';
         }
 
-        return $this->toHtmlString('<button' . $this->html->attributes($options) . '>' . $value . '</button>');
+        return $this->toHtmlString('<button'.$this->html->attributes($options).'>'.$value.'</button>');
     }
 
-    ### HELPERS ################################################################
+    // ## HELPERS ################################################################
 
     protected function getMethod(string $method): string
     {

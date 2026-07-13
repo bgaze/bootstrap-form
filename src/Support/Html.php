@@ -15,9 +15,7 @@ use Illuminate\Support\HtmlString;
  */
 class Html
 {
-    public function __construct(protected readonly UrlGenerator $url)
-    {
-    }
+    public function __construct(protected readonly UrlGenerator $url) {}
 
     /**
      * Build an HTML attribute string from an array (leading space included when non-empty).
@@ -31,12 +29,12 @@ class Html
 
             // Skip nulls (absent) and empty strings (e.g. a disabled boolean attribute),
             // so a dropped attribute never leaves a stray double space in the output.
-            if (!is_null($element) && $element !== '') {
+            if (! is_null($element) && $element !== '') {
                 $html[] = $element;
             }
         }
 
-        return count($html) > 0 ? ' ' . implode(' ', $html) : '';
+        return count($html) > 0 ? ' '.implode(' ', $html) : '';
     }
 
     protected function attributeElement(int|string $key, mixed $value): ?string
@@ -52,11 +50,11 @@ class Html
         }
 
         if (is_array($value) && $key === 'class') {
-            return 'class="' . implode(' ', $value) . '"';
+            return 'class="'.implode(' ', $value).'"';
         }
 
-        if (!is_null($value)) {
-            return $key . '="' . e($value, false) . '"';
+        if (! is_null($value)) {
+            return $key.'="'.e($value, false).'"';
         }
 
         return null;
@@ -71,7 +69,7 @@ class Html
     {
         $content = is_array($content) ? implode('', $content) : $content;
 
-        return $this->toHtmlString('<' . $tag . $this->attributes($attributes) . '>' . $content . '</' . $tag . '>');
+        return $this->toHtmlString('<'.$tag.$this->attributes($attributes).'>'.$content.'</'.$tag.'>');
     }
 
     public function link(string $url, string|false|null $title = null, array $attributes = [], ?bool $secure = null, bool $escape = true): HtmlString
@@ -86,7 +84,7 @@ class Html
             $title = $this->entities($title);
         }
 
-        return $this->toHtmlString('<a href="' . $this->entities($url) . '"' . $this->attributes($attributes) . '>' . $title . '</a>');
+        return $this->toHtmlString('<a href="'.$this->entities($url).'"'.$this->attributes($attributes).'>'.$title.'</a>');
     }
 
     protected function toHtmlString(string $html): HtmlString

@@ -24,8 +24,8 @@ class DriverManager
         $version = $version === 5 ? 5 : 4;
 
         return static::$drivers[$version] ??= match ($version) {
-            5 => new Bootstrap5Driver(),
-            default => new Bootstrap4Driver(),
+            5 => new Bootstrap5Driver,
+            default => new Bootstrap4Driver,
         };
     }
 }

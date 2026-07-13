@@ -10,6 +10,8 @@ use Bgaze\BootstrapForm\Support\Input;
  * Specific settings:
  *
  * @property bool $custom
+ *
+ * @phpstan-consistent-constructor
  */
 class RangeInput extends Input
 {

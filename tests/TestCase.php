@@ -3,6 +3,7 @@
 namespace Bgaze\BootstrapForm\Tests;
 
 use Bgaze\BootstrapForm\BootstrapFormServiceProvider;
+use Bgaze\BootstrapForm\Support\Facades\BF;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Orchestra\Testbench\TestCase as BaseTestCase;
@@ -25,7 +26,7 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageAliases($app)
     {
         return [
-            'BF' => \Bgaze\BootstrapForm\Support\Facades\BF::class,
+            'BF' => BF::class,
         ];
     }
 
@@ -33,11 +34,10 @@ abstract class TestCase extends BaseTestCase
      * Flash a validation error bag into the session to exercise error rendering.
      *
      * @param  array  $errors  field => message(s)
-     * @param  string  $bag
      */
     protected function withErrors(array $errors, string $bag = 'default'): void
     {
-        $viewBag = new ViewErrorBag();
+        $viewBag = new ViewErrorBag;
         $viewBag->put($bag, new MessageBag($errors));
 
         $this->app['session.store']->put('errors', $viewBag);

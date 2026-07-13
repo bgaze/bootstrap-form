@@ -12,23 +12,28 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
- * Input settings:
+ * Input settings (dynamic settings accessed via HasSettings):
  *
  * @property string $errors
  * @property string $name
- * @property string $value
+ * @property mixed $value
  * @property mixed $label
- * @property string $help
+ * @property string|false $help
+ * @property string|false $success
  *
  * Inherited from form:
- *
  * @property string $layout
+ * @property int $bootstrap_version
+ * @property bool $custom
  * @property string $error_bag
  * @property bool $show_all_errors
- * @property bool $pull_right
+ * @property bool $show_valid_feedback
+ * @property string|false $pull_right
  * @property string $left_class
  * @property string $right_class
- * @property string $spacer
+ * @property string|false $hspace
+ * @property string|false $vspace
+ * @property string|false $lspace
  * @property bool|array $group
  */
 abstract class Input
@@ -72,7 +77,7 @@ abstract class Input
         return $this->group();
     }
 
-    ### CONFIGURATION ##########################################################
+    // ## CONFIGURATION ##########################################################
 
     protected function defaults(): Collection
     {
@@ -144,14 +149,14 @@ abstract class Input
             $this->group_attributes = Attributes::make();
         }
 
-        if (!$this->group_attributes->id) {
-            $this->group_attributes->id = $this->flattenName($this->name, '-') . '-group';
+        if (! $this->group_attributes->id) {
+            $this->group_attributes->id = $this->flattenName($this->name, '-').'-group';
         }
     }
 
     protected function errorTemplate(): string
     {
-        return '<div class="' . $this->driver->feedbackClass($this->feedbackIsBlock()) . '"' . $this->feedbackId('error') . '>:message</div>';
+        return '<div class="'.$this->driver->feedbackClass($this->feedbackIsBlock()).'"'.$this->feedbackId('error').'>:message</div>';
     }
 
     /**
@@ -172,7 +177,7 @@ abstract class Input
     {
         $id = $this->fieldId();
 
-        return is_null($id) ? '' : ' id="' . $id . '-' . $suffix . '"';
+        return is_null($id) ? '' : ' id="'.$id.'-'.$suffix.'"';
     }
 
     /**
@@ -206,13 +211,13 @@ abstract class Input
      */
     protected function validFeedback(): string
     {
-        if (!$this->validFeedbackIsRendered()) {
+        if (! $this->validFeedbackIsRendered()) {
             return '';
         }
 
         $attributes = ['class' => $this->driver->validFeedbackClass($this->feedbackIsBlock())];
-        if (!is_null($this->fieldId())) {
-            $attributes['id'] = $this->fieldId() . '-valid';
+        if (! is_null($this->fieldId())) {
+            $attributes['id'] = $this->fieldId().'-valid';
         }
 
         return $this->html->tag('div', $this->success, $attributes)->toHtml();
@@ -234,20 +239,20 @@ abstract class Input
      */
     protected function setAriaAttributes(): void
     {
-        if (!$this->hasSingleInput() || is_null($this->fieldId())) {
+        if (! $this->hasSingleInput() || is_null($this->fieldId())) {
             return;
         }
 
         $describedby = [];
 
         if ($this->errorsAreRendered()) {
-            $describedby[] = $this->fieldId() . '-error';
+            $describedby[] = $this->fieldId().'-error';
         } elseif ($this->validFeedbackIsRendered()) {
-            $describedby[] = $this->fieldId() . '-valid';
+            $describedby[] = $this->fieldId().'-valid';
         }
 
         if ($this->help !== false) {
-            $describedby[] = $this->fieldId() . '-help';
+            $describedby[] = $this->fieldId().'-help';
         }
 
         if ($describedby !== []) {
@@ -281,12 +286,12 @@ abstract class Input
         }
 
         $errorBag = $errors->{$this->error_bag} ?? false;
-        if (!$errorBag) {
+        if (! $errorBag) {
             return;
         }
 
         $field = $this->flattenName($this->name, '.');
-        if (!$errorBag->has($field)) {
+        if (! $errorBag->has($field)) {
             // The form was submitted (a bag exists) and no error concerns this field.
             $this->setValidState();
 
@@ -309,7 +314,7 @@ abstract class Input
      */
     protected function setValidState(): void
     {
-        if (!$this->show_valid_feedback) {
+        if (! $this->show_valid_feedback) {
             return;
         }
 
@@ -318,7 +323,7 @@ abstract class Input
         $this->group_attributes->addClass($this->driver->validClass());
     }
 
-    ### COMPONENTS #############################################################
+    // ## COMPONENTS #############################################################
 
     abstract public function input(): string;
 
@@ -336,7 +341,7 @@ abstract class Input
      */
     protected function controlBody(): string
     {
-        if (!$this->isFloating()) {
+        if (! $this->isFloating()) {
             return $this->input();
         }
 
@@ -389,8 +394,8 @@ abstract class Input
         }
 
         $attributes = [];
-        if (!is_null($this->fieldId())) {
-            $attributes['id'] = $this->fieldId() . '-help';
+        if (! is_null($this->fieldId())) {
+            $attributes['id'] = $this->fieldId().'-help';
         }
         $attributes['class'] = $this->driver->helpClass();
 
@@ -399,7 +404,7 @@ abstract class Input
 
     public function group(): string
     {
-        if (!$this->group) {
+        if (! $this->group) {
             return $this->inputGroup();
         }
 
@@ -417,7 +422,7 @@ abstract class Input
             $this->group_attributes->addClass($this->vspace);
         }
 
-        $content = $this->leftGroupColumn() . $this->rightGroupColumn();
+        $content = $this->leftGroupColumn().$this->rightGroupColumn();
 
         return $this->html->tag('div', $content, $this->group_attributes->toArray())->toHtml();
     }
@@ -432,7 +437,7 @@ abstract class Input
             return '';
         }
 
-        if ($this->layout === 'horizontal' && $this->pull_right && !$this->label) {
+        if ($this->layout === 'horizontal' && $this->pull_right && ! $this->label) {
             return $this->html->tag('div', '', ['class' => $this->left_class])->toHtml();
         }
 

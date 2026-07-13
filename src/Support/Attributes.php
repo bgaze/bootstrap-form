@@ -20,6 +20,8 @@ use Illuminate\Contracts\Support\Arrayable;
  * (e.g. building a checkbox collection's children).
  *
  * @implements Arrayable<string, mixed>
+ *
+ * @phpstan-consistent-constructor
  */
 class Attributes implements Arrayable
 {
@@ -28,9 +30,7 @@ class Attributes implements Arrayable
      */
     public const LITERAL_PREFIX = '~';
 
-    public function __construct(protected array $items = [])
-    {
-    }
+    public function __construct(protected array $items = []) {}
 
     public static function make(array $items = []): static
     {
@@ -62,7 +62,7 @@ class Attributes implements Arrayable
             return $this;
         }
 
-        $classes = preg_split('/\s+/', trim($this->class . ' ' . $class));
+        $classes = preg_split('/\s+/', trim($this->class.' '.$class));
         $this->class = implode(' ', array_unique($classes));
 
         return $this;
