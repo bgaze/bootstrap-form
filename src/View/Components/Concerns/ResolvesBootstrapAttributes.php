@@ -86,4 +86,55 @@ trait ResolvesBootstrapAttributes
     {
         return [...BF::settings()->keys()->all(), 'disable_errors'];
     }
+
+    /**
+     * The rendered content of a named slot, or null when absent/empty.
+     *
+     * Read from __laravel_slots (the actual slots) rather than $data[$name], so a slot never
+     * collides with a public property of the same name (e.g. the label prop).
+     *
+     * @param  array<string, mixed>  $data
+     */
+    protected function namedSlot(array $data, string $name): ?string
+    {
+        $slots = $data['__laravel_slots'] ?? [];
+
+        if (! isset($slots[$name])) {
+            return null;
+        }
+
+        $content = trim((string) $slots[$name]);
+
+        return $content !== '' ? $content : null;
+    }
+
+    /**
+     * Resolve the label text: a <x-slot:label> overrides the label attribute/prop.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    protected function resolveLabel(array $data, mixed $label): mixed
+    {
+        return $this->namedSlot($data, 'label') ?? $label;
+    }
+
+    /**
+     * Fold <x-slot:prepend> / <x-slot:append> into the options as rich input-group addons.
+     *
+     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
+     */
+    protected function withAddonSlots(array $data, array $options): array
+    {
+        foreach (['prepend', 'append'] as $addon) {
+            $slot = $this->namedSlot($data, $addon);
+
+            if ($slot !== null) {
+                $options[$addon] = $slot;
+            }
+        }
+
+        return $options;
+    }
 }

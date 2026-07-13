@@ -15,6 +15,10 @@ class Password extends InputComponent
 
     protected function renderHtml(array $data): string
     {
-        return (string) BF::password($this->name, $this->label, $this->bootstrapOptions());
+        return (string) BF::password(
+            $this->name,
+            $this->resolveLabel($data, $this->label),
+            $this->withAddonSlots($data, $this->bootstrapOptions()),
+        );
     }
 }

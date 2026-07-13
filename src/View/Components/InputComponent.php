@@ -28,6 +28,11 @@ abstract class InputComponent extends BootstrapComponent
 
     protected function renderHtml(array $data): string
     {
-        return (string) BF::{$this->type}($this->name, $this->label, $this->value, $this->bootstrapOptions());
+        return (string) BF::{$this->type}(
+            $this->name,
+            $this->resolveLabel($data, $this->label),
+            $this->value,
+            $this->withAddonSlots($data, $this->bootstrapOptions()),
+        );
     }
 }

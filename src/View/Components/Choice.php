@@ -26,6 +26,6 @@ abstract class Choice extends BootstrapComponent
 
     protected function renderHtml(array $data): string
     {
-        return (string) BF::{$this->type}($this->name, $this->label, $this->choices, $this->checked, $this->bootstrapOptions());
+        return (string) BF::{$this->type}($this->name, $this->resolveLabel($data, $this->label), $this->choices, $this->checked, $this->bootstrapOptions());
     }
 }

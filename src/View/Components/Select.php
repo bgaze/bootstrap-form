@@ -24,6 +24,12 @@ class Select extends BootstrapComponent
 
     protected function renderHtml(array $data): string
     {
-        return (string) BF::select($this->name, $this->label, $this->choices, $this->selected, $this->bootstrapOptions());
+        return (string) BF::select(
+            $this->name,
+            $this->resolveLabel($data, $this->label),
+            $this->choices,
+            $this->selected,
+            $this->withAddonSlots($data, $this->bootstrapOptions()),
+        );
     }
 }

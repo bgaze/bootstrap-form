@@ -29,6 +29,6 @@ abstract class Checkable extends BootstrapComponent
     {
         $value = $this->value ?? $this->defaultValue;
 
-        return (string) BF::{$this->type}($this->name, $this->label, $value, $this->checked, $this->bootstrapOptions());
+        return (string) BF::{$this->type}($this->name, $this->resolveLabel($data, $this->label), $value, $this->checked, $this->bootstrapOptions());
     }
 }
