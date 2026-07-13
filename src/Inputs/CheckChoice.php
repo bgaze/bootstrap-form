@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
-use Bgaze\BootstrapForm\Inputs\CheckInput;
+use Illuminate\Support\Collection;
 
 /**
  * Specific settings:
- * 
+ *
  * @property string $tag
  * @property array  $choices
  * @property bool   $inline
@@ -16,13 +18,7 @@ use Bgaze\BootstrapForm\Inputs\CheckInput;
  */
 class CheckChoice extends Input
 {
-
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
         return parent::defaults()->merge([
             'tag' => 'checkbox',
@@ -32,42 +28,18 @@ class CheckChoice extends Input
         ]);
     }
 
-    /**
-     * The class constructor.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param array  $choices
-     * @param mixed  $checked
-     * @param array  $options
-     */
-    public function __construct($name, $label = null, array $choices = [], $checked = [], array $options = [])
+    public function __construct(string $name, mixed $label = null, array $choices = [], mixed $checked = [], array $options = [])
     {
         parent::__construct($name, $label, $checked, $options);
         $this->choices = $choices;
     }
 
-    /**
-     * Instanciate a CheckChoice.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param array  $choices
-     * @param mixed  $checked
-     * @param array  $options
-     * @return CheckChoice
-     */
-    public static function make($name, $label = null, array $choices = [], $checked = [], array $options = [])
+    public static function make(string $name, mixed $label = null, array $choices = [], mixed $checked = [], array $options = []): static
     {
         return new static($name, $label, $choices, $checked, $options);
     }
 
-    /**
-     * Set label attributes.
-     * 
-     * @param array $options 
-     */
-    protected function setLabelAttributes(array $options)
+    protected function setLabelAttributes(array $options): void
     {
         parent::setLabelAttributes($options);
 
@@ -78,20 +50,13 @@ class CheckChoice extends Input
 
     /**
      * Choice collections always render their validation feedback as a block.
-     *
-     * @return bool
      */
-    protected function feedbackIsBlock()
+    protected function feedbackIsBlock(): bool
     {
         return true;
     }
 
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
         $inputs = '';
 

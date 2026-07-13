@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support\Drivers;
 
 use Bgaze\BootstrapForm\Support\Html;
@@ -10,59 +12,37 @@ use Bgaze\BootstrapForm\Support\Html;
  */
 class Bootstrap4Driver extends VersionDriver
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function formGroupClass()
+    public function formGroupClass(): string
     {
         return 'form-group';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function labelClass()
+    public function labelClass(): string
     {
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function selectClass($custom)
+    public function selectClass(bool $custom): string
     {
         return $custom ? 'custom-select' : 'form-control';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function selectSizeClass($custom, $size)
+    public function selectSizeClass(bool $custom, string $size): string
     {
         return ($custom ? 'custom-select' : 'form-control') . '-' . $size;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rangeClass($custom)
+    public function rangeClass(bool $custom): string
     {
         return $custom ? 'custom-range' : 'form-control-range';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function formLayoutClass($layout)
+    public function formLayoutClass(string $layout): string
     {
         return $layout === 'vertical' ? '' : 'form-' . $layout;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function checkClasses($tag, $custom, $switch, $inline, $labelless)
+    public function checkClasses(string $tag, bool $custom, bool $switch, bool $inline, bool $labelless): array
     {
         $input = $custom ? 'custom-control-input' : 'form-check-input';
         if ($labelless && !$custom) {
@@ -87,10 +67,7 @@ class Bootstrap4Driver extends VersionDriver
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function inputGroup(Html $html, $prepend, $input, $append, $size)
+    public function inputGroup(Html $html, string $prepend, string $input, string $append, ?string $size): string
     {
         $prependHtml = ($prepend !== '')
             ? $html->tag('div', $prepend, ['class' => 'input-group-prepend'])->toHtml()
@@ -105,42 +82,27 @@ class Bootstrap4Driver extends VersionDriver
         ])->toHtml();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function usesCustomFile()
+    public function usesCustomFile(): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function fileInputClass()
+    public function fileInputClass(): string
     {
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function customFileInputClass()
+    public function customFileInputClass(): string
     {
         return 'custom-file-input';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function customFileLabelClass()
+    public function customFileLabelClass(): string
     {
         return 'custom-file-label';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function customFileWrapperClass($inline)
+    public function customFileWrapperClass(bool $inline): string
     {
         return $inline ? 'custom-file w-auto' : 'custom-file';
     }

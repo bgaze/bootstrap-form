@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
@@ -15,16 +17,9 @@ use Illuminate\Support\Collection;
  */
 class SelectInput extends Input
 {
-
     use HasAddons;
 
-
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
         return parent::defaults()->merge([
             'choices' => [],
@@ -34,45 +29,18 @@ class SelectInput extends Input
         ]);
     }
 
-
-    /**
-     * The class constructor.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  array  $choices
-     * @param  mixed  $selected
-     * @param  array  $options
-     */
-    public function __construct($name, $label = null, $choices = [], $selected = null, array $options = [])
+    public function __construct(string $name, mixed $label = null, array $choices = [], mixed $selected = null, array $options = [])
     {
         parent::__construct($name, $label, $selected, $options);
         $this->choices = $choices;
     }
 
-
-    /**
-     * Instanciate a SelectInput.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  array  $choices
-     * @param  mixed  $selected
-     * @param  array  $options
-     * @return SelectInput
-     */
-    public static function make($name, $label = null, $choices = [], $selected = null, array $options = [])
+    public static function make(string $name, mixed $label = null, array $choices = [], mixed $selected = null, array $options = []): static
     {
         return new static($name, $label, $choices, $selected, $options);
     }
 
-
-    /**
-     * Set input attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
@@ -83,13 +51,7 @@ class SelectInput extends Input
         }
     }
 
-
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
         return $this->elements->select($this->name, $this->choices, $this->value, $this->input_attributes->toArray())->toHtml();
     }

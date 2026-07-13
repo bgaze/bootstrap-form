@@ -1,53 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support\Traits;
 
 use Illuminate\Support\Collection;
 
 trait HasSettings
 {
-
-    /**
-     * The settings repository.
-     *
-     * @var Collection
-     */
-    protected $settings;
-
+    protected Collection $settings;
 
     /**
      * Bind any undefined property to the settings repository.
-     *
-     * @param  string  $key
-     * @return mixed
      */
-    public function __get($key)
+    public function __get(string $key): mixed
     {
         return $this->settings->get($key);
     }
 
-
     /**
      * Put any undefined property into the settings repository.
-     *
-     * @param  string  $key
-     * @param  mixed  $value
      */
-    public function __set($key, $value)
+    public function __set(string $key, mixed $value): void
     {
         $this->settings->put($key, $value);
     }
 
-
     /**
-     * Flatten arrayed field names to work with the validator, including removing "[]",
-     * and converting nested arrays like "foo[bar][baz]" to "foo.bar.baz".
-     *
-     * @param  string  $name
-     * @param  string  $separator
-     * @return string
+     * Flatten arrayed field names for the validator: drop "[]" and turn "foo[bar][baz]"
+     * into "foo.bar.baz" using the given separator.
      */
-    protected function flattenName($name, $separator)
+    protected function flattenName(string $name, string $separator): string
     {
         return preg_replace_callback("/\[(.*)\\]/U", function ($matches) use ($separator) {
             if (!empty($matches[1]) || $matches[1] === '0') {

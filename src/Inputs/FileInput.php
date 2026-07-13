@@ -1,28 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
 use Bgaze\BootstrapForm\Support\Traits\HasAddons;
+use Illuminate\Support\Collection;
 
 /**
  * Specific settings:
- * 
+ *
  * @property bool    $custom
  * @property string  $text
  * @property string  $button
  */
 class FileInput extends Input
 {
-
     use HasAddons;
 
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
         return parent::defaults()->merge([
             'text' => 'Choose file',
@@ -32,37 +29,17 @@ class FileInput extends Input
         ]);
     }
 
-    /**
-     * The class constructor.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param array  $options
-     */
-    public function __construct($name, $label = null, array $options = [])
+    public function __construct(string $name, mixed $label = null, array $options = [])
     {
         parent::__construct($name, $label, null, $options);
     }
 
-    /**
-     * Instanciate a FileInput.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param array  $options
-     * @return FileInput
-     */
-    public static function make($name, $label = null, array $options = [])
+    public static function make(string $name, mixed $label = null, array $options = []): static
     {
         return new static($name, $label, $options);
     }
 
-    /**
-     * Set input attributes.
-     * 
-     * @param array  $options 
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
@@ -78,24 +55,13 @@ class FileInput extends Input
         }
     }
 
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
         return $this->elements->file($this->name, $this->input_attributes->toArray())->toHtml();
     }
 
-    /**
-     * Decorate the input to get the final Bootstrap format.
-     *
-     * @return string
-     */
-    public function inputGroup()
+    public function inputGroup(): string
     {
-        // Prepare file input.
         $input = $this->input();
 
         // Only versions with a dedicated custom-file markup wrap the input.
@@ -103,7 +69,7 @@ class FileInput extends Input
             return $input;
         }
 
-        // Prepare button.
+        // Prepare the browse button label.
         $attr = ['class' => $this->driver->customFileLabelClass()];
         if ($this->button) {
             $attr['data-browse'] = $this->button;
@@ -115,7 +81,6 @@ class FileInput extends Input
             'class' => $this->driver->customFileWrapperClass($this->layout === 'inline'),
         ])->toHtml();
 
-        // Check if addons.
         if (!$this->append && !$this->prepend) {
             return $input;
         }
@@ -126,7 +91,7 @@ class FileInput extends Input
             $this->resolveAddon($this->prepend),
             $input,
             $this->resolveAddon($this->append),
-            null
+            null,
         );
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
@@ -11,41 +13,19 @@ use Bgaze\BootstrapForm\Support\Input;
  */
 class RangeInput extends Input
 {
-
-    /**
-     * Instantiate a RangeInput.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  mixed  $value
-     * @param  array  $options
-     * @return RangeInput
-     */
-    public static function make($name, $label = null, $value = null, array $options = [])
+    public static function make(string $name, mixed $label = null, mixed $value = null, array $options = []): static
     {
         return new static($name, $label, $value, $options);
     }
 
-
-    /**
-     * Set input attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
         $this->input_attributes->addClass($this->driver->rangeClass((bool) $this->custom));
     }
 
-
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
         return $this->elements->range($this->name, $this->value, $this->input_attributes->toArray())->toHtml();
     }

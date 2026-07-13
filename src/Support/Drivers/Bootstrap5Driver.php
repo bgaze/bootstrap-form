@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support\Drivers;
 
 use Bgaze\BootstrapForm\Support\Html;
@@ -13,62 +15,41 @@ use Bgaze\BootstrapForm\Support\Html;
  */
 class Bootstrap5Driver extends VersionDriver
 {
-
-    /**
-     * {@inheritdoc}
-     */
-    public function formGroupClass()
+    public function formGroupClass(): string
     {
         return 'mb-3';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function labelClass()
+    public function labelClass(): string
     {
         return 'form-label';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function selectClass($custom)
+    public function selectClass(bool $custom): string
     {
         return 'form-select';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function selectSizeClass($custom, $size)
+    public function selectSizeClass(bool $custom, string $size): string
     {
         return 'form-select-' . $size;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rangeClass($custom)
+    public function rangeClass(bool $custom): string
     {
         return 'form-range';
     }
 
     /**
-     * {@inheritdoc}
-     *
      * Bootstrap 5 dropped the form-horizontal / form-inline element classes: horizontal
      * layout is carried by the grid classes on each group, inline is best-effort.
      */
-    public function formLayoutClass($layout)
+    public function formLayoutClass(string $layout): string
     {
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function checkClasses($tag, $custom, $switch, $inline, $labelless)
+    public function checkClasses(string $tag, bool $custom, bool $switch, bool $inline, bool $labelless): array
     {
         $input = 'form-check-input';
         if ($labelless) {
@@ -92,54 +73,37 @@ class Bootstrap5Driver extends VersionDriver
     }
 
     /**
-     * {@inheritdoc}
-     *
      * Bootstrap 5 removed the .input-group-prepend / .input-group-append wrappers:
      * addons sit as direct children of the input group.
      */
-    public function inputGroup(Html $html, $prepend, $input, $append, $size)
+    public function inputGroup(Html $html, string $prepend, string $input, string $append, ?string $size): string
     {
         return $html->tag('div', $prepend . $input . $append, [
             'class' => $this->inputGroupClass($size),
         ])->toHtml();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function usesCustomFile()
+    public function usesCustomFile(): bool
     {
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function fileInputClass()
+    public function fileInputClass(): string
     {
         return 'form-control';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function customFileInputClass()
+    public function customFileInputClass(): string
     {
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function customFileLabelClass()
+    public function customFileLabelClass(): string
     {
         return '';
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function customFileWrapperClass($inline)
+    public function customFileWrapperClass(bool $inline): string
     {
         return '';
     }

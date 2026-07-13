@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
+use Illuminate\Support\Collection;
 
 /**
  * Specific settings:
- * 
+ *
  * @property string $tag
  * @property bool   $disable_errors
  * @property bool   $checked
@@ -16,21 +19,14 @@ use Bgaze\BootstrapForm\Support\Input;
  */
 class CheckInput extends Input
 {
-
     /**
      * Resolved wrapper/input/label classes and extra input attributes for the control.
      *
-     * @var array
+     * @var array{wrapper: string, input: string, label: string, input_attributes: array}
      */
-    protected $check_classes = [];
+    protected array $check_classes = [];
 
-
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
         return parent::defaults()->merge([
             'tag' => 'checkbox',
@@ -41,42 +37,18 @@ class CheckInput extends Input
         ]);
     }
 
-    /**
-     * The class constructor.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param mixed  $value
-     * @param mixed  $checked
-     * @param array  $options
-     */
-    public function __construct($name, $label = null, $value = 1, $checked = null, array $options = [])
+    public function __construct(string $name, mixed $label = null, mixed $value = 1, mixed $checked = null, array $options = [])
     {
         parent::__construct($name, $label, $value, $options);
         $this->checked = $checked;
     }
 
-    /**
-     * Instanciate a CheckInput.
-     * 
-     * @param string $name
-     * @param mixed  $label
-     * @param mixed  $value
-     * @param mixed  $checked
-     * @param array  $options
-     * @return CheckInput
-     */
-    public static function make($name, $label = null, $value = 1, $checked = null, array $options = [])
+    public static function make(string $name, mixed $label = null, mixed $value = 1, mixed $checked = null, array $options = []): static
     {
         return new static($name, $label, $value, $checked, $options);
     }
 
-    /**
-     * Set input attributes.
-     * 
-     * @param array  $options 
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
@@ -95,7 +67,7 @@ class CheckInput extends Input
             (bool) $this->custom,
             (bool) $this->switch,
             (bool) $this->inline,
-            $this->label === false
+            $this->label === false,
         );
 
         $this->input_attributes->addClass($this->check_classes['input']);
@@ -105,34 +77,19 @@ class CheckInput extends Input
         }
     }
 
-    /**
-     * Set label attributes.
-     *
-     * @param array $options
-     */
-    protected function setLabelAttributes(array $options)
+    protected function setLabelAttributes(array $options): void
     {
         parent::setLabelAttributes($options);
 
         $this->label_attributes->addClass($this->check_classes['label']);
     }
 
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
         return $this->elements->{$this->tag}($this->name, $this->value, $this->checked, $this->input_attributes->toArray())->toHtml();
     }
 
-    /**
-     * Decorate the input to get the final Bootstrap format.
-     *
-     * @return string
-     */
-    public function inputGroup()
+    public function inputGroup(): string
     {
         $content = $this->input();
         $content .= $this->label();
@@ -142,21 +99,17 @@ class CheckInput extends Input
         }
 
         if ($this->help) {
-            $content .= $this->html->tag('small', $this->help, ['class' => $this->driver->helpClass()]);
+            $content .= $this->html->tag('small', $this->help, ['class' => $this->driver->helpClass()])->toHtml();
         }
 
         return $this->html->tag('div', $content, ['class' => $this->check_classes['wrapper']])->toHtml();
     }
 
-    /**
-     * Compile label to a HTML string.
-     * 
-     * @return string
-     */
-    public function label()
+    public function label(): string
     {
+        // Custom, label-less controls still need an (empty) label for the markup to hold.
         if ($this->label === false && $this->custom) {
-            return sprintf($this->elements->label($this->input_attributes->id, '%s', $this->label_attributes->toArray(), false), '');
+            return sprintf($this->elements->label($this->input_attributes->id, '%s', $this->label_attributes->toArray(), false)->toHtml(), '');
         }
 
         if ($this->label === false) {
@@ -167,11 +120,9 @@ class CheckInput extends Input
     }
 
     /**
-     * Get the "left" part of the form group (empty or spacer in "pull right" mode).
-     * 
-     * @return string
+     * The "left" part of the form group: empty, or a spacer in "pull right" mode.
      */
-    protected function leftGroupColumn()
+    protected function leftGroupColumn(): string
     {
         if ($this->layout === 'horizontal' && $this->pull_right) {
             return $this->html->tag('div', '', ['class' => $this->left_class])->toHtml();

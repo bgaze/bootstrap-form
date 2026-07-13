@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support\Drivers;
 
 /**
@@ -7,30 +9,23 @@ namespace Bgaze\BootstrapForm\Support\Drivers;
  */
 class DriverManager
 {
-
     /**
      * Resolved driver instances, keyed by version.
      *
-     * @var array
+     * @var array<int, VersionDriver>
      */
-    protected static $drivers = [];
+    protected static array $drivers = [];
 
     /**
      * Get the driver for the given Bootstrap version (defaults to 4 for any unknown value).
-     *
-     * @param  int  $version
-     * @return VersionDriver
      */
-    public static function make($version)
+    public static function make(int $version): VersionDriver
     {
-        $version = ((int) $version === 5) ? 5 : 4;
+        $version = $version === 5 ? 5 : 4;
 
-        if (!isset(static::$drivers[$version])) {
-            static::$drivers[$version] = ($version === 5)
-                ? new Bootstrap5Driver()
-                : new Bootstrap4Driver();
-        }
-
-        return static::$drivers[$version];
+        return static::$drivers[$version] ??= match ($version) {
+            5 => new Bootstrap5Driver(),
+            default => new Bootstrap4Driver(),
+        };
     }
 }

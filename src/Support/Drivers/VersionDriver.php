@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support\Drivers;
 
 use Bgaze\BootstrapForm\Support\Html;
@@ -14,190 +16,107 @@ use Bgaze\BootstrapForm\Support\Html;
  */
 abstract class VersionDriver
 {
-
     ### SHARED TOKENS (identical across Bootstrap versions) #####################
 
-    /**
-     * Class for text-like inputs and textareas.
-     */
-    public function inputClass()
+    public function inputClass(): string
     {
         return 'form-control';
     }
 
-    /**
-     * Size modifier class for text-like inputs ("sm" | "lg").
-     */
-    public function inputSizeClass($size)
+    public function inputSizeClass(string $size): string
     {
         return 'form-control-' . $size;
     }
 
-    /**
-     * Grid class for the right (fields) column of horizontal groups when pulling right.
-     */
-    public function colClass()
+    public function colClass(): string
     {
         return 'col';
     }
 
-    /**
-     * Label class in horizontal layout.
-     */
-    public function colFormLabelClass()
+    public function colFormLabelClass(): string
     {
         return 'col-form-label';
     }
 
-    /**
-     * Help text class.
-     */
-    public function helpClass()
+    public function helpClass(): string
     {
         return 'form-text';
     }
 
     /**
-     * Validation feedback container class.
-     *
      * @param  bool  $block  Force display (used with input groups and choice collections).
      */
-    public function feedbackClass($block)
+    public function feedbackClass(bool $block): string
     {
         return $block ? 'invalid-feedback d-block' : 'invalid-feedback';
     }
 
-    /**
-     * Class flagging an invalid input / group.
-     */
-    public function invalidClass()
+    public function invalidClass(): string
     {
         return 'is-invalid';
     }
 
-    /**
-     * Base class prefix for buttons ("btn btn-" + style).
-     */
-    public function buttonBaseClass()
+    public function buttonBaseClass(): string
     {
         return 'btn btn-';
     }
 
-    /**
-     * Grid row class for horizontal groups.
-     */
-    public function rowClass()
+    public function rowClass(): string
     {
         return 'row';
     }
 
-    /**
-     * Label class for a choices collection (checkboxes / radios) in horizontal layout.
-     */
-    public function checkChoiceLabelClass()
+    public function checkChoiceLabelClass(): string
     {
         return 'pt-0';
     }
 
     ### VERSION DELTAS #########################################################
 
-    /**
-     * Form group wrapper class.
-     */
-    abstract public function formGroupClass();
+    abstract public function formGroupClass(): string;
+
+    abstract public function labelClass(): string;
+
+    abstract public function selectClass(bool $custom): string;
+
+    abstract public function selectSizeClass(bool $custom, string $size): string;
+
+    abstract public function rangeClass(bool $custom): string;
 
     /**
-     * Label class in vertical / inline layout (empty when the version has none).
-     */
-    abstract public function labelClass();
-
-    /**
-     * Select class.
-     *
-     * @param  bool  $custom
-     */
-    abstract public function selectClass($custom);
-
-    /**
-     * Select size modifier class ("sm" | "lg").
-     *
-     * @param  bool  $custom
-     * @param  string  $size
-     */
-    abstract public function selectSizeClass($custom, $size);
-
-    /**
-     * Range input class.
-     *
-     * @param  bool  $custom
-     */
-    abstract public function rangeClass($custom);
-
-    /**
-     * Form element class for a given layout (empty when the version has none).
-     *
      * @param  string  $layout  vertical | horizontal | inline
      */
-    abstract public function formLayoutClass($layout);
+    abstract public function formLayoutClass(string $layout): string;
 
     /**
      * Resolve the classes (and extra input attributes) for a checkbox / radio / switch.
      *
-     * @param  string  $tag  checkbox | radio
-     * @param  bool  $custom
-     * @param  bool  $switch
-     * @param  bool  $inline
      * @param  bool  $labelless  Whether the control is rendered without a label.
-     * @return array{wrapper:string,input:string,label:string,input_attributes:array}
+     * @return array{wrapper: string, input: string, label: string, input_attributes: array}
      */
-    abstract public function checkClasses($tag, $custom, $switch, $inline, $labelless);
+    abstract public function checkClasses(string $tag, bool $custom, bool $switch, bool $inline, bool $labelless): array;
 
     /**
      * Wrap an input with its prepend / append addons into an input group.
-     *
-     * @param  Html  $html
-     * @param  string  $prepend  Prepend content (empty string when none).
-     * @param  string  $input  The input HTML.
-     * @param  string  $append  Append content (empty string when none).
-     * @param  string|null  $size  "sm" | "lg" | null
      */
-    abstract public function inputGroup(Html $html, $prepend, $input, $append, $size);
+    abstract public function inputGroup(Html $html, string $prepend, string $input, string $append, ?string $size): string;
 
     /**
      * Whether the version renders custom-styled file inputs (dedicated markup).
      */
-    abstract public function usesCustomFile();
+    abstract public function usesCustomFile(): bool;
 
-    /**
-     * Class for a plain (non custom) file input.
-     */
-    abstract public function fileInputClass();
+    abstract public function fileInputClass(): string;
 
-    /**
-     * Class for the input of a custom file control.
-     */
-    abstract public function customFileInputClass();
+    abstract public function customFileInputClass(): string;
 
-    /**
-     * Class for the label of a custom file control.
-     */
-    abstract public function customFileLabelClass();
+    abstract public function customFileLabelClass(): string;
 
-    /**
-     * Class for the wrapper of a custom file control.
-     *
-     * @param  bool  $inline
-     */
-    abstract public function customFileWrapperClass($inline);
+    abstract public function customFileWrapperClass(bool $inline): string;
 
     ### SHARED HELPERS #########################################################
 
-    /**
-     * Compute the input group wrapper class including the optional size modifier.
-     *
-     * @param  string|null  $size
-     */
-    protected function inputGroupClass($size)
+    protected function inputGroupClass(?string $size): string
     {
         $class = 'input-group';
 

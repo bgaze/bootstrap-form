@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Support;
 
 use Bgaze\BootstrapForm\Support\Drivers\DriverManager;
@@ -31,61 +33,21 @@ use Illuminate\Support\Str;
  */
 abstract class Input
 {
-
     use HasSettings;
 
-    /**
-     * The active Bootstrap version driver.
-     *
-     * @var VersionDriver
-     */
-    protected $driver;
+    protected VersionDriver $driver;
 
-    /**
-     * HTML serialization primitive.
-     *
-     * @var Html
-     */
-    protected $html;
+    protected Html $html;
 
-    /**
-     * Form/element renderer.
-     *
-     * @var FormElements
-     */
-    protected $elements;
+    protected FormElements $elements;
 
-    /**
-     * The input attributes repository.
-     *
-     * @var Attributes
-     */
-    protected $input_attributes;
+    protected Attributes $input_attributes;
 
-    /**
-     * The label attributes repository.
-     *
-     * @var Attributes
-     */
-    protected $label_attributes;
+    protected Attributes $label_attributes;
 
-    /**
-     * The group attributes repository.
-     *
-     * @var Attributes
-     */
-    protected $group_attributes;
+    protected Attributes $group_attributes;
 
-
-    /**
-     * The class constructor.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  mixed  $value
-     * @param  array  $options
-     */
-    public function __construct($name, $label = null, $value = null, array $options = [])
+    public function __construct(string $name, mixed $label = null, mixed $value = null, array $options = [])
     {
         // Resolve renderers from the active form.
         $this->html = BF::html();
@@ -99,47 +61,24 @@ abstract class Input
         $this->getErrors();
     }
 
-
-    /**
-     * Return the input as a HTML string.
-     *
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->group();
     }
 
     ### CONFIGURATION ##########################################################
 
-
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
         return BF::settings()->merge([
             'help' => false,
         ]);
     }
 
-
-    /**
-     * Merge provided options with default configuration.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  mixed  $value
-     * @param  array  $options
-     */
-    protected function configure($name, $label, $value, array $options)
+    protected function configure(string $name, mixed $label, mixed $value, array $options): void
     {
-        // Get default settings.
+        // Default settings, then merge the provided ones.
         $this->settings = static::defaults();
-
-        // Merge with provided configuration.
         $this->settings = $this->settings->merge(Options::settings($options, $this->settings->keys()));
 
         // Add reserved values.
@@ -152,13 +91,7 @@ abstract class Input
         $this->driver = DriverManager::make((int) $this->settings->get('bootstrap_version', 4));
     }
 
-
-    /**
-     * Set input attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         $this->input_attributes = Attributes::make(Options::attributes($options, $this->settings->keys()));
 
@@ -167,13 +100,7 @@ abstract class Input
         }
     }
 
-
-    /**
-     * Set label attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setLabelAttributes(array $options)
+    protected function setLabelAttributes(array $options): void
     {
         $label = $this->label;
 
@@ -188,13 +115,7 @@ abstract class Input
         }
     }
 
-
-    /**
-     * Set group attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setGroupAttributes(array $options)
+    protected function setGroupAttributes(array $options): void
     {
         if (isset($options['group'])) {
             if ($options['group'] === false) {
@@ -218,33 +139,24 @@ abstract class Input
         }
     }
 
-
-    /**
-     * Get the template to build up error messages.
-     */
-    protected function errorTemplate()
+    protected function errorTemplate(): string
     {
         return '<div class="' . $this->driver->feedbackClass($this->feedbackIsBlock()) . '">:message</div>';
     }
 
-
     /**
      * Whether the validation feedback must be forced to display as a block.
      * Overridden where the layout requires it (input groups, choice collections).
-     *
-     * @return bool
      */
-    protected function feedbackIsBlock()
+    protected function feedbackIsBlock(): bool
     {
         return false;
     }
 
-
     /**
-     * Compile inputs errors to and HTML string.
-     * Add error class to input and group if there is any errors.
+     * Compile the field errors and flag the input / group as invalid when any exist.
      */
-    protected function getErrors()
+    protected function getErrors(): void
     {
         $errors = BF::context()->session()->get('errors');
         if (empty($errors)) {
@@ -273,32 +185,17 @@ abstract class Input
 
     ### COMPONENTS #############################################################
 
-
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public abstract function input();
-
+    abstract public function input(): string;
 
     /**
      * Decorate the input to get the final Bootstrap format.
-     *
-     * @return string
      */
-    public function inputGroup()
+    public function inputGroup(): string
     {
         return $this->input();
     }
 
-
-    /**
-     * Compile label to a HTML string.
-     *
-     * @return string
-     */
-    public function label()
+    public function label(): string
     {
         if ($this->label === false) {
             return '';
@@ -307,13 +204,7 @@ abstract class Input
         return $this->elements->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
     }
 
-
-    /**
-     * Compile label to a HTML string.
-     *
-     * @return string
-     */
-    public function help()
+    public function help(): string
     {
         if ($this->help === false) {
             return '';
@@ -322,13 +213,7 @@ abstract class Input
         return $this->html->tag('small', $this->help, ['class' => $this->driver->helpClass()])->toHtml();
     }
 
-
-    /**
-     * Compile group to a HTML string.
-     *
-     * @return string
-     */
-    public function group()
+    public function group(): string
     {
         if (!$this->group) {
             return $this->inputGroup();
@@ -353,13 +238,10 @@ abstract class Input
         return $this->html->tag('div', $content, $this->group_attributes->toArray())->toHtml();
     }
 
-
     /**
-     * Get the "left" part of the form group (label or spacer in "pull right" mode).
-     *
-     * @return string
+     * The "left" part of the form group: label, or a spacer in "pull right" mode.
      */
-    protected function leftGroupColumn()
+    protected function leftGroupColumn(): string
     {
         if ($this->layout === 'horizontal' && $this->pull_right && !$this->label) {
             return $this->html->tag('div', '', ['class' => $this->left_class])->toHtml();
@@ -378,13 +260,10 @@ abstract class Input
         return $this->label();
     }
 
-
     /**
-     * Get the "right" part of the form group (input + errors + help wrapped in a div).
-     *
-     * @return string
+     * The "right" part of the form group: input + errors + help wrapped in a div.
      */
-    protected function rightGroupColumn()
+    protected function rightGroupColumn(): string
     {
         $content = $this->inputGroup();
         $content .= $this->errors;

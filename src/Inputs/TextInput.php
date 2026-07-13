@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Bgaze\BootstrapForm\Inputs;
 
 use Bgaze\BootstrapForm\Support\Input;
@@ -14,16 +16,9 @@ use Illuminate\Support\Collection;
  */
 class TextInput extends Input
 {
-
     use HasAddons;
 
-
-    /**
-     * Get the input default options.
-     *
-     * @return Collection
-     */
-    protected function defaults()
+    protected function defaults(): Collection
     {
         return parent::defaults()
             ->except('custom')
@@ -35,28 +30,12 @@ class TextInput extends Input
             ]);
     }
 
-
-    /**
-     * Instanciate a TextInput.
-     *
-     * @param  string  $name
-     * @param  mixed  $label
-     * @param  mixed  $value
-     * @param  array  $options
-     * @return TextInput
-     */
-    public static function make($name, $label = null, $value = null, array $options = [])
+    public static function make(string $name, mixed $label = null, mixed $value = null, array $options = []): static
     {
         return new static($name, $label, $value, $options);
     }
 
-
-    /**
-     * Set input attributes.
-     *
-     * @param  array  $options
-     */
-    protected function setInputAttributes(array $options)
+    protected function setInputAttributes(array $options): void
     {
         parent::setInputAttributes($options);
 
@@ -67,13 +46,7 @@ class TextInput extends Input
         }
     }
 
-
-    /**
-     * Compile input to a HTML string.
-     *
-     * @return string
-     */
-    public function input()
+    public function input(): string
     {
         if ($this->tag === 'password') {
             return $this->elements->password($this->name, $this->input_attributes->toArray())->toHtml();
