@@ -73,7 +73,7 @@ class CheckChoice extends Input
                     'disable_errors' => true,
                     'group' => false,
                     'help' => false,
-                    'id' => $this->flattenName($this->name, '_') . '_' . $value,
+                    'id' => $this->flattenName($this->name, '-') . '-' . $value,
                 ])
                 ->toArray();
 

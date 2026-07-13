@@ -15,7 +15,7 @@ class LayoutTest extends TestCase
         $html = (string) BF::text('login');
         BF::close();
 
-        $expected = '<div id="login_group" class="form-group row">'
+        $expected = '<div id="login-group" class="form-group row">'
             . '<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
             . '<div class="col"><input id="login" class="form-control" name="login" type="text"></div></div>';
 
@@ -28,7 +28,7 @@ class LayoutTest extends TestCase
         $html = (string) BF::checkbox('remember', 'Remember me');
         BF::close();
 
-        $expected = '<div id="remember_group" class="form-group row">'
+        $expected = '<div id="remember-group" class="form-group row">'
             . '<div class="col-lg-2 col-xl-3"></div>'
             . '<div class="col"><div class="form-check">'
             . '<input id="remember" class="form-check-input" name="remember" type="checkbox" value="1">'
@@ -43,7 +43,7 @@ class LayoutTest extends TestCase
         $html = (string) BF::text('login');
         BF::close();
 
-        $expected = '<div id="login_group" class="form-group mr-3 my-1">'
+        $expected = '<div id="login-group" class="form-group mr-3 my-1">'
             . '<label for="login" class="mr-2">Login</label>'
             . '<div><input id="login" class="form-control" name="login" type="text"></div></div>';
 
@@ -58,7 +58,7 @@ class LayoutTest extends TestCase
         $html = (string) BF::text('login');
         BF::close();
 
-        $expected = '<div id="login_group" class="is-invalid form-group row">'
+        $expected = '<div id="login-group" class="is-invalid form-group row">'
             . '<label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label>'
             . '<div class="col"><input id="login" class="form-control is-invalid" name="login" type="text">'
             . '<div class="invalid-feedback">The login field is required.</div></div></div>';

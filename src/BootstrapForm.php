@@ -337,7 +337,7 @@ class BootstrapForm
 
         // Same id policy as inputs: false disables, null / '' / blank generates.
         if ($id !== false && (is_null($id) || trim((string) $id) === '')) {
-            $options['id'] = $this->flattenName($name, '_');
+            $options['id'] = $this->flattenName($name, '-');
         }
 
         return $this->elements->hidden($name, $value, $options);

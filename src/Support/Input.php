@@ -99,7 +99,7 @@ abstract class Input
 
         // id => false disables the attribute; null / '' / whitespace-only triggers generation.
         if ($id !== false && (is_null($id) || trim((string) $id) === '')) {
-            $this->input_attributes->id = $this->flattenName($this->name, '_');
+            $this->input_attributes->id = $this->flattenName($this->name, '-');
         }
     }
 
@@ -138,7 +138,7 @@ abstract class Input
         }
 
         if (!$this->group_attributes->id) {
-            $this->group_attributes->id = $this->flattenName($this->name, '_') . '_group';
+            $this->group_attributes->id = $this->flattenName($this->name, '-') . '-group';
         }
     }
 
