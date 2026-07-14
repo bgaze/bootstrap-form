@@ -12,10 +12,14 @@ jobs:
 
     strategy:
       fail-fast: false
+      # Testbench 10 targets Laravel 12 (PHP 8.2+); Testbench 11 targets Laravel 13 (PHP 8.3+).
       matrix:
-        php: ['8.2', '8.3', '8.4']
-        # Testbench 10 targets Laravel 12 (Laravel 11 is end-of-life for security fixes).
-        testbench: ['10.*']
+        include:
+          - { php: '8.2', testbench: '10.*' }
+          - { php: '8.3', testbench: '10.*' }
+          - { php: '8.4', testbench: '10.*' }
+          - { php: '8.3', testbench: '11.*' }
+          - { php: '8.4', testbench: '11.*' }
 
     name: PHP ${{ matrix.php }} - Testbench ${{ matrix.testbench }}
 
