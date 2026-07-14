@@ -10,6 +10,15 @@
     <img src="./intro.png" alt="Bootstrap 4 forms builder for Laravel 6+">
 </p>
 
+> **⚠️ Maintenance branch — Bootstrap Form v3.**
+> The current release is **v4** (see the [`master`](https://github.com/bgaze/bootstrap-form) branch), which
+> drops the Laravel Collective HTML dependency and defaults to Bootstrap 5 — with breaking changes.
+> To stay on **v3**, require it explicitly:
+>
+> ```shell
+> composer require "bgaze/bootstrap-form:^3.0"
+> ```
+
 This package uses in background [Laravel Collective HTML](https://laravelcollective.com/docs/5.8/html) to simplify
 Bootstrap forms creation into Laravel applications.
 
@@ -36,7 +45,7 @@ and **live templates** for this package's custom Blade directives.
 Simply install the package using Composer:
 
 ```shell
-composer require bgaze/bootstrap-form
+composer require "bgaze/bootstrap-form:^3.0"
 ```
 
 There are a various configuration options available, publish the configuration file to customize them:
