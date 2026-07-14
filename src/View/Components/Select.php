@@ -32,4 +32,14 @@ class Select extends BootstrapComponent
             $this->withAddonSlots($data, $this->bootstrapOptions()),
         );
     }
+
+    /**
+     * A <select> carries both options and optgroups, each with an "all children" bag.
+     *
+     * @return array<string, string>
+     */
+    protected function childAttributeGroups(): array
+    {
+        return ['option' => 'option_attributes', 'optgroup' => 'optgroup_attributes'];
+    }
 }

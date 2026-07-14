@@ -17,6 +17,10 @@ use Illuminate\Support\Str;
  *  - `group:*`  -> options['group'] (group element attributes, kept verbatim)
  *  - `input:*`  -> literal input HTML attribute (prefixed with {@see Attributes::LITERAL_PREFIX}
  *                  so it escapes the settings partition — the x-component equivalent of `~`)
+ *  - `option:*` / `optgroup:*` -> options['option_attributes'] / options['optgroup_attributes']
+ *                  (child-attribute bags), but ONLY for components that declare the prefix via
+ *                  {@see childAttributeGroups()} — so the array bag never leaks as a rendered
+ *                  attribute on a component that does not support it.
  *  - `group`    -> false disables the wrapper; an array provides its attributes
  *  - anything else -> input attribute / setting, its key normalized to the snake_case BF
  *                     setting name when it maps to one (so kebab-case is idiomatic), otherwise
@@ -32,6 +36,7 @@ trait ResolvesBootstrapAttributes
         $options = [];
         $label = [];
         $group = [];
+        $childGroups = [];
         $groupDisabled = false;
 
         foreach ($this->attributes->getAttributes() as $key => $value) {
@@ -41,6 +46,8 @@ trait ResolvesBootstrapAttributes
                 $group[substr($key, 6)] = $value;
             } elseif (str_starts_with($key, 'input:')) {
                 $options[Attributes::LITERAL_PREFIX.substr($key, 6)] = $value;
+            } elseif (($childGroup = $this->matchChildAttributeGroup($key)) !== null) {
+                $childGroups[$childGroup[0]][$childGroup[1]] = $value;
             } elseif ($key === 'group') {
                 if ($value === false || $value === 'false') {
                     $groupDisabled = true;
@@ -50,6 +57,10 @@ trait ResolvesBootstrapAttributes
             } else {
                 $options[$this->normalizeSettingKey($key)] = $value;
             }
+        }
+
+        foreach ($childGroups as $target => $attributes) {
+            $options[$target] = $attributes;
         }
 
         if ($label !== []) {
@@ -85,6 +96,36 @@ trait ResolvesBootstrapAttributes
     protected function settingKeys(): array
     {
         return [...BF::settings()->keys()->all(), 'disable_errors'];
+    }
+
+    /**
+     * The child-attribute prefixes this component supports, as `prefix => options key`.
+     * Empty by default so `option:` / `optgroup:` are only recognized by choice components
+     * ({@see Select}, {@see Choice}) and never leak elsewhere.
+     *
+     * @return array<string, string>
+     */
+    protected function childAttributeGroups(): array
+    {
+        return [];
+    }
+
+    /**
+     * Match a `prefix:attr` key against the supported child-attribute prefixes.
+     *
+     * @return array{0: string, 1: string}|null  [options key, attribute name], or null
+     */
+    protected function matchChildAttributeGroup(string $key): ?array
+    {
+        foreach ($this->childAttributeGroups() as $prefix => $target) {
+            $needle = $prefix.':';
+
+            if (str_starts_with($key, $needle)) {
+                return [$target, substr($key, strlen($needle))];
+            }
+        }
+
+        return null;
     }
 
     /**

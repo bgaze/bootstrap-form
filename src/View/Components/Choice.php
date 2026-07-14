@@ -28,4 +28,15 @@ abstract class Choice extends BootstrapComponent
     {
         return (string) BF::{$this->type}($this->name, $this->resolveLabel($data, $this->label), $this->choices, $this->checked, $this->bootstrapOptions());
     }
+
+    /**
+     * A checkable collection has only options (no input element, no optgroups): the child
+     * attribute bag is `option:` alone.
+     *
+     * @return array<string, string>
+     */
+    protected function childAttributeGroups(): array
+    {
+        return ['option' => 'option_attributes'];
+    }
 }
