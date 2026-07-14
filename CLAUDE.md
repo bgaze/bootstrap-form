@@ -54,7 +54,12 @@ form/field). Public open-source (GitHub / Packagist).
 - HTML rendering is **internalized** (owned `src/Support/` layer) — there is no `laravelcollective/html` or fork
   dependency. Composer requires the concrete `illuminate/*` components used at runtime (`support`, `database`,
   `routing`, `session`, `view`, `http`).
-- The `tests/` suite is a **characterization oracle**: it asserts the exact rendered HTML, including a 53-fixture
+- **TDD-leaning; tests travel with the change.** Favor a test-driven approach: write/adjust the corresponding tests
+  as part of the change and commit them in the same commit — unit tests for new logic, golden fixtures, explicit-string
+  characterizations, x-component parity/guard. As a personal project, stay pragmatic about ceremony, but tests are the
+  non-negotiable safety net: not every case can be exercised by hand, so the suite is what guarantees a change does not
+  silently break the rest.
+- The `tests/` suite is a **characterization oracle**: it asserts the exact rendered HTML, including a
   **golden snapshot** (`tests/golden/*.html`) captured as the iso reference. Any intended markup change must update the
   expected strings / goldens in the same commit; an unintended diff there is a regression. Regenerate goldens
   deliberately with `UPDATE_GOLDEN=1 vendor/bin/phpunit`.
