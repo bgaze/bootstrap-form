@@ -1,0 +1,21 @@
+# bgaze/bootstrap-form
+
+> Bootstrap 4/5 forms builder for Laravel 12+. Builds forms via a `BF` facade, Blade directives, or Blade
+> x-components — three interchangeable syntaxes that produce byte-identical HTML. Bootstrap 4 by default,
+> Bootstrap 5 opt-in.
+
+Start with the hub (`docs/llm/index.md`): it carries the two mandatory detection steps (resolved config +
+syntax in use), the universal field model, the full field catalog, the resolution cascade, and the
+load-on-demand index below. Read a spoke only when the task touches its area.
+
+## Docs
+
+- [Usage guide — hub](docs/llm/index.md): entry point — detection steps, field model, the three syntaxes, full field catalog, cascade, spoke index.
+- [Choice fields](docs/llm/choice-fields.md): select / checkboxes / radios, the `choices` grammar, optgroups, per-option attributes, switches.
+- [Layouts](docs/llm/layouts.md): vertical / horizontal / inline / floating + column and spacing options.
+- [Input groups](docs/llm/input-groups.md): prepend/append addons (options & slots), control sizing, help text.
+- [Model binding & validation](docs/llm/model-binding.md): form open, model store/update, old input, error display, valid feedback, error bags.
+- [Options & attributes](docs/llm/options-and-attributes.md): settings-vs-attributes partition, the `~` / `input:` escape, `id` policy, `label`, `group`, `custom`.
+- [x-components](docs/llm/components.md): tag list, attribute projection, slots, layout shortcuts, the parity contract.
+- [Bootstrap 5](docs/llm/bootstrap5.md): Bootstrap 4↔5 deltas, version override, floating layout, `custom` no-op, inline caveat.
+- [Configuration](docs/llm/config.md): the full configuration key reference.
