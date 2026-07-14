@@ -12,7 +12,7 @@ use BF;
  * is stripped at render time. These outputs were verified byte-identical before and
  * after the Attributes value-object rewrite.
  */
-class LiteralAttributeTest extends TestCase
+class LiteralAttributeTest extends Bootstrap4TestCase
 {
     public function test_tilde_emits_literal_attribute_colliding_with_a_setting(): void
     {

@@ -113,7 +113,7 @@ trait ResolvesBootstrapAttributes
     /**
      * Match a `prefix:attr` key against the supported child-attribute prefixes.
      *
-     * @return array{0: string, 1: string}|null  [options key, attribute name], or null
+     * @return array{0: string, 1: string}|null [options key, attribute name], or null
      */
     protected function matchChildAttributeGroup(string $key): ?array
     {

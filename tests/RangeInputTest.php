@@ -7,7 +7,7 @@ use BF;
 /**
  * Characterization tests for RangeInput (Bootstrap 4).
  */
-class RangeInputTest extends TestCase
+class RangeInputTest extends Bootstrap4TestCase
 {
     public function test_native_range(): void
     {

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Blade;
  * (which runs before the slot). If ordering were wrong, fields would render with the default
  * (Bootstrap 4) state instead of the form's overridden state.
  */
-class ComponentRenderOrderingTest extends TestCase
+class ComponentRenderOrderingTest extends Bootstrap4TestCase
 {
     private function render(string $template): string
     {

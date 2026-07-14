@@ -7,7 +7,7 @@ use BF;
 /**
  * Characterization tests for SelectInput (Bootstrap 4).
  */
-class SelectInputTest extends TestCase
+class SelectInputTest extends Bootstrap4TestCase
 {
     public function test_native_select(): void
     {

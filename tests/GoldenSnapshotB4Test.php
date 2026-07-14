@@ -7,24 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /**
- * Exhaustive golden-snapshot oracle: renders a fixed fixture matrix and asserts the
- * output byte-for-byte against committed `.golden` files captured on the current code.
- * After the dependency-removal refactor these must still match exactly (iso proof).
+ * Golden-snapshot oracle for the frozen Bootstrap 4 baseline.
+ *
+ * Bootstrap 5 is the package default; Bootstrap 4 is frozen for backward compatibility, so this
+ * suite pins the version to 4 (via Bootstrap4TestCase) and locks the historical markup byte-for-byte.
+ * Goldens live under golden/b4/ and must not drift. Version-agnostic elements (buttons, label, hidden)
+ * live in GoldenSnapshotCommonTest (golden/ root); the B5 default in GoldenSnapshotB5Test (golden/b5/).
  *
  * Form open() is intentionally excluded (CSRF token value is non-deterministic).
- * To (re)capture the baseline: UPDATE_GOLDEN=1 vendor/bin/phpunit --filter GoldenSnapshot
+ * To (re)capture: UPDATE_GOLDEN=1 vendor/bin/phpunit --filter GoldenSnapshotB4
  */
-class GoldenSnapshotTest extends TestCase
+class GoldenSnapshotB4Test extends Bootstrap4TestCase
 {
     public static function fixtures(): array
     {
         $names = [
-            // Text family (Bootstrap 4)
+            // Text family
             'text.simple', 'text.value', 'text.help', 'text.size_sm', 'text.prepend_append',
             'text.email', 'text.number', 'text.date', 'text.color',
             'text.search', 'text.month', 'text.week', 'text.datetime_local',
             'text.id_false', 'text.id_explicit',
-            'textarea', 'password', 'hidden',
+            'textarea', 'password',
             // Select
             'select.native', 'select.custom', 'select.size_lg', 'select.selected',
             'select.placeholder', 'select.optgroup', 'select.collection_selected',
@@ -38,14 +41,10 @@ class GoldenSnapshotTest extends TestCase
             'check.label_false', 'check.radio', 'check.checkboxes', 'check.radios',
             // Checkable child attributes
             'check.option_attributes', 'check.advanced_option', 'check.option_id_override',
-            // Misc elements
-            'el.submit', 'el.reset', 'el.button', 'el.link', 'el.label',
             // Layouts
             'layout.h_text', 'layout.i_text', 'layout.h_checkbox',
-            // Bootstrap 5 (per-field override)
-            'b5.text', 'b5.checkbox', 'b5.switch', 'b5.select', 'b5.file', 'b5.range', 'b5.error',
-            // Floating labels (4th layout, Bootstrap 5)
-            'float.text', 'float.select', 'float.textarea', 'float.addon', 'float.checkbox', 'float.b4_degrades',
+            // Floating layout degrades to vertical on Bootstrap 4
+            'float.degrades',
             // Validation errors
             'error.text', 'error.checkboxes', 'error.help_describedby',
             // Valid feedback (opt-in)
@@ -62,7 +61,7 @@ class GoldenSnapshotTest extends TestCase
     {
         $actual = $this->render($name);
 
-        $path = __DIR__.'/golden/'.$name.'.html';
+        $path = __DIR__.'/golden/b4/'.$name.'.html';
 
         if (getenv('UPDATE_GOLDEN') || ! is_file($path)) {
             if (! is_dir(dirname($path))) {
@@ -100,7 +99,6 @@ class GoldenSnapshotTest extends TestCase
             case 'text.id_explicit': return (string) BF::text('field', null, null, ['id' => 'custom_id']);
             case 'textarea': return (string) BF::textarea('bio');
             case 'password': return (string) BF::password('secret');
-            case 'hidden': return (string) BF::hidden('token_field', 'abc');
 
                 // Select
             case 'select.native': return (string) BF::select('sel', null, $choices);
@@ -140,13 +138,6 @@ class GoldenSnapshotTest extends TestCase
             case 'check.advanced_option': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', ['value' => 'editor', 'label' => 'Editor', 'data-x' => 'y']]);
             case 'check.option_id_override': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', ['value' => 'f', 'label' => 'Female', 'id' => 'gender-female']]);
 
-                // Misc elements
-            case 'el.submit': return (string) BF::submit('Save');
-            case 'el.reset': return (string) BF::reset('Reset');
-            case 'el.button': return (string) BF::button('Go');
-            case 'el.link': return (string) BF::link('/home', 'Home');
-            case 'el.label': return (string) BF::label('field', 'My label');
-
                 // Layouts
             case 'layout.h_text': BF::horizontal(['url' => '/x']);
                 $h = (string) BF::text('login');
@@ -164,25 +155,8 @@ class GoldenSnapshotTest extends TestCase
 
                 return $h;
 
-                // Bootstrap 5 (per-field override)
-            case 'b5.text': return (string) BF::text('login', null, null, ['bootstrap_version' => 5]);
-            case 'b5.checkbox': return (string) BF::checkbox('accept', 'Accept', 1, null, ['bootstrap_version' => 5]);
-            case 'b5.switch': return (string) BF::checkbox('accept', 'Accept', 1, null, ['bootstrap_version' => 5, 'switch' => true]);
-            case 'b5.select': return (string) BF::select('sel', null, $choices, null, ['bootstrap_version' => 5]);
-            case 'b5.file': return (string) BF::file('doc', null, ['bootstrap_version' => 5]);
-            case 'b5.range': return (string) BF::range('vol', null, null, ['bootstrap_version' => 5]);
-            case 'b5.error':
-                $this->withErrors(['login' => ['The login field is required.']]);
-
-                return (string) BF::text('login', null, null, ['bootstrap_version' => 5]);
-
-                // Floating labels (4th layout, Bootstrap 5)
-            case 'float.text': return (string) BF::text('email', 'Email address', null, ['bootstrap_version' => 5, 'layout' => 'floating']);
-            case 'float.select': return (string) BF::select('country', 'Country', ['fr' => 'France'], null, ['bootstrap_version' => 5, 'layout' => 'floating']);
-            case 'float.textarea': return (string) BF::textarea('bio', 'Bio', null, ['bootstrap_version' => 5, 'layout' => 'floating']);
-            case 'float.addon': return (string) BF::text('amount', 'Amount', null, ['bootstrap_version' => 5, 'layout' => 'floating', 'prepend' => '$']);
-            case 'float.checkbox': return (string) BF::checkbox('accept', 'Accept', 1, null, ['bootstrap_version' => 5, 'layout' => 'floating']);
-            case 'float.b4_degrades': return (string) BF::text('email', 'Email address', null, ['layout' => 'floating']);
+                // Floating layout degrades to vertical on Bootstrap 4
+            case 'float.degrades': return (string) BF::text('email', 'Email address', null, ['layout' => 'floating']);
 
                 // Validation errors
             case 'error.text':

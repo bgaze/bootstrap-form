@@ -1,8 +1,8 @@
 <!--
 Sources: src/Support/Options.php, src/Support/Attributes.php, src/Support/Input.php,
          src/View/Components/Concerns/ResolvesBootstrapAttributes.php
-Goldens: tests/golden/text.id_explicit.html, tests/golden/text.id_false.html,
-         tests/golden/check.option_id_override.html
+Goldens: tests/golden/b4/text.id_explicit.html, tests/golden/b4/text.id_false.html,
+         tests/golden/b4/check.option_id_override.html
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 

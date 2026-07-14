@@ -7,7 +7,7 @@ use BF;
 /**
  * Characterization tests for CheckInput / CheckChoice (Bootstrap 4).
  */
-class CheckInputTest extends TestCase
+class CheckInputTest extends Bootstrap4TestCase
 {
     public function test_checkbox_basic(): void
     {

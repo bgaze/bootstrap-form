@@ -7,7 +7,7 @@ use BF;
 /**
  * Characterization tests for FileInput (Bootstrap 4).
  */
-class FileInputTest extends TestCase
+class FileInputTest extends Bootstrap4TestCase
 {
     public function test_native_file(): void
     {

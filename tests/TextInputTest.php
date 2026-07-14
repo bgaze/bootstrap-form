@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 /**
  * Characterization tests for the TextInput family (Bootstrap 4).
  */
-class TextInputTest extends TestCase
+class TextInputTest extends Bootstrap4TestCase
 {
     /**
      * All simple types share the TextInput path; only the `type` attribute differs.

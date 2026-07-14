@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
  * "checked" state resolution). These lock the current byte-exact output so the
  * dependency-removal refactor can be proven iso.
  */
-class ValueBindingTest extends TestCase
+class ValueBindingTest extends Bootstrap4TestCase
 {
     // ## OLD INPUT ##############################################################
 

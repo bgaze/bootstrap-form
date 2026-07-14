@@ -2,8 +2,8 @@
 
 Bootstrap 4/5 forms builder for Laravel 12+. Composer **package** (library, not an app): builds forms via a
 `BF` facade and Blade directives, rendering HTML through its **own owned renderer** (no third-party form/HTML
-dependency). Renders **Bootstrap 4 by default**; Bootstrap 5 is **opt-in** (`bootstrap_version` config, or per
-form/field). Public open-source (GitHub / Packagist).
+dependency). Renders **Bootstrap 5 by default**; Bootstrap 4 is **fully supported for backward compatibility**
+(`bootstrap_version` config, or per form/field). Public open-source (GitHub / Packagist).
 
 > Branch `v4` (work in progress): the historical `bgaze/laravel-collective-html` dependency has been removed in
 > favor of an internal, iso-rendering HTML/form layer. Targets a **major version bump** (also hosting upcoming
@@ -40,14 +40,20 @@ form/field). Public open-source (GitHub / Packagist).
 
 ## Bootstrap version
 
-- `config/config.php`: `bootstrap_version` (4 | 5, default 4) selects the driver; layout-level, app-tunable options
-  live under version sections `bootstrap4` / `bootstrap5`. Component classes are native/fixed (driver code), not
-  configurable.
-- Resolution: global default ← per-form override (`BF::open(['bootstrap_version' => 5])`) ← per-field override. A
+- `config/config.php`: `bootstrap_version` (4 | 5, **default 5**) selects the driver; layout-level, app-tunable
+  options live under version sections `bootstrap4` / `bootstrap5`. Component classes are native/fixed (driver code),
+  not configurable.
+- Resolution: global default ← per-form override (`BF::open(['bootstrap_version' => 4])`) ← per-field override. A
   per-field override switches the driver (component classes); layout settings stay inherited from the form.
-- `custom` is a Bootstrap 4 concept (native vs custom controls) and is a **no-op in Bootstrap 5** (styles unified).
-  It stays a recognized setting in both versions so it is never emitted as an HTML attribute.
+- **B4 is frozen** (compatibility only); **B5 is the default** and where new work happens. `custom` is a Bootstrap 4
+  concept (native vs custom controls) and is a **no-op in Bootstrap 5** (styles unified); it stays a recognized
+  setting in both versions so it is never emitted as an HTML attribute.
 - Bootstrap 5 inline forms are **best-effort** (B5 reworked inline layout); vertical and horizontal are fully supported.
+- **Tests / goldens** are split by concern: `tests/golden/` root = version-agnostic snapshots
+  (`GoldenSnapshotCommonTest`), `tests/golden/b4/` = frozen B4 baseline (`GoldenSnapshotB4Test`),
+  `tests/golden/b5/` = B5 default (`GoldenSnapshotB5Test`). B4-asserting suites pin the version via
+  `Bootstrap4TestCase` — **never regenerate the B4 goldens**. `VersionOverrideTest` (neutral `TestCase`)
+  asserts the default is B5.
 
 ## Documentation
 
@@ -65,7 +71,8 @@ the code. The public site (`https://packages.bgaze.fr/bootstrap-form`) is a **do
   - `llms.txt` (repo root, llmstxt.org format) — the **discovery breadcrumb**: points an LLM to the hub +
     spokes. It mirrors the hub's spoke index, so it is updated alongside it (below).
 - **Style** — dense, exact, deterministic. Examples must be **byte-accurate** (lifted from / checked against
-  `tests/golden/*.html`). Default syntax in examples: **x-components** in Blade, the **`BF` facade** in PHP.
+  `tests/golden/` — root = transverse, `b4/` = B4, `b5/` = B5 default). Default syntax in examples:
+  **x-components** in Blade, the **`BF` facade** in PHP.
 - **No-divergence law — docs travel with the code, in the SAME commit.** Any change to the public surface or
   rendered behavior updates the mapped doc file(s) in the same commit. Divergence between docs and code is a defect,
   same discipline as tests/goldens.
@@ -89,9 +96,10 @@ the code. The public site (`https://packages.bgaze.fr/bootstrap-form`) is a **do
   non-negotiable safety net: not every case can be exercised by hand, so the suite is what guarantees a change does not
   silently break the rest.
 - The `tests/` suite is a **characterization oracle**: it asserts the exact rendered HTML, including a
-  **golden snapshot** (`tests/golden/*.html`) captured as the iso reference. Any intended markup change must update the
-  expected strings / goldens in the same commit; an unintended diff there is a regression. Regenerate goldens
-  deliberately with `UPDATE_GOLDEN=1 vendor/bin/phpunit`.
+  **golden snapshot** captured as the iso reference — organized as `tests/golden/` (root = version-agnostic),
+  `tests/golden/b4/` (frozen B4 baseline) and `tests/golden/b5/` (B5 default). Any intended markup change must
+  update the expected strings / goldens in the same commit; an unintended diff there is a regression. Regenerate
+  goldens deliberately with `UPDATE_GOLDEN=1 vendor/bin/phpunit` (never for the frozen B4 baseline).
 - **Docs travel with the change.** `docs/` is the SSOT for public behavior/usage; any change to the public surface
   updates the mapped doc file(s) **in the same commit** (find them via the `Sources:` headers — see § Documentation).
   Docs/code divergence is a defect, same as a stale golden.

@@ -110,7 +110,7 @@ class BootstrapForm
     protected function resetForm(): void
     {
         $config = config('bootstrap_form');
-        $version = (int) ($config['bootstrap_version'] ?? 4);
+        $version = (int) ($config['bootstrap_version'] ?? 5);
 
         // Default options: agnostic root settings + the active version layout section.
         // Assembled as a plain (heterogeneous) array, then wrapped once.

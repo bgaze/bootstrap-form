@@ -7,7 +7,7 @@ use BF;
 /**
  * Characterization tests for field rendering under horizontal / inline layouts (Bootstrap 4).
  */
-class LayoutTest extends TestCase
+class LayoutTest extends Bootstrap4TestCase
 {
     public function test_horizontal_text(): void
     {

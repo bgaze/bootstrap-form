@@ -2,7 +2,7 @@
 Sources: src/BootstrapForm.php, src/BootstrapFormServiceProvider.php, src/config/config.php,
          src/Support/Input.php, src/Support/Options.php, src/Support/Attributes.php,
          src/View/Components/*.php
-Goldens: tests/golden/text.simple.html, tests/golden/*.html
+Goldens: tests/golden/b5/text.html (default), tests/golden/b4/*.html (B4 baseline)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -10,7 +10,8 @@ Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md 
 
 `bgaze/bootstrap-form` renders **Bootstrap 4/5** form markup for Laravel 12+ from a single field
 description, through **three interchangeable syntaxes that produce byte-identical HTML**. It owns its
-HTML layer (no `laravelcollective/html`). **Bootstrap 4 is the default; Bootstrap 5 is opt-in.**
+HTML layer (no `laravelcollective/html`). **Bootstrap 5 is the default; Bootstrap 4 is fully supported
+for backward compatibility.**
 
 **How to use this guide:** read this file in full — it is enough to build the large majority of forms.
 Load a spoke from the [on-demand index](#on-demand-index) only when a task needs that specific area.
@@ -48,10 +49,10 @@ Directives stay supported but are not the syntax to introduce into a new codebas
 
 ## 2. The three syntaxes (iso-rendering)
 
-All three below render **exactly**:
+All three below render **exactly** (Bootstrap 5, the default):
 
 ```html
-<div id="field-group" class="form-group"><label for="field">Field</label><div><input id="field" class="form-control" name="field" type="text"></div></div>
+<div id="field-group" class="mb-3"><label for="field" class="form-label">Field</label><div><input id="field" class="form-control" name="field" type="text"></div></div>
 ```
 
 ```blade
@@ -121,8 +122,8 @@ Anything **not** in this list is treated as an HTML attribute.
 - **Form-only, reserved** (never inherited by fields): `model`, `url`, `route`, `action`, `store`,
   `update`.
 
-**Resolution cascade** (each level overrides the previous): global config → per-form
-(`BF::open(['bootstrap_version' => 5])`) → per-field (`['bootstrap_version' => 5]` in a field's
+**Resolution cascade** (each level overrides the previous): global config (default `5`) → per-form
+(`BF::open(['bootstrap_version' => 4])`) → per-field (`['bootstrap_version' => 4]` in a field's
 options). A per-field version override switches the driver (component classes); layout settings stay
 inherited from the form.
 

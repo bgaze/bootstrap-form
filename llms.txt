@@ -1,8 +1,8 @@
 # bgaze/bootstrap-form
 
 > Bootstrap 4/5 forms builder for Laravel 12+. Builds forms via a `BF` facade, Blade directives, or Blade
-> x-components — three interchangeable syntaxes that produce byte-identical HTML. Bootstrap 4 by default,
-> Bootstrap 5 opt-in.
+> x-components — three interchangeable syntaxes that produce byte-identical HTML. Bootstrap 5 by default;
+> Bootstrap 4 is fully supported for backward compatibility.
 
 Start with the hub (`docs/llm/index.md`): it carries the two mandatory detection steps (resolved config +
 syntax in use), the universal field model, the full field catalog, the resolution cascade, and the

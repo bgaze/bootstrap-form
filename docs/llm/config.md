@@ -22,7 +22,7 @@ read it before assuming a value (see the [hub](index.md) §1.1).
 |---|---|---|
 | `blade_directives` | `bool` = `true` | Register the `@open`, `@text`, … Blade directives. |
 | `components` | `bool` = `true` | Register the `bf` x-component namespace (`<x-bf::text/>`, …). Facade & directives stay available regardless. |
-| `bootstrap_version` | `4` \| `5` = `4` | Selects the version driver (markup vocabulary). Overridable per form / per field. See [bootstrap5.md](bootstrap5.md). |
+| `bootstrap_version` | `4` \| `5` = `5` | Selects the version driver (markup vocabulary). Default `5`; set `4` for legacy Bootstrap 4 (fully supported). Overridable per form / per field. See [bootstrap5.md](bootstrap5.md). |
 | `layout` | `vertical` \| `horizontal` \| `inline` \| `floating` = `vertical` | Default form layout. See [layouts.md](layouts.md). |
 | `group` | `array` = `[]` | Application-wide default HTML attributes for the form-group wrapper. The group class is always added. |
 | `show_all_errors` | `bool` = `false` | Render all of a field's error messages instead of only the first. See [model-binding.md](model-binding.md). |

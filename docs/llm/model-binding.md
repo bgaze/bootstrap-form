@@ -2,8 +2,9 @@
 Sources: src/BootstrapForm.php (initForm/initModelForm, open, RESERVED), src/Support/FormElements.php
          (open/model/token/getAction/getAppendage), src/Support/FieldValue.php, src/Support/FormContext.php,
          src/Support/Input.php (getErrors/setValidState/setAriaAttributes/validFeedback)
-Goldens: tests/golden/model.*.html, tests/golden/old.*.html, tests/golden/error.*.html,
-         tests/golden/valid.*.html
+Goldens: tests/golden/b5/{model.text,old.text,error.text,valid.text_success}.html (default),
+         tests/golden/b4/model.*.html, tests/golden/b4/old.*.html, tests/golden/b4/error.*.html,
+         tests/golden/b4/valid.*.html (B4)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -57,7 +58,7 @@ Bound field values are then read from the model automatically:
 
 ```html
 <!-- <x-bf::text name="login"/> with a bound model whose login = "jdoe" -->
-<div id="login-group" class="form-group"><label for="login">Login</label><div><input id="login" class="form-control" name="login" type="text" value="jdoe"></div></div>
+<div id="login-group" class="mb-3"><label for="login" class="form-label">Login</label><div><input id="login" class="form-control" name="login" type="text" value="jdoe"></div></div>
 ```
 
 **Value resolution order** (per field): old input → *(empty-string rule, below)* → explicit `value`
@@ -93,7 +94,7 @@ field with an error gets `is-invalid` on the control **and** its group, an `aria
 an `invalid-feedback` message wired via `aria-describedby`:
 
 ```html
-<div id="login-group" class="is-invalid form-group"><label for="login">Login</label><div><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text"><div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>
+<div id="login-group" class="is-invalid mb-3"><label for="login" class="form-label">Login</label><div><input id="login" class="form-control is-invalid" aria-describedby="login-error" aria-invalid="true" name="login" type="text"><div class="invalid-feedback" id="login-error">The login field is required.</div></div></div>
 ```
 
 - **`show_all_errors => true`** renders all messages for the field instead of only the first.

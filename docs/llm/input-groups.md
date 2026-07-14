@@ -1,8 +1,9 @@
 <!--
 Sources: src/Support/Traits/HasAddons.php, src/Support/Drivers/Bootstrap4Driver.php,
          src/Support/Drivers/Bootstrap5Driver.php, src/Support/Input.php (help)
-Goldens: tests/golden/text.prepend_append.html, tests/golden/text.help.html,
-         tests/golden/float.addon.html, tests/golden/error.help_describedby.html
+Goldens: tests/golden/b5/text.prepend_append.html, tests/golden/b5/text.help.html (default),
+         tests/golden/b5/float.addon.html, tests/golden/b4/text.prepend_append.html (B4),
+         tests/golden/b4/error.help_describedby.html
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -21,7 +22,7 @@ either wraps the control in a Bootstrap **input group**.
 <x-bf::text name="amount" prepend="$" append=".00"/>
 ```
 ```html
-<div id="amount-group" class="form-group"><label for="amount">Amount</label><div><div class="input-group"><div class="input-group-prepend">$</div><input id="amount" class="form-control" name="amount" type="text"><div class="input-group-append">.00</div></div></div></div>
+<div id="amount-group" class="mb-3"><label for="amount" class="form-label">Amount</label><div><div class="input-group">$<input id="amount" class="form-control" name="amount" type="text">.00</div></div></div>
 ```
 
 Facade / slot forms:
@@ -36,12 +37,13 @@ echo BF::text('amount', 'Amount', null, ['prepend' => '$', 'append' => '.00']);
 </x-bf::text>
 ```
 
-**Version difference:** Bootstrap 4 wraps each addon in `.input-group-prepend` / `.input-group-append`
-divs (above). **Bootstrap 5 dropped those wrappers** — addons sit as direct children of `.input-group`:
+**Version difference:** Bootstrap 5 (the default, above) places addons as **direct children** of
+`.input-group`. **Bootstrap 4 (legacy)** wraps each in an `.input-group-prepend` / `.input-group-append`
+div:
 
 ```html
-<!-- Bootstrap 5 -->
-<div class="input-group">$<input …>.00</div>
+<!-- Bootstrap 4 (legacy) -->
+<div class="form-group"><label for="amount">Amount</label><div><div class="input-group"><div class="input-group-prepend">$</div><input id="amount" class="form-control" name="amount" type="text"><div class="input-group-append">.00</div></div></div></div>
 ```
 
 Validation feedback is forced to display as a block (`invalid-feedback d-block`) inside an input group.
@@ -74,7 +76,7 @@ via `aria-describedby`:
 <x-bf::text name="login" help="Some help"/>
 ```
 ```html
-<div id="login-group" class="form-group"><label for="login">Login</label><div><input id="login" class="form-control" aria-describedby="login-help" name="login" type="text"><small id="login-help" class="form-text">Some help</small></div></div>
+<div id="login-group" class="mb-3"><label for="login" class="form-label">Login</label><div><input id="login" class="form-control" aria-describedby="login-help" name="login" type="text"><small id="login-help" class="form-text">Some help</small></div></div>
 ```
 
 When both an error and help are present, both ids are referenced

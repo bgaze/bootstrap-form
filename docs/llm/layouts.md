@@ -3,7 +3,8 @@ Sources: src/BootstrapForm.php (vertical/horizontal/inline/floating/open, button
          src/Support/Input.php (group/leftGroupColumn/rightGroupColumn),
          src/Inputs/CheckInput.php (leftGroupColumn), src/Support/Drivers/*.php (formLayoutClass,
          labelClass, colFormLabelClass, floatingGroup, supportsFloating), src/config/config.php
-Goldens: tests/golden/layout.*.html, tests/golden/float.*.html
+Goldens: tests/golden/b5/layout.*.html, tests/golden/b5/text.html, tests/golden/b5/float.*.html (default),
+         tests/golden/b4/layout.*.html, tests/golden/b4/float.degrades.html (B4)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -28,22 +29,22 @@ sections — see [config.md](config.md)); component classes are fixed.
 ## Vertical (default)
 
 Label above the control. The form carries no layout class; each field is a form group
-(`form-group` in B4, `mb-3` in B5) with the control wrapped in a bare `<div>`.
+(`mb-3` in B5, the default; `form-group` in B4) with the control wrapped in a bare `<div>`.
 
 ```html
-<div id="field-group" class="form-group"><label for="field">Field</label><div><input id="field" class="form-control" name="field" type="text"></div></div>
+<div id="field-group" class="mb-3"><label for="field" class="form-label">Field</label><div><input id="field" class="form-control" name="field" type="text"></div></div>
 ```
 
 ---
 
 ## Horizontal
 
-Label and control on one grid row. Form gets `form-horizontal` (B4; no class in B5 — the grid does the
-work). Each group gets `form-group row`; the label gets `col-form-label` + `left_class`; the control
-column gets `col`.
+Label and control on one grid row. The form gets no layout class (B5 default — the grid does the work;
+B4 legacy adds `form-horizontal`). Each group gets `mb-3 row` (B5) / `form-group row` (B4); the label
+gets `col-form-label` + `left_class`; the control column gets `col`.
 
 ```html
-<div id="login-group" class="form-group row"><label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label><div class="col"><input id="login" class="form-control" name="login" type="text"></div></div>
+<div id="login-group" class="mb-3 row"><label for="login" class="col-form-label col-lg-2 col-xl-3">Login</label><div class="col"><input id="login" class="form-control" name="login" type="text"></div></div>
 ```
 
 - **`left_class`** / **`right_class`** — the label / control column widths (config defaults
@@ -52,7 +53,7 @@ column gets `col`.
   left column so the control stays aligned. A checkbox in horizontal layout:
 
   ```html
-  <div id="accept-group" class="form-group row"><div class="col-lg-2 col-xl-3"></div><div class="col"><div class="form-check">…</div></div></div>
+  <div id="accept-group" class="mb-3 row"><div class="col-lg-2 col-xl-3"></div><div class="col"><div class="form-check">…</div></div></div>
   ```
   Set `pull_right => false` to drop the spacer.
 
@@ -60,15 +61,16 @@ column gets `col`.
 
 ## Inline
 
-All groups flow on one line. Form gets `form-inline` (B4; best-effort in B5). Groups get the horizontal
-+ vertical spacing utilities; labels get the label spacing:
+All groups flow on one line. The form gets no layout class (B5 default, best-effort; B4 legacy adds
+`form-inline`). Groups get the form-group class + the horizontal/vertical spacing utilities; labels get
+the label class + the label spacing:
 
 ```html
-<div id="login-group" class="form-group mr-3 my-1"><label for="login" class="mr-2">Login</label><div><input id="login" class="form-control" name="login" type="text"></div></div>
+<div id="login-group" class="mb-3 me-3 my-1"><label for="login" class="form-label me-2">Login</label><div><input id="login" class="form-control" name="login" type="text"></div></div>
 ```
 
-- **`lspace`** — space between a label and its field (on the label). B4 `mr-2`, B5 `me-2`.
-- **`hspace`** — horizontal space between groups. B4 `mr-3`, B5 `me-3`.
+- **`lspace`** — space between a label and its field (on the label). B5 `me-2`, B4 `mr-2`.
+- **`hspace`** — horizontal space between groups. B5 `me-3`, B4 `mr-3`.
 - **`vspace`** — vertical space between groups. `my-1`. Set any to `false` to disable.
 
 > Bootstrap 5 reworked inline forms; this layout is **best-effort** there and may need extra markup on

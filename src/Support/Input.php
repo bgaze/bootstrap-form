@@ -100,7 +100,7 @@ abstract class Input
         $this->errors = '';
 
         // Resolve the version driver from the (possibly overridden) settings.
-        $this->driver = DriverManager::make((int) $this->settings->get('bootstrap_version', 4));
+        $this->driver = DriverManager::make((int) $this->settings->get('bootstrap_version', 5));
     }
 
     protected function setInputAttributes(array $options): void

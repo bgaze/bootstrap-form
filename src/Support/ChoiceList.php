@@ -33,7 +33,7 @@ class ChoiceList
      * (the item wins).
      *
      * @param  array<array-key, mixed>  $choices
-     * @param  array<string, mixed>  $optionAttributes   applied to every <option>
+     * @param  array<string, mixed>  $optionAttributes  applied to every <option>
      * @param  array<string, mixed>  $optgroupAttributes  applied to every <optgroup>
      * @return array{0: array<array-key, mixed>, 1: array<array-key, mixed>, 2: array<array-key, mixed>}
      */

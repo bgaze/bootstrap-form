@@ -3,7 +3,7 @@ Sources: src/Inputs/SelectInput.php, src/Inputs/CheckInput.php, src/Inputs/Check
          src/Support/ChoiceList.php, src/View/Components/Select.php, src/View/Components/Choice.php,
          src/View/Components/Checkboxes.php, src/View/Components/Radios.php,
          src/View/Components/Checkbox.php, src/View/Components/Radio.php
-Goldens: tests/golden/select.*.html, tests/golden/check.*.html
+Goldens: tests/golden/b5/*.html (default), tests/golden/b4/select.*.html, tests/golden/b4/check.*.html (B4)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -24,7 +24,7 @@ partition.
 <x-bf::select name="sel" :choices="['a' => 'A', 'b' => 'B', 'c' => 'C']" selected="b"/>
 ```
 ```html
-<div id="sel-group" class="form-group"><label for="sel">Sel</label><div><select id="sel" class="form-control" name="sel"><option value="a">A</option><option value="b" selected="selected">B</option><option value="c">C</option></select></div></div>
+<div id="sel-group" class="mb-3"><label for="sel" class="form-label">Sel</label><div><select id="sel" class="form-select" name="sel"><option value="a">A</option><option value="b" selected="selected">B</option><option value="c">C</option></select></div></div>
 ```
 
 Select-specific settings: `choices`, `selected` (the `value` arg), `custom` (bool), `size`
@@ -39,10 +39,10 @@ addons). Anything else is an HTML attribute on `<select>` (`multiple`, `required
   <x-bf::select name="sel" :choices="['a' => 'A']" placeholder="Pick"/>
   ```
   ```html
-  <select id="sel" class="form-control" name="sel"><option selected="selected" value="">Pick</option><option value="a">A</option></select>
+  <select id="sel" class="form-select" name="sel"><option selected="selected" value="">Pick</option><option value="a">A</option></select>
   ```
-- **`custom`** (Bootstrap 4) → `class="custom-select"` instead of `form-control`. No-op in Bootstrap 5
-  (always `form-select`). See [bootstrap5.md](bootstrap5.md).
+- **`custom`** (Bootstrap 4 legacy) → in B4, `class="custom-select"` instead of `form-control`. No-op in
+  Bootstrap 5 (the default), which always renders `form-select`. See [bootstrap5.md](bootstrap5.md).
 - **`size`** → adds `form-control-lg` / `custom-select-lg` (B4) or `form-select-lg` (B5).
 - Floating layout wraps `<select>` + label in `.form-floating` (B5 only); no placeholder is injected.
 
@@ -70,7 +70,7 @@ Optgroup example:
 <x-bf::select name="sel" :choices="['G1' => ['a' => 'A', 'b' => 'B'], 'G2' => ['c' => 'C']]"/>
 ```
 ```html
-<select id="sel" class="form-control" name="sel"><optgroup label="G1"><option value="a">A</option><option value="b">B</option></optgroup><optgroup label="G2"><option value="c">C</option></optgroup></select>
+<div id="sel-group" class="mb-3"><label for="sel" class="form-label">Sel</label><div><select id="sel" class="form-select" name="sel"><optgroup label="G1"><option value="a">A</option><option value="b">B</option></optgroup><optgroup label="G2"><option value="c">C</option></optgroup></select></div></div>
 ```
 
 ### Blanket child attributes
@@ -101,23 +101,23 @@ checkable collections recognize them):
 <x-bf::checkbox name="accept" label="Accept"/>
 ```
 ```html
-<div id="accept-group" class="form-group"><div><div class="form-check"><input id="accept" class="form-check-input" name="accept" type="checkbox" value="1"><label for="accept" class="form-check-label">Accept</label></div></div></div>
+<div id="accept-group" class="mb-3"><div><div class="form-check"><input id="accept" class="form-check-input" name="accept" type="checkbox" value="1"><label for="accept" class="form-check-label">Accept</label></div></div></div>
 ```
 
 Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom` (bool, B4),
 `switch` (bool, checkbox only).
 
-- **`switch`** → renders a switch; forces `custom = true` (B4: `custom-control custom-switch`; B5:
-  `form-check form-switch` + `role="switch"`). Ignored for radios.
+- **`switch`** → renders a switch (B5 default: `form-check form-switch` + `role="switch"`; B4 legacy:
+  `custom-control custom-switch`, forcing `custom = true`). Ignored for radios.
 
   ```blade
   <x-bf::checkbox name="accept" label="Accept" switch/>
   ```
   ```html
-  <div class="custom-control custom-switch"><input id="accept" class="custom-control-input" name="accept" type="checkbox" value="1"><label for="accept" class="custom-control-label">Accept</label></div>
+  <div class="form-check form-switch"><input id="accept" class="form-check-input" role="switch" name="accept" type="checkbox" value="1"><label for="accept" class="form-check-label">Accept</label></div>
   ```
-- **`inline`** → adds `form-check-inline` (or `custom-control-inline` when `custom`).
-- **`custom`** (Bootstrap 4) → `custom-control custom-checkbox` / `custom-radio`. No-op in B5.
+- **`inline`** → adds `form-check-inline` (or `custom-control-inline` in B4 when `custom`).
+- **`custom`** (Bootstrap 4 legacy) → in B4, `custom-control custom-checkbox` / `custom-radio`. No-op in B5 (the default).
 - **`value`** — the submitted value when checked (checkbox defaults to `1`, radio to `null`).
 - **`label => false`** removes the label (a custom control keeps an empty `<label>` for its markup).
 
@@ -133,7 +133,7 @@ Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom
 <x-bf::radios name="gender" :choices="['m' => 'Male', 'f' => 'Female']" checked="f"/>
 ```
 ```html
-<div id="gender-group" class="form-group"><label for="gender">Gender</label><div><div class="form-check"><input id="gender-m" class="form-check-input" name="gender" type="radio" value="m"><label for="gender-m" class="form-check-label">Male</label></div><div class="form-check"><input id="gender-f" class="form-check-input" name="gender" type="radio" value="f"><label for="gender-f" class="form-check-label">Female</label></div></div></div>
+<div id="gender-group" class="mb-3"><label for="gender" class="form-label">Gender</label><div><div class="form-check"><input id="gender-m" class="form-check-input" name="gender" type="radio" value="m"><label for="gender-m" class="form-check-label">Male</label></div><div class="form-check"><input id="gender-f" class="form-check-input" checked="checked" name="gender" type="radio" value="f"><label for="gender-f" class="form-check-label">Female</label></div></div></div>
 ```
 
 - **`choices`** — the same grammar as `select`, **minus optgroups** (an `options` key or nested group

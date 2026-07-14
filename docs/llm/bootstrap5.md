@@ -2,33 +2,34 @@
 Sources: src/Support/Drivers/VersionDriver.php, src/Support/Drivers/Bootstrap4Driver.php,
          src/Support/Drivers/Bootstrap5Driver.php, src/Support/Drivers/DriverManager.php,
          src/BootstrapForm.php (resetForm/initForm version resolution, driver()), src/config/config.php
-Goldens: tests/golden/b5.*.html
+Goldens: tests/golden/b5/*.html
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
 # Bootstrap 4 ↔ 5
 
-Bootstrap 4 is the default; Bootstrap 5 is opt-in and produces byte-identical B4 output until enabled.
-A **version driver** owns the class vocabulary and the structural deltas — no Bootstrap class literal
-exists outside a driver.
+**Bootstrap 5 is the default.** Bootstrap 4 is frozen but fully supported for backward compatibility —
+opt into it globally, per form or per field. A **version driver** owns the class vocabulary and the
+structural deltas — no Bootstrap class literal exists outside a driver.
 
 ---
 
 ## Selecting the version
 
-Three levels, each overriding the previous (**cascade**):
+The default is Bootstrap 5. To render Bootstrap 4, opt in at one of three levels, each overriding the
+previous (**cascade**):
 
-1. **Global** — config `bootstrap_version` (`4` | `5`).
-2. **Per form** — `BF::open(['bootstrap_version' => 5])` / `<x-bf::form bootstrap-version="5">`.
-3. **Per field** — `['bootstrap_version' => 5]` in a field's options.
+1. **Global** — config `bootstrap_version` (`4` | `5`, default `5`).
+2. **Per form** — `BF::open(['bootstrap_version' => 4])` / `<x-bf::form bootstrap-version="4">`.
+3. **Per field** — `['bootstrap_version' => 4]` in a field's options.
 
 A per-field override switches the **driver** (component classes) for that field; layout settings
 (`left_class`, spacing, …) stay inherited from the form.
 
 ```php
-config(['bootstrap_form.bootstrap_version' => 5]); // app-wide
-BF::open(['url' => '/x', 'bootstrap_version' => 5]); // this form
-BF::text('login', null, null, ['bootstrap_version' => 5]); // this field
+config(['bootstrap_form.bootstrap_version' => 4]); // app-wide (opt into legacy B4)
+BF::open(['url' => '/x', 'bootstrap_version' => 4]); // this form
+BF::text('login', null, null, ['bootstrap_version' => 4]); // this field
 ```
 
 ---

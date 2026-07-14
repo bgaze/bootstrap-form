@@ -33,14 +33,15 @@ return [
     |--------------------------------------------------------------------------
     |
     | The Bootstrap version forms are rendered for: 4 or 5.
-    | Defaults to 4 (fully backward compatible). Set to 5 to opt into Bootstrap 5
-    | markup application wide. It can also be overridden per form, e.g.:
+    | Defaults to 5. Set to 4 for legacy Bootstrap 4 markup (still fully
+    | supported for backward compatibility). It can also be overridden per form
+    | or per field, e.g.:
     |
-    |     BF::open(['bootstrap_version' => 5])
+    |     BF::open(['bootstrap_version' => 4])
     |
     */
 
-    'bootstrap_version' => 4,
+    'bootstrap_version' => 5,
 
     /*
     |--------------------------------------------------------------------------
