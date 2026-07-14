@@ -160,7 +160,8 @@ binding (**[model-binding.md](model-binding.md)**), plus any inherited setting a
 | `<x-bf::checkboxes :choices :checked>` | `BF::checkboxes` / `@checkboxes` | `(name, label, choices, checked)` |
 | `<x-bf::radios :choices :checked>` | `BF::radios` / `@radios` | `(name, label, choices, checked)` |
 
-`choices` accept a rich grammar (optgroups, per-option attributes). See **[choice-fields.md](choice-fields.md)**.
+`choices` accept a rich grammar (optgroups, per-option attributes) and any `iterable` — `array`,
+`Collection` (e.g. `Model::pluck('name', 'id')`), or a generator. See **[choice-fields.md](choice-fields.md)**.
 
 ### Single checkable — `(name, label, value, checked)`
 

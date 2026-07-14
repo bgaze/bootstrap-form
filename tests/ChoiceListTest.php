@@ -3,6 +3,7 @@
 namespace Bgaze\BootstrapForm\Tests;
 
 use Bgaze\BootstrapForm\Support\ChoiceList;
+use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
@@ -76,6 +77,55 @@ class ChoiceListTest extends TestCase
                 [],
                 ['class' => 'grp']
             )
+        );
+    }
+
+    // ## ITERABLE CHOICES — array | Collection | Traversable ###################
+
+    public function test_select_accepts_a_collection_identically_to_an_array(): void
+    {
+        // A flat Collection is the idiomatic v3 case: Model::pluck('name', 'id').
+        $this->assertSame(
+            ChoiceList::select(['fr' => 'France', 'us' => 'USA']),
+            ChoiceList::select(new Collection(['fr' => 'France', 'us' => 'USA']))
+        );
+    }
+
+    public function test_select_accepts_a_generator_preserving_keys(): void
+    {
+        $generator = (function () {
+            yield 'fr' => 'France';
+            yield 'us' => 'USA';
+        })();
+
+        $this->assertSame(
+            [['fr' => 'France', 'us' => 'USA'], [], []],
+            ChoiceList::select($generator)
+        );
+    }
+
+    public function test_select_recurses_a_collection_of_optgroups(): void
+    {
+        // The optgroup value is itself a Collection: Arrayable::toArray() flattens both levels.
+        $this->assertSame(
+            [['G1' => ['a' => 'A', 'b' => 'B']], [], []],
+            ChoiceList::select(new Collection(['G1' => new Collection(['a' => 'A', 'b' => 'B'])]))
+        );
+    }
+
+    public function test_select_advanced_optgroup_options_accept_an_iterable(): void
+    {
+        $this->assertSame(
+            [['Europe' => ['fr' => 'France']], [], []],
+            ChoiceList::select([['label' => 'Europe', 'options' => new Collection(['fr' => 'France'])]])
+        );
+    }
+
+    public function test_checkables_accepts_a_collection_identically_to_an_array(): void
+    {
+        $this->assertSame(
+            ChoiceList::checkables(['a' => 'A', 'b' => 'B']),
+            ChoiceList::checkables(new Collection(['a' => 'A', 'b' => 'B']))
         );
     }
 

@@ -48,6 +48,12 @@ addons). Anything else is an HTML attribute on `<select>` (`multiple`, `required
 
 ### The `choices` grammar (`ChoiceList`)
 
+**Accepted input:** `choices` may be an `array`, a `Collection`, or **any `iterable`** (generator,
+`ArrayIterator`, …) — pass `Model::pluck('name', 'id')` straight through. It is normalized to an array
+once, at the boundary; a `Collection` is coerced via `toArray()`, so a Collection whose optgroup values
+are themselves Collections is flattened in the same pass. The nested `options` of an advanced optgroup is
+likewise any `iterable`.
+
 Five entry forms, freely mixed. Parsing is **strict** — an ambiguous/incomplete descriptor throws
 `InvalidArgumentException`.
 
@@ -60,7 +66,7 @@ Five entry forms, freely mixed. Parsing is **strict** — an ambiguous/incomplet
 
 Rules:
 - An advanced option **must** define both `value` and `label`; the remaining keys are HTML attributes.
-- An advanced optgroup **must** define `label` and an array `options`; other keys are `<optgroup>` attributes.
+- An advanced optgroup **must** define `label` and an iterable `options`; other keys are `<optgroup>` attributes.
 - Optgroups are **root-only** — nesting an optgroup inside an optgroup throws.
 - A bare (numeric-keyed) array that is neither an advanced option nor optgroup throws.
 

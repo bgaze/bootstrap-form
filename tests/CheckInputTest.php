@@ -3,6 +3,7 @@
 namespace Bgaze\BootstrapForm\Tests;
 
 use BF;
+use Illuminate\Support\Collection;
 
 /**
  * Characterization tests for CheckInput / CheckChoice (Bootstrap 4).
@@ -119,5 +120,26 @@ class CheckInputTest extends Bootstrap4TestCase
             .'<div class="invalid-feedback d-block" id="login-error">The login field is required.</div></div></div>';
 
         $this->assertSame($expected, (string) BF::checkboxes('login', null, ['a' => 'A']));
+    }
+
+    public function test_checkboxes_choices_accept_a_collection_like_an_array(): void
+    {
+        // Regression guard: a real Laravel Collection must render identically to the array form.
+        $choices = ['a' => 'A', 'b' => 'B'];
+
+        $this->assertSame(
+            (string) BF::checkboxes('tags', null, $choices),
+            (string) BF::checkboxes('tags', null, new Collection($choices))
+        );
+    }
+
+    public function test_radios_choices_accept_a_collection_like_an_array(): void
+    {
+        $choices = ['m' => 'Male', 'f' => 'Female'];
+
+        $this->assertSame(
+            (string) BF::radios('gender', null, $choices),
+            (string) BF::radios('gender', null, new Collection($choices))
+        );
     }
 }

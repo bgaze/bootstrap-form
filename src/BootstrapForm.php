@@ -354,7 +354,7 @@ class BootstrapForm
         return $this->input('textarea', $name, $label, $value, $options);
     }
 
-    public function select(string $name, mixed $label = null, array $choices = [], mixed $selected = null, array $options = []): Input
+    public function select(string $name, mixed $label = null, iterable $choices = [], mixed $selected = null, array $options = []): Input
     {
         return Inputs\SelectInput::make($name, $label, $choices, $selected, $options);
     }
@@ -388,7 +388,7 @@ class BootstrapForm
         return Inputs\CheckInput::make($name, $label, $value, $checked, $options);
     }
 
-    public function checkboxes(string $name, mixed $label = null, array $choices = [], mixed $checked = null, array $options = []): Input
+    public function checkboxes(string $name, mixed $label = null, iterable $choices = [], mixed $checked = null, array $options = []): Input
     {
         $options['tag'] = 'checkbox';
 
@@ -402,7 +402,7 @@ class BootstrapForm
         return Inputs\CheckInput::make($name, $label, $value, $checked, $options);
     }
 
-    public function radios(string $name, mixed $label = null, array $choices = [], mixed $checked = null, array $options = []): Input
+    public function radios(string $name, mixed $label = null, iterable $choices = [], mixed $checked = null, array $options = []): Input
     {
         $options['tag'] = 'radio';
 

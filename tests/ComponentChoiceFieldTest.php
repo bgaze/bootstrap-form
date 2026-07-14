@@ -55,6 +55,18 @@ class ComponentChoiceFieldTest extends TestCase
         );
     }
 
+    public function test_select_choices_accept_a_collection(): void
+    {
+        // The widened iterable property lets :choices bind a Collection, not just an array.
+        $this->assertSame(
+            (string) BF::select('color', 'Color', ['red' => 'Red', 'blue' => 'Blue']),
+            trim(Blade::render(
+                '<x-bf::select name="color" label="Color" :choices="$choices"/>',
+                ['choices' => collect(['red' => 'Red', 'blue' => 'Blue'])]
+            ))
+        );
+    }
+
     public function test_checkboxes_option_prefix_targets_every_child(): void
     {
         $this->assertSame(

@@ -13,12 +13,12 @@ use Bgaze\BootstrapForm\Support\Facades\BF;
 class Select extends BootstrapComponent
 {
     /**
-     * @param  array<array-key, mixed>  $choices
+     * @param  iterable<array-key, mixed>  $choices
      */
     public function __construct(
         public string $name,
         public mixed $label = null,
-        public array $choices = [],
+        public iterable $choices = [],
         public mixed $selected = null,
     ) {}
 

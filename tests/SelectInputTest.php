@@ -3,6 +3,7 @@
 namespace Bgaze\BootstrapForm\Tests;
 
 use BF;
+use Illuminate\Support\Collection;
 
 /**
  * Characterization tests for SelectInput (Bootstrap 4).
@@ -55,5 +56,17 @@ class SelectInputTest extends Bootstrap4TestCase
         $choices = [['label' => 'Europe', 'options' => [['value' => 'fr', 'label' => 'France', 'data-flag' => 'fr']]]];
 
         $this->assertSame($expected, (string) BF::select('country', null, $choices, null, ['optgroup_attributes' => ['class' => 'grp']]));
+    }
+
+    public function test_choices_accept_a_collection_like_an_array(): void
+    {
+        // Regression guard: v3 (Collective) accepted a Collection here — Model::pluck('name', 'id')
+        // being the idiomatic source. The widened iterable signature restores that.
+        $choices = ['fr' => 'France', 'us' => 'USA'];
+
+        $this->assertSame(
+            (string) BF::select('country', null, $choices),
+            (string) BF::select('country', null, new Collection($choices))
+        );
     }
 }

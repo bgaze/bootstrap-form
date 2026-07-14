@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bgaze\BootstrapForm\Support;
 
+use Illuminate\Contracts\Support\Arrayable;
 use InvalidArgumentException;
 
 /**
@@ -32,18 +33,18 @@ class ChoiceList
      * The "all options" / "all optgroups" attribute bags are merged under each per-item entry
      * (the item wins).
      *
-     * @param  array<array-key, mixed>  $choices
+     * @param  iterable<array-key, mixed>  $choices
      * @param  array<string, mixed>  $optionAttributes  applied to every <option>
      * @param  array<string, mixed>  $optgroupAttributes  applied to every <optgroup>
      * @return array{0: array<array-key, mixed>, 1: array<array-key, mixed>, 2: array<array-key, mixed>}
      */
-    public static function select(array $choices, array $optionAttributes = [], array $optgroupAttributes = []): array
+    public static function select(iterable $choices, array $optionAttributes = [], array $optgroupAttributes = []): array
     {
         $list = [];
         $options = [];
         $optgroups = [];
 
-        foreach ($choices as $key => $item) {
+        foreach (self::normalize($choices) as $key => $item) {
             // Advanced optgroup: an array carrying an `options` key (root-only).
             if (is_array($item) && array_key_exists('options', $item)) {
                 [$label, $groupAttributes, $inner] = self::parseAdvancedOptgroup($item);
@@ -88,15 +89,15 @@ class ChoiceList
      * Normalize rich checkable choices into an ordered list of children. Optgroups and
      * nesting are unsupported (checkables have no such structure) and throw.
      *
-     * @param  array<array-key, mixed>  $choices
+     * @param  iterable<array-key, mixed>  $choices
      * @param  array<string, mixed>  $optionAttributes  applied to every child
      * @return array<int, array{value: mixed, label: mixed, attributes: array<string, mixed>}>
      */
-    public static function checkables(array $choices, array $optionAttributes = []): array
+    public static function checkables(iterable $choices, array $optionAttributes = []): array
     {
         $result = [];
 
-        foreach ($choices as $key => $item) {
+        foreach (self::normalize($choices) as $key => $item) {
             if (is_array($item)) {
                 if (array_key_exists('options', $item)) {
                     throw new InvalidArgumentException('Checkable choices do not support optgroups.');
@@ -179,15 +180,37 @@ class ChoiceList
             throw new InvalidArgumentException("An advanced optgroup must define a 'label'.");
         }
 
-        if (! is_array($item['options'])) {
-            throw new InvalidArgumentException("An advanced optgroup 'options' must be an array.");
+        if (! is_iterable($item['options'])) {
+            throw new InvalidArgumentException("An advanced optgroup 'options' must be iterable.");
         }
 
         $label = $item['label'];
-        $options = $item['options'];
+        $options = self::normalize($item['options']);
         unset($item['label'], $item['options']);
 
         return [$label, $item, $options];
+    }
+
+    /**
+     * Coerce any accepted `choices` shape (array, Arrayable/Collection, or Traversable) into
+     * a plain keyed array. Arrayable::toArray() recurses, so a Collection whose items are
+     * themselves Collections (e.g. optgroups) is flattened in one pass; a bare Traversable is
+     * materialized with its keys preserved.
+     *
+     * @param  iterable<array-key, mixed>  $choices
+     * @return array<array-key, mixed>
+     */
+    protected static function normalize(iterable $choices): array
+    {
+        if (is_array($choices)) {
+            return $choices;
+        }
+
+        if ($choices instanceof Arrayable) {
+            return $choices->toArray();
+        }
+
+        return iterator_to_array($choices);
     }
 
     /**

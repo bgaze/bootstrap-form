@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
 /**
  * Specific settings:
  *
- * @property array $choices
+ * @property iterable $choices
  * @property bool $custom
  * @property string $size
  * @property array $option_attributes
@@ -36,13 +36,13 @@ class SelectInput extends Input
         ]);
     }
 
-    public function __construct(string $name, mixed $label = null, array $choices = [], mixed $selected = null, array $options = [])
+    public function __construct(string $name, mixed $label = null, iterable $choices = [], mixed $selected = null, array $options = [])
     {
         parent::__construct($name, $label, $selected, $options);
         $this->choices = $choices;
     }
 
-    public static function make(string $name, mixed $label = null, array $choices = [], mixed $selected = null, array $options = []): static
+    public static function make(string $name, mixed $label = null, iterable $choices = [], mixed $selected = null, array $options = []): static
     {
         return new static($name, $label, $choices, $selected, $options);
     }

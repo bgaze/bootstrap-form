@@ -12,7 +12,7 @@ use Illuminate\Support\Collection;
  * Specific settings:
  *
  * @property string $tag
- * @property array $choices
+ * @property iterable $choices
  * @property bool $inline
  * @property bool $custom
  * @property bool $switch
@@ -33,13 +33,13 @@ class CheckChoice extends Input
         ]);
     }
 
-    public function __construct(string $name, mixed $label = null, array $choices = [], mixed $checked = [], array $options = [])
+    public function __construct(string $name, mixed $label = null, iterable $choices = [], mixed $checked = [], array $options = [])
     {
         parent::__construct($name, $label, $checked, $options);
         $this->choices = $choices;
     }
 
-    public static function make(string $name, mixed $label = null, array $choices = [], mixed $checked = [], array $options = []): static
+    public static function make(string $name, mixed $label = null, iterable $choices = [], mixed $checked = [], array $options = []): static
     {
         return new static($name, $label, $choices, $checked, $options);
     }
