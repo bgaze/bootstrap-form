@@ -10,6 +10,14 @@
     <img src="./intro.png">
 </p>
 
+> **⚠️ Legacy maintenance branch — Bootstrap Form v1** (Laravel 5.8+).
+> Newer major versions are available (**v2**, **v3**, **v4** — see the
+> [`master`](https://github.com/bgaze/bootstrap-form) branch). To stay on **v1**, require it explicitly:
+>
+> ```shell
+> composer require "bgaze/bootstrap-form:^1.0"
+> ```
+
 This package uses in background [Laravel Collective HTML](https://laravelcollective.com/docs/5.8/html) to simplify Bootstrap 4 forms creation into Laravel applications.
 
 Model form binding and automatic error display are supported, as well as most of Bootstrap forms features : form layouts, custom fields, input groups, ... 
@@ -25,7 +33,7 @@ Full documentation and examples are available at [https://packages.bgaze.fr/boot
 Simply install the package using Composer:
 
 ```shell
-composer require bgaze/bootstrap-form
+composer require "bgaze/bootstrap-form:^1.0"
 ```
 
 There are a various configuration options available, publish the configuration file to customize them:
