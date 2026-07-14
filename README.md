@@ -7,107 +7,111 @@
 ![Packagist](https://img.shields.io/packagist/dt/bgaze/bootstrap-form)
 
 <p style="text-align:center">
-    <img src="./intro.png" alt="Bootstrap 4 forms builder for Laravel 6+">
+    <img src="./intro.png" alt="Bootstrap forms builder for Laravel">
 </p>
 
 This package simplifies Bootstrap forms creation in Laravel applications, rendering all markup through its own
-lightweight HTML/form layer (no third-party form/HTML dependency).
+lightweight HTML/form layer (**no third-party form/HTML dependency**).
 
-It renders **Bootstrap 4** markup by default, and supports **Bootstrap 5** as an opt-in (see
-[Bootstrap 5 support](#bootstrap-5-support) below): existing applications are not impacted until they opt in.
-
-Model form binding and automatic error display are supported, as well as most of Bootstrap forms features : form
-layouts, custom fields, input groups, ...
+It renders **Bootstrap 5** markup by default and **fully supports Bootstrap 4** for backward compatibility
+(switchable globally, per form, or per field). Model form binding and automatic error display are supported, as
+well as most Bootstrap form features: form layouts, custom fields, input groups, and more.
 
 Any contribution or feedback is highly welcomed, please feel free to create a pull request
 or [submit a new issue](https://github.com/bgaze/bootstrap-form/issues/new).
 
-## Documentation
+## ℹ️ v4 status — functional, documentation in progress
 
-Full documentation and examples are available
-at [https://packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)
+**v4 is functional and tested**, but its full documentation is **still being written**. In the meantime, the
+[**LLM usage guide**](docs/llm/index.md) shipped in this repository is the **authoritative, up-to-date reference**
+(dense but exact — usable by humans and AI assistants alike). The full documentation site
+([packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)) still reflects **v3** and will be
+regenerated for v4.
 
-If you use **PhpStorm IDE**, you can also
-check [this gist](https://gist.github.com/bgaze/1f559782c85511dc2671cdb6b453f0c6) which allow to easily configure **syntax highlighting** 
-and **live templates** for this package's custom Blade directives.
+## ⚠️ Upgrading — v4 has breaking changes
+
+v4 introduces breaking changes over v3 (see [What's new](#whats-new-in-v4) below). New installs get v4 by default.
+**To keep using a previous major version, require it explicitly** and refer to its dedicated branch:
+
+| Version | Install | Docs |
+|---------|---------|------|
+| **v3** (Bootstrap 4 default, B5 opt-in) | `composer require "bgaze/bootstrap-form:^3.0"` | [`v3` branch](https://github.com/bgaze/bootstrap-form/tree/v3) · [site](https://packages.bgaze.fr/bootstrap-form) |
+| **v2** (Bootstrap 4 only) | `composer require "bgaze/bootstrap-form:^2.0"` | [`v2` branch](https://github.com/bgaze/bootstrap-form/tree/v2) · [site](https://packages.bgaze.fr/bootstrap-form) |
+
+## Requirements
+
+- PHP **8.2+**
+- Laravel **12** or **13**
 
 ## Quick start
 
-Simply install the package using Composer:
+Install the package using Composer:
 
 ```shell
 composer require bgaze/bootstrap-form
 ```
 
-There are a various configuration options available, publish the configuration file to customize them:
+Several configuration options are available; publish the configuration file to customize them:
 
 ```shell
 php artisan vendor:publish --provider="Bgaze\BootstrapForm\BootstrapFormServiceProvider"
 ```
 
-The `BF` facade provides many methods to create forms and inputs:
+Forms can be built through **three interchangeable syntaxes that produce byte-identical HTML**:
 
-```html
-echo BF::open(['url' => '/my/url', 'novalidate' => true])
-echo BF::text('login')
-echo BF::email('email')
-echo BF::checkbox('remember_me', null, 1, null, ['switch' => true, 'inline' => true])
-echo BF::submit('Login')
-echo BF::close()
+```blade
+{{-- x-components — the Blade default --}}
+<x-bf::form url="/x">
+    <x-bf::text name="field"/>
+    <x-bf::submit>Save</x-bf::submit>
+</x-bf::form>
 ```
 
-Most of them have a Blade directive alias to ease form creation from Blade templates:
-
-```html
-@open(['url' => '/my/url', 'novalidate' => true])
-@text('login')
-@email('email')
-@checkbox('remember_me', null, 1, null, ['switch' => true, 'inline' => true])
-@submit('Login')
+```blade
+{{-- Blade directives --}}
+@open(['url' => '/x'])
+@text('field')
+@submit('Save')
 @close
 ```
 
-## Bootstrap 5 support
-
-Since **v3.0**, the package can render **Bootstrap 5** markup. Bootstrap 4 stays the default, so
-**existing applications are not impacted** until they explicitly opt in.
-
-Enable Bootstrap 5 application wide in the published configuration file:
-
 ```php
-// config/bootstrap_form.php
-'bootstrap_version' => 5,
+// BF facade — PHP context
+echo BF::open(['url' => '/x']);
+echo BF::text('field');
+echo BF::submit('Save');
+echo BF::close();
 ```
 
-Or opt in for a single form (all its fields inherit the version):
+If you use **PhpStorm**, [this gist](https://gist.github.com/bgaze/1f559782c85511dc2671cdb6b453f0c6) helps you
+configure **syntax highlighting** and **live templates** for the package's Blade directives.
 
-```html
-@open(['url' => '/my/url', 'bootstrap_version' => 5])
-```
+## What's new in v4
 
-Or for a single field:
+- **No more third-party dependency.** The historical `laravelcollective/html` dependency is gone, replaced by an
+  internal, iso-rendering HTML/form layer owned by the package.
+- **Bootstrap 5 is now the default.** Bootstrap 4 remains **fully supported** for backward compatibility (frozen),
+  switchable via `bootstrap_version` globally, per form (`BF::open(['bootstrap_version' => 4])`), or per field.
+- **Laravel 12 & 13**, PHP **8.2+** (older versions dropped).
+- **x-components** — a new Blade component syntax (`<x-bf::text .../>`) alongside the directives and the `BF`
+  facade; all three render identical markup.
+- **Richer choice grammar** for `select` / `checkboxes` / `radios` (optgroups, per-option attributes) accepting
+  any `iterable` (array, Collection, generator).
+- **New field types & layouts** — `datetime-local`, `month`, `week`, `search` inputs, Bootstrap 5 **floating
+  labels** (4th layout), opt-in **valid feedback**, and accessible `aria-describedby` / `aria-invalid` wiring.
+- **LLM-optimized documentation** in [`docs/llm/`](docs/llm/index.md) (+ [`llms.txt`](llms.txt)).
 
-```html
-@text('login', null, null, ['bootstrap_version' => 5])
-```
+## Documentation
 
-**Vertical** and **horizontal** layouts are fully supported. **Inline** forms are best-effort: Bootstrap 5
-reworked the inline layout and it may require additional markup on your side.
+The [**LLM usage guide**](docs/llm/index.md) is the current source of truth for v4:
 
-The `custom` option (Bootstrap 4 native vs custom controls) is a **no-op** in Bootstrap 5, where custom
-controls were merged into the default styles.
+- [index.md](docs/llm/index.md) — hub: config detection, the universal field model, the three syntaxes, and the
+  full field catalog.
+- On-demand spokes: [choice-fields](docs/llm/choice-fields.md), [layouts](docs/llm/layouts.md),
+  [input-groups](docs/llm/input-groups.md), [model-binding](docs/llm/model-binding.md),
+  [options-and-attributes](docs/llm/options-and-attributes.md), [components](docs/llm/components.md),
+  [bootstrap5](docs/llm/bootstrap5.md), [config](docs/llm/config.md).
 
-### Upgrading from v2 to v3
+## License
 
-v3 is backward compatible **at runtime**: with the default `bootstrap_version` (4), the rendered HTML is
-unchanged. The only breaking change is the **configuration file structure**: the layout options (`custom`,
-`left_class`, `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`) now live under per-version sections.
-
-If you had **published and customized** the configuration file, republish it and move your customizations under
-the `bootstrap4` (and/or `bootstrap5`) key:
-
-```shell
-php artisan vendor:publish --provider="Bgaze\BootstrapForm\BootstrapFormServiceProvider" --force
-```
-
-Applications that never published the configuration file have nothing to do.
+Open-sourced software licensed under the [MIT license](LICENSE).
