@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bgaze\BootstrapForm\Inputs;
 
+use Bgaze\BootstrapForm\Support\ChoiceList;
 use Bgaze\BootstrapForm\Support\Input;
 use Bgaze\BootstrapForm\Support\Traits\HasAddons;
 use Illuminate\Support\Collection;
@@ -14,6 +15,8 @@ use Illuminate\Support\Collection;
  * @property array $choices
  * @property bool $custom
  * @property string $size
+ * @property array $option_attributes
+ * @property array $optgroup_attributes
  *
  * @phpstan-consistent-constructor
  */
@@ -28,6 +31,8 @@ class SelectInput extends Input
             'size' => null,
             'prepend' => false,
             'append' => false,
+            'option_attributes' => [],
+            'optgroup_attributes' => [],
         ]);
     }
 
@@ -55,7 +60,20 @@ class SelectInput extends Input
 
     public function input(): string
     {
-        return $this->elements->select($this->name, $this->choices, $this->value, $this->input_attributes->toArray())->toHtml();
+        [$list, $optionsAttributes, $optgroupsAttributes] = ChoiceList::select(
+            $this->choices,
+            (array) $this->option_attributes,
+            (array) $this->optgroup_attributes,
+        );
+
+        return $this->elements->select(
+            $this->name,
+            $list,
+            $this->value,
+            $this->input_attributes->toArray(),
+            $optionsAttributes,
+            $optgroupsAttributes,
+        )->toHtml();
     }
 
     protected function isFloatable(): bool

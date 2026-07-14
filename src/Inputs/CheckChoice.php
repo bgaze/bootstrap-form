@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bgaze\BootstrapForm\Inputs;
 
+use Bgaze\BootstrapForm\Support\ChoiceList;
 use Bgaze\BootstrapForm\Support\Input;
 use Illuminate\Support\Collection;
 
@@ -15,6 +16,7 @@ use Illuminate\Support\Collection;
  * @property bool $inline
  * @property bool $custom
  * @property bool $switch
+ * @property array $option_attributes
  *
  * @phpstan-consistent-constructor
  */
@@ -27,6 +29,7 @@ class CheckChoice extends Input
             'choices' => [],
             'inline' => false,
             'switch' => false,
+            'option_attributes' => [],
         ]);
     }
 
@@ -71,20 +74,28 @@ class CheckChoice extends Input
     {
         $inputs = '';
 
-        foreach ($this->choices as $value => $label) {
+        foreach (ChoiceList::checkables($this->choices, (array) $this->option_attributes) as $choice) {
+            $value = $choice['value'];
             $checked = in_array($value, (array) $this->value);
 
+            // Per-item (advanced-form) attributes win over the propagated field attributes.
+            // A per-item id overrides the generated one; everything else stays structural.
+            $attributes = $choice['attributes'];
+            $id = $attributes['id'] ?? $this->flattenName($this->name, '-').'-'.$value;
+            unset($attributes['id']);
+
             $options = $this->settings
-                ->except(['choices', 'name', 'value', 'label'])
+                ->except(['choices', 'name', 'value', 'label', 'option_attributes'])
                 // all(): raw items — keep any LITERAL_PREFIX ('~') intact so the
                 // escape survives into each generated child control.
                 ->merge($this->input_attributes->all())
+                ->merge($attributes)
                 ->merge([
                     'layout' => 'vertical',
                     'disable_errors' => true,
                     'group' => false,
                     'help' => false,
-                    'id' => $this->flattenName($this->name, '-').'-'.$value,
+                    'id' => $id,
                 ])
                 ->toArray();
 
@@ -92,7 +103,7 @@ class CheckChoice extends Input
                 $options['inline'] = true;
             }
 
-            $inputs .= CheckInput::make($this->name, $label, $value, $checked, $options);
+            $inputs .= CheckInput::make($this->name, $choice['label'], $value, $checked, $options);
         }
 
         return $inputs;
