@@ -31,6 +31,48 @@ class ComponentChoiceFieldTest extends TestCase
         );
     }
 
+    public function test_select_option_prefix_targets_every_option(): void
+    {
+        $this->assertSame(
+            (string) BF::select('color', null, ['red' => 'Red'], null, ['option_attributes' => ['class' => 'opt']]),
+            $this->render('<x-bf::select name="color" :choices="[\'red\' => \'Red\']" option:class="opt"/>')
+        );
+    }
+
+    public function test_select_optgroup_prefix_targets_every_optgroup(): void
+    {
+        $this->assertSame(
+            (string) BF::select('color', null, ['Warm' => ['red' => 'Red']], null, ['optgroup_attributes' => ['data-z' => 'yo']]),
+            $this->render('<x-bf::select name="color" :choices="[\'Warm\' => [\'red\' => \'Red\']]" optgroup:data-z="yo"/>')
+        );
+    }
+
+    public function test_select_advanced_choices_pass_through_the_data(): void
+    {
+        $this->assertSame(
+            (string) BF::select('color', null, [['value' => 'red', 'label' => 'Red', 'data-x' => 'y']]),
+            $this->render('<x-bf::select name="color" :choices="[[\'value\' => \'red\', \'label\' => \'Red\', \'data-x\' => \'y\']]"/>')
+        );
+    }
+
+    public function test_checkboxes_option_prefix_targets_every_child(): void
+    {
+        $this->assertSame(
+            (string) BF::checkboxes('roles', 'Roles', ['a' => 'A', 'b' => 'B'], null, ['option_attributes' => ['data-g' => '1']]),
+            $this->render('<x-bf::checkboxes name="roles" label="Roles" :choices="[\'a\' => \'A\', \'b\' => \'B\']" option:data-g="1"/>')
+        );
+    }
+
+    public function test_option_prefix_is_not_projected_on_a_non_choice_component(): void
+    {
+        // The guard: option:/optgroup: are only projected by choice components, so the
+        // option_attributes array bag never leaks as a rendered attribute elsewhere.
+        $out = $this->render('<x-bf::text name="foo" option:class="x"/>');
+
+        $this->assertStringNotContainsString('option_attributes', $out);
+        $this->assertStringNotContainsString('Array', $out);
+    }
+
     public function test_file_matches_facade(): void
     {
         $this->assertSame(

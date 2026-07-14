@@ -85,6 +85,30 @@ class CheckInputTest extends TestCase
         $this->assertSame($expected, (string) BF::radios('gender', null, ['m' => 'Male', 'f' => 'Female']));
     }
 
+    public function test_checkboxes_option_attributes_apply_to_every_child(): void
+    {
+        $expected = '<div id="tags-group" class="form-group"><label for="tags">Tags</label><div>'
+            .'<div class="form-check"><input id="tags-a" data-g="1" class="form-check-input" name="tags" type="checkbox" value="a">'
+            .'<label for="tags-a" class="form-check-label">A</label></div>'
+            .'<div class="form-check"><input id="tags-b" data-g="1" class="form-check-input" name="tags" type="checkbox" value="b">'
+            .'<label for="tags-b" class="form-check-label">B</label></div></div></div>';
+
+        $this->assertSame($expected, (string) BF::checkboxes('tags', null, ['a' => 'A', 'b' => 'B'], null, ['option_attributes' => ['data-g' => '1']]));
+    }
+
+    public function test_checkboxes_advanced_option_carries_attributes_and_overrides_id(): void
+    {
+        $expected = '<div id="tags-group" class="form-group"><label for="tags">Tags</label><div>'
+            .'<div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a">'
+            .'<label for="tags-a" class="form-check-label">A</label></div>'
+            .'<div class="form-check"><input id="custom-b" data-x="y" class="form-check-input" name="tags" type="checkbox" value="b">'
+            .'<label for="custom-b" class="form-check-label">B</label></div></div></div>';
+
+        $choices = ['a' => 'A', ['value' => 'b', 'label' => 'B', 'data-x' => 'y', 'id' => 'custom-b']];
+
+        $this->assertSame($expected, (string) BF::checkboxes('tags', null, $choices));
+    }
+
     public function test_checkboxes_collection_with_error(): void
     {
         $this->withErrors(['login' => ['The login field is required.']]);

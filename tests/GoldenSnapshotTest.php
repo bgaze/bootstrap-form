@@ -28,11 +28,16 @@ class GoldenSnapshotTest extends TestCase
             // Select
             'select.native', 'select.custom', 'select.size_lg', 'select.selected',
             'select.placeholder', 'select.optgroup', 'select.collection_selected',
+            // Select child attributes
+            'select.option_attributes', 'select.advanced_option', 'select.option_item_wins',
+            'select.advanced_optgroup',
             // File / range
             'file.native', 'file.custom', 'range.native', 'range.custom',
             // Checkables
             'check.checkbox', 'check.custom', 'check.switch', 'check.inline',
             'check.label_false', 'check.radio', 'check.checkboxes', 'check.radios',
+            // Checkable child attributes
+            'check.option_attributes', 'check.advanced_option', 'check.option_id_override',
             // Misc elements
             'el.submit', 'el.reset', 'el.button', 'el.link', 'el.label',
             // Layouts
@@ -106,6 +111,14 @@ class GoldenSnapshotTest extends TestCase
             case 'select.optgroup': return (string) BF::select('sel', null, ['G1' => ['a' => 'A', 'b' => 'B'], 'G2' => ['c' => 'C']]);
             case 'select.collection_selected': return (string) BF::select('sel', null, $choices, collect(['b', 'c']), ['multiple' => true]);
 
+                // Select child attributes
+            case 'select.option_attributes': return (string) BF::select('sel', null, $choices, null, ['option_attributes' => ['class' => 'opt']]);
+            case 'select.advanced_option': return (string) BF::select('sel', null, ['a' => 'A', ['value' => 'b', 'label' => 'B', 'data-x' => 'y', 'disabled' => true]]);
+            case 'select.option_item_wins': return (string) BF::select('sel', null, [['value' => 'a', 'label' => 'A', 'class' => 'special']], null, ['option_attributes' => ['class' => 'base', 'data-g' => '1']]);
+            case 'select.advanced_optgroup': return (string) BF::select('sel', null, [
+                ['label' => 'Group', 'data-z' => 'yo', 'options' => ['a' => 'A', ['value' => 'b', 'label' => 'B', 'data-x' => 'y']]],
+            ], null, ['optgroup_attributes' => ['class' => 'grp']]);
+
                 // File / range
             case 'file.native': return (string) BF::file('doc');
             case 'file.custom': return (string) BF::file('doc', null, ['custom' => true]);
@@ -121,6 +134,11 @@ class GoldenSnapshotTest extends TestCase
             case 'check.radio': return (string) BF::radio('gender', 'Female', 'f');
             case 'check.checkboxes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor']);
             case 'check.radios': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', 'f' => 'Female']);
+
+                // Checkable child attributes
+            case 'check.option_attributes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['option_attributes' => ['data-g' => '1']]);
+            case 'check.advanced_option': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', ['value' => 'editor', 'label' => 'Editor', 'data-x' => 'y']]);
+            case 'check.option_id_override': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', ['value' => 'f', 'label' => 'Female', 'id' => 'gender-female']]);
 
                 // Misc elements
             case 'el.submit': return (string) BF::submit('Save');
