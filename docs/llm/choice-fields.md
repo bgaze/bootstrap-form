@@ -161,3 +161,14 @@ Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom
 - **Validation feedback** is rendered **once at the collection level** (children carry
   `disable_errors`), and always as a block (`invalid-feedback d-block`). The collection has no single
   control, so no `aria-describedby`/`aria-invalid` is wired onto a child. See [model-binding.md](model-binding.md).
+- **`required` mark** — when the collection carries the `required` attribute, the `required_mark`
+  (default `' *'`) is appended to the **global** label only, never to the individual choice labels
+  (the children are rendered with `required_mark => false`). A standalone `checkbox` / `radio` gets the
+  mark on its own label. See [config.md](config.md).
+
+  ```blade
+  <x-bf::checkboxes name="roles" label="Roles" :choices="['admin' => 'Admin', 'editor' => 'Editor']" required/>
+  ```
+  ```html
+  <div id="roles-group" class="mb-3"><label for="roles" class="form-label">Roles *</label><div><div class="form-check"><input required id="roles-admin" class="form-check-input" name="roles" type="checkbox" value="admin"><label for="roles-admin" class="form-check-label">Admin</label></div><div class="form-check"><input required id="roles-editor" class="form-check-input" name="roles" type="checkbox" value="editor"><label for="roles-editor" class="form-check-label">Editor</label></div></div></div>
+  ```

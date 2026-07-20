@@ -96,6 +96,9 @@ class CheckChoice extends Input
                     'group' => false,
                     'help' => false,
                     'id' => $id,
+                    // The required mark belongs on the collection's global label, never
+                    // on the individual choice labels.
+                    'required_mark' => false,
                 ])
                 ->toArray();
 

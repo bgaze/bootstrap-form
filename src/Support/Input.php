@@ -28,6 +28,7 @@ use Illuminate\Support\Str;
  * @property string $error_bag
  * @property bool $show_all_errors
  * @property bool $show_valid_feedback
+ * @property string|false $required_mark
  * @property string|false $pull_right
  * @property string $left_class
  * @property string $right_class
@@ -384,7 +385,52 @@ abstract class Input
             return '';
         }
 
-        return $this->elements->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
+        return $this->elements->label($this->input_attributes->id, $this->labelValue(), $this->label_attributes->toArray(), false)->toHtml();
+    }
+
+    /**
+     * The label content with the required mark appended when applicable. The mark rides
+     * the label's (unescaped) render path, so HTML marks are emitted verbatim.
+     */
+    protected function labelValue(): mixed
+    {
+        $mark = $this->requiredMark();
+
+        return $mark === '' ? $this->label : $this->label.$mark;
+    }
+
+    /**
+     * The required mark to append to the label, or '' when the field is not required or
+     * the feature is disabled (required_mark set to false / null / '').
+     */
+    protected function requiredMark(): string
+    {
+        $mark = $this->required_mark;
+
+        if ($mark === false || $mark === null || $mark === '' || ! $this->isRequired()) {
+            return '';
+        }
+
+        return (string) $mark;
+    }
+
+    /**
+     * Whether the field carries the HTML "required" attribute, in any of its forms:
+     * ['required' => true], ['required' => 'required'] or the bare ['required'].
+     */
+    protected function isRequired(): bool
+    {
+        foreach ($this->input_attributes->all() as $key => $value) {
+            if ($key === 'required') {
+                return $value !== false && $value !== null;
+            }
+
+            if (is_int($key) && $value === 'required') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function help(): string

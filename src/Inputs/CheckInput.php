@@ -129,7 +129,7 @@ class CheckInput extends Input
             return '';
         }
 
-        return $this->elements->label($this->input_attributes->id, $this->label, $this->label_attributes->toArray(), false)->toHtml();
+        return $this->elements->label($this->input_attributes->id, $this->labelValue(), $this->label_attributes->toArray(), false)->toHtml();
     }
 
     /**

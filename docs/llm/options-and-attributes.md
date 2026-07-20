@@ -34,6 +34,11 @@ BF::text('login', 'Login', null, [
 attribute is **omitted**; any other scalar → `name="value"`. `class` is merge-aware (deduplicated,
 order preserved).
 
+> **`required` also drives the label mark.** While `required` is rendered as an attribute, its presence
+> additionally appends the `required_mark` **setting** (default `' *'`) to the label. The mark itself is
+> a setting (never rendered as an attribute) and accepts HTML / `false`; see [config.md](config.md). On
+> `checkboxes` / `radios` it marks the global label only — see [choice-fields.md](choice-fields.md).
+
 ---
 
 ## The `~` literal escape

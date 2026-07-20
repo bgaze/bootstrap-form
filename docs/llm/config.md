@@ -27,10 +27,36 @@ read it before assuming a value (see the [hub](index.md) §1.1).
 | `group` | `array` = `[]` | Application-wide default HTML attributes for the form-group wrapper. The group class is always added. |
 | `show_all_errors` | `bool` = `false` | Render all of a field's error messages instead of only the first. See [model-binding.md](model-binding.md). |
 | `show_valid_feedback` | `bool` = `false` | After a failed submit, mark error-free fields valid (`is-valid`); a per-field `success` message then renders a `valid-feedback`. |
+| `required_mark` | `string` \| `false` = `' *'` | Mark appended to the label of any field carrying the HTML `required` attribute. HTML accepted verbatim; `false` disables. See below. |
 
-The `bootstrap_version` and `layout` values, plus `custom`, `show_all_errors`, `show_valid_feedback`
-and the version-section keys below, are **inheritable settings**: a form default cascades to its
-fields, and each field may override.
+The `bootstrap_version` and `layout` values, plus `custom`, `show_all_errors`, `show_valid_feedback`,
+`required_mark` and the version-section keys below, are **inheritable settings**: a form default
+cascades to its fields, and each field may override.
+
+### `required_mark`
+
+The mark is appended to the **label** of any field whose HTML `required` attribute is set (in any
+form: `['required' => true]`, `['required' => 'required']`, or the bare `['required']`). Notes:
+
+- **HTML is accepted verbatim** — spacing/markup lives in the value itself, which is why the default
+  already includes a leading space (`' *'`). Example value: `' <span class="text-danger">*</span>'`.
+- **`false` disables** the mark (globally, per form, or per field).
+- **Smart on collections** — on `checkboxes` / `radios` the mark is applied to the **global** label
+  only, never to the individual choice labels (see [choice-fields.md](choice-fields.md)).
+- It is a **setting**, not an HTML attribute (never rendered on the element); see
+  [options-and-attributes.md](options-and-attributes.md).
+
+```php
+// Global default ' *' — the field has the required attribute, so the label gets the mark:
+BF::text('email', 'Email', null, ['required' => true]);
+// <label for="email" class="form-label">Email *</label> … <input required …>
+
+// HTML mark, per field:
+BF::text('email', 'Email', null, ['required' => true, 'required_mark' => ' <span class="text-danger">*</span>']);
+
+// Disable per form (or per field):
+BF::open(['required_mark' => false]);
+```
 
 ---
 

@@ -96,6 +96,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Required mark
+    |--------------------------------------------------------------------------
+    |
+    | The mark appended to the label of any field carrying the HTML "required"
+    | attribute. HTML is accepted verbatim (e.g. ' <span class="text-danger">*</span>'),
+    | so spacing/markup lives in the value itself; the default already includes a
+    | leading space. Set to false to disable the feature.
+    |
+    | It can be overridden per form or per field, e.g.:
+    |
+    |     BF::open(['required_mark' => false])
+    |     BF::text('email', 'Email', null, ['required' => true, 'required_mark' => ' (required)'])
+    |
+    | On a choice collection (checkboxes / radios) the mark is applied to the
+    | global label only, never to the individual choice labels.
+    |
+    */
+
+    'required_mark' => ' *',
+
+    /*
+    |--------------------------------------------------------------------------
     | Bootstrap 4 layout options
     |--------------------------------------------------------------------------
     |

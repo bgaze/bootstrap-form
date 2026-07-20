@@ -41,6 +41,8 @@ class GoldenSnapshotB4Test extends Bootstrap4TestCase
             'check.label_false', 'check.radio', 'check.checkboxes', 'check.radios',
             // Checkable child attributes
             'check.option_attributes', 'check.advanced_option', 'check.option_id_override',
+            // Required mark (version-agnostic behavior; proven on the frozen B4 baseline too)
+            'required.text', 'required.checkboxes',
             // Layouts
             'layout.h_text', 'layout.i_text', 'layout.h_checkbox',
             // Floating layout degrades to vertical on Bootstrap 4
@@ -137,6 +139,10 @@ class GoldenSnapshotB4Test extends Bootstrap4TestCase
             case 'check.option_attributes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['option_attributes' => ['data-g' => '1']]);
             case 'check.advanced_option': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', ['value' => 'editor', 'label' => 'Editor', 'data-x' => 'y']]);
             case 'check.option_id_override': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', ['value' => 'f', 'label' => 'Female', 'id' => 'gender-female']]);
+
+                // Required mark
+            case 'required.text': return (string) BF::text('email', 'Email', null, ['required' => true]);
+            case 'required.checkboxes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['required' => true]);
 
                 // Layouts
             case 'layout.h_text': BF::horizontal(['url' => '/x']);

@@ -29,7 +29,8 @@ Never assume defaults. Establish the project's actual conventions first.
 - Values that change the markup you must emit: `bootstrap_version` (`4`|`5`), `layout`
   (`vertical`|`horizontal`|`inline`|`floating`), `custom` (Bootstrap 4 only), the `bootstrap4` /
   `bootstrap5` layout sections (`left_class`, `right_class`, `pull_right`, `lspace`, `hspace`,
-  `vspace`), `show_all_errors`, `show_valid_feedback`, `blade_directives`, `components`.
+  `vspace`), `show_all_errors`, `show_valid_feedback`, `required_mark`, `blade_directives`,
+  `components`.
 - Full reference: **[config.md](config.md)**.
 
 ### 1.2 Syntax in use
@@ -98,7 +99,8 @@ Almost every field shares the signature **`(name, label, value, options)`** (dev
   - **settings** — keys matching a known package setting (§4) are consumed as configuration and
     **never rendered**.
   - **HTML attributes** — every other key is rendered on the control (`placeholder`, `required`,
-    `min`, `data-*`, `class`, ...). Boolean `true` renders a valueless attribute (`required`).
+    `min`, `data-*`, `class`, ...). Boolean `true` renders a valueless attribute (`required`). Setting
+    `required` also appends the `required_mark` to the label (default `' *'`; see [config.md](config.md)).
   - **`~` escape** — prefix a key with `~` to force it onto the element even when its name collides
     with a setting: `'~size' => '10'` renders `size="10"` instead of being read as the Bootstrap
     control-size setting. In x-components the equivalent is the `input:` prefix (`input:size="10"`).
@@ -114,8 +116,8 @@ group wrapper id is `{id}-group`.
 Anything **not** in this list is treated as an HTML attribute.
 
 - **Inherited from the form** (form default cascades to its fields): `layout`, `bootstrap_version`,
-  `custom`, `error_bag`, `show_all_errors`, `show_valid_feedback`, `left_class`, `right_class`,
-  `pull_right`, `lspace`, `hspace`, `vspace`, `group`.
+  `custom`, `error_bag`, `show_all_errors`, `show_valid_feedback`, `required_mark`, `left_class`,
+  `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`, `group`.
 - **Per field, all types:** `label`, `help`, `success`.
 - **Per field, text-like inputs only** (text/email/url/tel/number/date/time/datetime-local/month/
   week/search/color/textarea/password): `size` (`'sm'`|`'lg'`), `prepend`, `append`.

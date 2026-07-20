@@ -27,6 +27,7 @@ class GoldenSnapshotB5Test extends TestCase
             'text', 'text.help', 'text.prepend_append',
             'select.native', 'select.selected', 'select.optgroup',
             'checkbox', 'checkbox.switch', 'radios.checked', 'checkboxes.option_attributes',
+            'required.text', 'required.text_html', 'required.checkbox', 'required.checkboxes', 'required.radios',
             'file', 'range',
             'layout.horizontal', 'layout.horizontal_checkbox', 'layout.inline',
             'float.text', 'float.select', 'float.textarea', 'float.addon', 'float.checkbox',
@@ -70,6 +71,12 @@ class GoldenSnapshotB5Test extends TestCase
             case 'checkbox.switch': return (string) BF::checkbox('accept', 'Accept', 1, null, ['switch' => true]);
             case 'radios.checked': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', 'f' => 'Female'], 'f');
             case 'checkboxes.option_attributes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['option_attributes' => ['data-g' => '1']]);
+
+            case 'required.text': return (string) BF::text('email', 'Email', null, ['required' => true]);
+            case 'required.text_html': return (string) BF::text('email', 'Email', null, ['required' => true, 'required_mark' => ' <span class="text-danger">*</span>']);
+            case 'required.checkbox': return (string) BF::checkbox('accept', 'I accept', 1, null, ['required' => true]);
+            case 'required.checkboxes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['required' => true]);
+            case 'required.radios': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', 'f' => 'Female'], null, ['required' => true]);
 
             case 'file': return (string) BF::file('doc');
             case 'range': return (string) BF::range('vol');
