@@ -5,9 +5,11 @@ Bootstrap 4/5 forms builder for Laravel 12+. Composer **package** (library, not 
 dependency). Renders **Bootstrap 5 by default**; Bootstrap 4 is **fully supported for backward compatibility**
 (`bootstrap_version` config, or per form/field). Public open-source (GitHub / Packagist).
 
-> Branch `v4` (work in progress): the historical `bgaze/laravel-collective-html` dependency has been removed in
-> favor of an internal, iso-rendering HTML/form layer. Targets a **major version bump** (also hosting upcoming
-> features); not tagged/released until validated.
+> **v4 is released** (`v4.0.x` on Packagist). The v4 major dropped the historical `bgaze/laravel-collective-html`
+> dependency in favor of an internal, iso-rendering HTML/form layer. There is **no `v4` git branch**: v4
+> development lands directly on `master` (the `v1`/`v2`/`v3` branches are the older-major maintenance lines).
+> **Release discipline**: tag a version **only after the GitHub Actions pipeline is green** (phpunit matrix +
+> PHPStan + Pint); published tags are immutable — never force-move one, cut a new patch instead.
 
 ## Stack
 
