@@ -9,7 +9,10 @@ dependency). Renders **Bootstrap 5 by default**; Bootstrap 4 is **fully supporte
 > dependency in favor of an internal, iso-rendering HTML/form layer. There is **no `v4` git branch**: v4
 > development lands directly on `master` (the `v1`/`v2`/`v3` branches are the older-major maintenance lines).
 > **Release discipline**: tag a version **only after the GitHub Actions pipeline is green** (phpunit matrix +
-> PHPStan + Pint); published tags are immutable — never force-move one, cut a new patch instead.
+> PHPStan + Pint); published tags are immutable — never force-move one, cut a new patch instead. After the tag,
+> **publish a matching GitHub Release with human-readable notes** (`gh release create`): Packagist consumes the
+> tag, the Release is the public changelog + watcher notification — every tag gets one, and the newest is marked
+> `--latest`.
 
 ## Stack
 
