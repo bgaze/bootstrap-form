@@ -28,7 +28,7 @@ use Illuminate\Support\Str;
  * @property string $error_bag
  * @property bool $show_all_errors
  * @property bool $show_valid_feedback
- * @property string|false $required_mark
+ * @property string|false|null $required_mark
  * @property string|false $pull_right
  * @property string $left_class
  * @property string $right_class
