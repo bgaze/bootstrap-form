@@ -74,6 +74,50 @@ class Bootstrap5Test extends TestCase
         $this->assertStringNotContainsString('input-group-append', $html);
     }
 
+    public function test_plain_text_addon_is_wrapped_in_input_group_text(): void
+    {
+        $expected = '<div id="amount-group" class="mb-3"><label for="amount" class="form-label">Amount</label>'
+            .'<div><div class="input-group"><span class="input-group-text">$</span>'
+            .'<input id="amount" class="form-control" name="amount" type="text">'
+            .'<span class="input-group-text">.00</span></div></div></div>';
+
+        $this->assertSame($expected, (string) BF::text('amount', null, null, ['prepend' => '$', 'append' => '.00']));
+    }
+
+    public function test_plain_text_addon_is_escaped(): void
+    {
+        // No tag token, so the value stays text: special chars are escaped inside the span.
+        $html = (string) BF::text('field', null, null, ['append' => 'R&D < 5']);
+
+        $this->assertStringContainsString('<span class="input-group-text">R&amp;D &lt; 5</span>', $html);
+    }
+
+    public function test_html_addon_is_passed_through_without_extra_wrapping(): void
+    {
+        $html = (string) BF::text('field', null, null, [
+            'append' => '<button type="button" class="btn btn-outline-secondary">Go</button>',
+        ]);
+
+        $this->assertStringContainsString(
+            '<input id="field" class="form-control" name="field" type="text">'
+                .'<button type="button" class="btn btn-outline-secondary">Go</button>',
+            $html
+        );
+        $this->assertStringNotContainsString('input-group-text', $html);
+    }
+
+    public function test_addon_array_resolves_each_item_independently(): void
+    {
+        $html = (string) BF::text('field', null, null, [
+            'prepend' => ['Price', '<span class="input-group-text">€</span>'],
+        ]);
+
+        $this->assertStringContainsString(
+            '<span class="input-group-text">Price</span><span class="input-group-text">€</span>',
+            $html
+        );
+    }
+
     public function test_textarea(): void
     {
         $expected = '<div id="bio-group" class="mb-3"><label for="bio" class="form-label">Bio</label>'

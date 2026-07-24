@@ -40,7 +40,8 @@ trait HasAddons
     }
 
     /**
-     * Flatten a prepend / append option (string or array) to a string ('' when empty).
+     * Resolve a prepend / append option (string or array) to its addon HTML ('' when empty).
+     * An array is treated as several addon items, each resolved independently.
      */
     protected function resolveAddon(mixed $addon): string
     {
@@ -48,6 +49,38 @@ trait HasAddons
             return '';
         }
 
-        return is_array($addon) ? implode('', $addon) : (string) $addon;
+        $items = is_array($addon) ? $addon : [$addon];
+
+        return implode('', array_map(
+            fn (mixed $item): string => $this->resolveAddonItem((string) $item),
+            $items,
+        ));
+    }
+
+    /**
+     * Resolve a single addon item. A value carrying HTML is emitted verbatim — the caller
+     * owns the markup (an .input-group-text span, a button, a dropdown…). A plain-text value
+     * is escaped and wrapped by the driver into the version's text addon, so the common
+     * units / currency case needs no boilerplate.
+     */
+    protected function resolveAddonItem(string $item): string
+    {
+        if ($item === '') {
+            return '';
+        }
+
+        return $this->addonContainsHtml($item)
+            ? $item
+            : $this->driver->addonText($this->html, $item);
+    }
+
+    /**
+     * Whether an addon value carries HTML markup (an element or comment tag). Detects a tag
+     * opening `<` immediately followed by a letter, `!` or `/`, so bare content such as
+     * `°C`, `$`, `R&D` or `a < b` is treated as text, not markup.
+     */
+    protected function addonContainsHtml(string $value): bool
+    {
+        return preg_match('/<[a-z!\/][^>]*>/i', $value) === 1;
     }
 }

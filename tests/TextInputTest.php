@@ -71,12 +71,27 @@ class TextInputTest extends Bootstrap4TestCase
 
     public function test_prepend_and_append_build_input_group(): void
     {
+        // Plain text is auto-wrapped in .input-group-text, nested in the B4 prepend/append div.
         $expected = '<div id="amount-group" class="form-group"><label for="amount">Amount</label>'
-            .'<div><div class="input-group"><div class="input-group-prepend">$</div>'
+            .'<div><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div>'
             .'<input id="amount" class="form-control" name="amount" type="text">'
-            .'<div class="input-group-append">.00</div></div></div></div>';
+            .'<div class="input-group-append"><span class="input-group-text">.00</span></div></div></div></div>';
 
         $this->assertSame($expected, (string) BF::text('amount', null, null, ['prepend' => '$', 'append' => '.00']));
+    }
+
+    public function test_html_addon_is_passed_through_without_extra_wrapping(): void
+    {
+        $html = (string) BF::text('field', null, null, [
+            'append' => '<button type="button" class="btn btn-outline-secondary">Go</button>',
+        ]);
+
+        // HTML addon is emitted verbatim inside the append div — no .input-group-text wrap.
+        $this->assertStringContainsString(
+            '<div class="input-group-append"><button type="button" class="btn btn-outline-secondary">Go</button></div>',
+            $html
+        );
+        $this->assertStringNotContainsString('input-group-text', $html);
     }
 
     public function test_textarea(): void

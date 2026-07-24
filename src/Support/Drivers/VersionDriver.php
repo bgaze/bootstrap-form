@@ -146,6 +146,17 @@ abstract class VersionDriver
         return $input.$label;
     }
 
+    /**
+     * Render a plain-text addon (no HTML) into the shared `.input-group-text` span, escaped.
+     * The span is identical across versions; only its placement in the input group differs
+     * (see each driver's inputGroup()). HTML addons never reach this method — the caller
+     * emits them verbatim.
+     */
+    public function addonText(Html $html, string $text): string
+    {
+        return $html->tag('span', e($text), ['class' => 'input-group-text'])->toHtml();
+    }
+
     // ## SHARED HELPERS #########################################################
 
     protected function inputGroupClass(?string $size): string

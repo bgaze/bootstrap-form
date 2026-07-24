@@ -44,7 +44,7 @@ BF::text('login', null, null, ['bootstrap_version' => 4]); // this field
 | Range | `form-control-range` (or `custom-range`) | `form-range` |
 | Checkbox/radio | `form-check` / `custom-control custom-{checkbox,radio}` | `form-check` |
 | Switch | `custom-control custom-switch` | `form-check form-switch` + `role="switch"` |
-| Input group addons | `.input-group-prepend` / `.input-group-append` wrappers | addons are direct children (no wrappers) |
+| Input group addons | each nested in an `.input-group-prepend` / `.input-group-append` div | addons are direct children (no wrappers) |
 | File | native or `custom-file` markup | `form-control` |
 | `custom` option | native vs custom controls | **no-op** (styles unified) |
 | Floating labels | not supported → degrades to vertical | supported (`.form-floating`) |

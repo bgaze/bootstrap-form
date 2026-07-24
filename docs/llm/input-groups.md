@@ -1,6 +1,7 @@
 <!--
-Sources: src/Support/Traits/HasAddons.php, src/Support/Drivers/Bootstrap4Driver.php,
-         src/Support/Drivers/Bootstrap5Driver.php, src/Support/Input.php (help)
+Sources: src/Support/Traits/HasAddons.php, src/Support/Drivers/VersionDriver.php (addonText),
+         src/Support/Drivers/Bootstrap4Driver.php, src/Support/Drivers/Bootstrap5Driver.php,
+         src/Support/Input.php (help)
 Goldens: tests/golden/b5/text.prepend_append.html, tests/golden/b5/text.help.html (default),
          tests/golden/b5/float.addon.html, tests/golden/b4/text.prepend_append.html (B4),
          tests/golden/b4/error.help_describedby.html
@@ -15,17 +16,28 @@ Applies to the **text-like inputs and `select`** (the fields using `HasAddons`).
 
 ## Prepend / append addons
 
-`prepend` and `append` accept a **string** (raw HTML/text) or an **array** (concatenated). Providing
-either wraps the control in a Bootstrap **input group**.
+`prepend` and `append` accept a **string** or an **array** (each item resolved independently).
+Providing either wraps the control in a Bootstrap **input group**.
+
+**Text vs HTML is auto-detected per item** (both Bootstrap versions):
+
+- a value **without an HTML tag** is treated as plain text: it is **escaped** and wrapped in an
+  `.input-group-text` span for you — the common units / currency / symbol case;
+- a value **containing an HTML tag** (`<span>`, `<button>`, `<i>`, `<!-- -->`, …) is emitted
+  **verbatim, unescaped** — you own the markup, so buttons, dropdowns or a hand-written
+  `.input-group-text` pass through untouched.
+
+Detection keys on a tag opening (`<` immediately followed by a letter, `!` or `/`), so bare content
+such as `°C`, `$`, `R&D` or `a < b` stays text.
 
 ```blade
 <x-bf::text name="amount" prepend="$" append=".00"/>
 ```
 ```html
-<div id="amount-group" class="mb-3"><label for="amount" class="form-label">Amount</label><div><div class="input-group">$<input id="amount" class="form-control" name="amount" type="text">.00</div></div></div>
+<div id="amount-group" class="mb-3"><label for="amount" class="form-label">Amount</label><div><div class="input-group"><span class="input-group-text">$</span><input id="amount" class="form-control" name="amount" type="text"><span class="input-group-text">.00</span></div></div></div>
 ```
 
-Facade / slot forms:
+Facade / slot forms (the slot content is resolved the same way — text is wrapped, HTML passes through):
 
 ```php
 echo BF::text('amount', 'Amount', null, ['prepend' => '$', 'append' => '.00']);
@@ -37,13 +49,20 @@ echo BF::text('amount', 'Amount', null, ['prepend' => '$', 'append' => '.00']);
 </x-bf::text>
 ```
 
-**Version difference:** Bootstrap 5 (the default, above) places addons as **direct children** of
-`.input-group`. **Bootstrap 4 (legacy)** wraps each in an `.input-group-prepend` / `.input-group-append`
-div:
+To force a non-text addon (a button, an icon, custom markup), pass HTML — it is not wrapped:
+
+```blade
+<x-bf::text name="search" append='<button type="button" class="btn btn-outline-secondary">Go</button>'/>
+```
+
+**Version difference:** the text-vs-HTML detection and the `.input-group-text` span are identical
+across versions; only the **placement** differs. **Bootstrap 5** (above) sets addons as **direct
+children** of `.input-group`. **Bootstrap 4 (legacy)** nests each in an `.input-group-prepend` /
+`.input-group-append` div (see [bootstrap5.md](bootstrap5.md)):
 
 ```html
 <!-- Bootstrap 4 (legacy) -->
-<div class="form-group"><label for="amount">Amount</label><div><div class="input-group"><div class="input-group-prepend">$</div><input id="amount" class="form-control" name="amount" type="text"><div class="input-group-append">.00</div></div></div></div>
+<div id="amount-group" class="form-group"><label for="amount">Amount</label><div><div class="input-group"><div class="input-group-prepend"><span class="input-group-text">$</span></div><input id="amount" class="form-control" name="amount" type="text"><div class="input-group-append"><span class="input-group-text">.00</span></div></div></div></div>
 ```
 
 Validation feedback is forced to display as a block (`invalid-feedback d-block`) inside an input group.
@@ -89,5 +108,5 @@ When both an error and help are present, both ids are referenced
 In the floating layout (Bootstrap 5), the `.form-floating` block nests **inside** the input group:
 
 ```html
-<div class="input-group">$<div class="form-floating"><input id="amount" class="form-control" placeholder=" " name="amount" type="text"><label for="amount">Amount</label></div></div>
+<div class="input-group"><span class="input-group-text">$</span><div class="form-floating"><input id="amount" class="form-control" placeholder=" " name="amount" type="text"><label for="amount">Amount</label></div></div>
 ```

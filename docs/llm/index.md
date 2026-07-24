@@ -210,7 +210,7 @@ For buttons/link/label the `options` second arg may be a Bootstrap variant strin
 {{-- Control sizing (text-like) --}}
 <x-bf::text name="code" size="sm"/>
 
-{{-- Input-group addons (string, or <x-slot:prepend>) — see input-groups.md --}}
+{{-- Input-group addons: plain text auto-wraps in .input-group-text; pass HTML (a button, an icon) to bypass — see input-groups.md --}}
 <x-bf::text name="amount" prepend="$" append=".00"/>
 
 {{-- Select with a plain value => label map --}}
