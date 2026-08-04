@@ -89,7 +89,8 @@ Validation feedback is forced to display as a block (`invalid-feedback d-block`)
 ## Help text
 
 `help => '...'` renders a `<small class="form-text">` after the control, wired to it for screen readers
-via `aria-describedby`:
+via `aria-describedby`. On a `checkbox` / `radio` it lands after the `.form-check` wrapper — see
+[choice-fields.md](choice-fields.md):
 
 ```blade
 <x-bf::text name="login" help="Some help"/>

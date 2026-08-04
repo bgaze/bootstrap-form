@@ -1,9 +1,11 @@
 <!--
 Sources: src/Inputs/SelectInput.php, src/Inputs/CheckInput.php, src/Inputs/CheckChoice.php,
-         src/Support/ChoiceList.php, src/View/Components/Select.php, src/View/Components/Choice.php,
+         src/Support/ChoiceList.php, src/Support/Input.php, src/View/Components/Select.php,
+         src/View/Components/Choice.php,
          src/View/Components/Checkboxes.php, src/View/Components/Radios.php,
          src/View/Components/Checkbox.php, src/View/Components/Radio.php
-Goldens: tests/golden/b5/*.html (default), tests/golden/b4/select.*.html, tests/golden/b4/check.*.html (B4)
+Goldens: tests/golden/b5/*.html (default), tests/golden/b4/select.*.html, tests/golden/b4/check.*.html,
+         tests/golden/b4/error.check_help.html, tests/golden/b4/valid.check_success.html (B4)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -126,6 +128,17 @@ Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom
 - **`custom`** (Bootstrap 4 legacy) → in B4, `custom-control custom-checkbox` / `custom-radio`. No-op in B5 (the default).
 - **`value`** — the submitted value when checked (checkbox defaults to `1`, radio to `null`).
 - **`label => false`** removes the label (a custom control keeps an empty `<label>` for its markup).
+- **`help` / feedback placement** — the validation feedback goes **inside** the `.form-check` wrapper (a
+  sibling of the input, which is what Bootstrap's `.is-invalid ~ .invalid-feedback` rule needs, so no
+  `d-block`); the `help` text goes **after** the wrapper, full width, like every other field type. Each
+  block is emitted exactly once. See [model-binding.md](model-binding.md).
+
+  ```blade
+  <x-bf::checkbox name="accept" label="Accept" help="Some help"/>
+  ```
+  ```html
+  <div id="accept-group" class="mb-3"><div><div class="form-check"><input id="accept" class="form-check-input" aria-describedby="accept-help" name="accept" type="checkbox" value="1"><label for="accept" class="form-check-label">Accept</label></div><small id="accept-help" class="form-text">Some help</small></div></div>
+  ```
 
 ---
 

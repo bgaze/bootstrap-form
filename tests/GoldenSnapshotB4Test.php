@@ -41,6 +41,8 @@ class GoldenSnapshotB4Test extends Bootstrap4TestCase
             'check.label_false', 'check.radio', 'check.checkboxes', 'check.radios',
             // Checkable child attributes
             'check.option_attributes', 'check.advanced_option', 'check.option_id_override',
+            // Help text on checkables: after the wrapper, once (feedback stays inside it)
+            'check.help', 'check.switch_help', 'check.inline_help', 'check.checkboxes_help',
             // Required mark (version-agnostic behavior; proven on the frozen B4 baseline too)
             'required.text', 'required.checkboxes',
             // Layouts
@@ -48,9 +50,9 @@ class GoldenSnapshotB4Test extends Bootstrap4TestCase
             // Floating layout degrades to vertical on Bootstrap 4
             'float.degrades',
             // Validation errors
-            'error.text', 'error.checkboxes', 'error.help_describedby',
+            'error.text', 'error.checkboxes', 'error.help_describedby', 'error.check_help',
             // Valid feedback (opt-in)
-            'valid.text', 'valid.text_success', 'valid.checkboxes',
+            'valid.text', 'valid.text_success', 'valid.checkboxes', 'valid.check_success',
             // Value binding
             'old.text', 'old.select', 'old.checkbox', 'model.text', 'model.checkbox',
         ];
@@ -140,6 +142,12 @@ class GoldenSnapshotB4Test extends Bootstrap4TestCase
             case 'check.advanced_option': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', ['value' => 'editor', 'label' => 'Editor', 'data-x' => 'y']]);
             case 'check.option_id_override': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', ['value' => 'f', 'label' => 'Female', 'id' => 'gender-female']]);
 
+                // Help text on checkables (rendered once, after the .form-check wrapper)
+            case 'check.help': return (string) BF::checkbox('accept', 'Accept', 1, null, ['help' => 'Some help']);
+            case 'check.switch_help': return (string) BF::checkbox('accept', 'Accept', 1, null, ['switch' => true, 'help' => 'Some help']);
+            case 'check.inline_help': return (string) BF::checkbox('accept', 'Accept', 1, null, ['inline' => true, 'help' => 'Some help']);
+            case 'check.checkboxes_help': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['help' => 'Some help']);
+
                 // Required mark
             case 'required.text': return (string) BF::text('email', 'Email', null, ['required' => true]);
             case 'required.checkboxes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['required' => true]);
@@ -177,6 +185,11 @@ class GoldenSnapshotB4Test extends Bootstrap4TestCase
                 $this->withErrors(['login' => ['The login field is required.']]);
 
                 return (string) BF::text('login', null, null, ['help' => 'Some help']);
+            case 'error.check_help':
+                $this->withErrors(['accept' => ['You must accept.']]);
+
+                // Error inside the .form-check wrapper, help after it — each once.
+                return (string) BF::checkbox('accept', 'Accept', 1, null, ['help' => 'Some help']);
 
                 // Valid feedback (a bag exists on another field, this one is untouched)
             case 'valid.text':
@@ -191,6 +204,10 @@ class GoldenSnapshotB4Test extends Bootstrap4TestCase
                 $this->withErrors(['other' => ['err']]);
 
                 return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin'], null, ['show_valid_feedback' => true, 'success' => 'Nice']);
+            case 'valid.check_success':
+                $this->withErrors(['other' => ['err']]);
+
+                return (string) BF::checkbox('accept', 'Accept', 1, null, ['show_valid_feedback' => true, 'success' => 'Nice', 'help' => 'Some help']);
 
                 // Value binding
             case 'old.text':

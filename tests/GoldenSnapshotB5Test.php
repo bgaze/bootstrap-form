@@ -27,11 +27,13 @@ class GoldenSnapshotB5Test extends TestCase
             'text', 'text.help', 'text.prepend_append',
             'select.native', 'select.selected', 'select.optgroup',
             'checkbox', 'checkbox.switch', 'radios.checked', 'checkboxes.option_attributes',
+            'checkbox.help', 'checkbox.switch_help', 'checkbox.inline_help', 'radio.help', 'checkboxes.help',
             'required.text', 'required.text_html', 'required.checkbox', 'required.checkboxes', 'required.radios',
             'file', 'range',
-            'layout.horizontal', 'layout.horizontal_checkbox', 'layout.inline',
+            'layout.horizontal', 'layout.horizontal_checkbox', 'layout.horizontal_checkbox_help', 'layout.inline',
             'float.text', 'float.select', 'float.textarea', 'float.addon', 'float.checkbox',
             'model.text', 'old.text', 'error.text', 'valid.text_success',
+            'error.checkbox_help', 'valid.checkbox_success',
         ];
 
         return array_map(fn ($n) => [$n], $names);
@@ -72,6 +74,13 @@ class GoldenSnapshotB5Test extends TestCase
             case 'radios.checked': return (string) BF::radios('gender', 'Gender', ['m' => 'Male', 'f' => 'Female'], 'f');
             case 'checkboxes.option_attributes': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['option_attributes' => ['data-g' => '1']]);
 
+                // Help text on checkables: rendered once, after the .form-check wrapper
+            case 'checkbox.help': return (string) BF::checkbox('accept', 'Accept', 1, null, ['help' => 'Some help']);
+            case 'checkbox.switch_help': return (string) BF::checkbox('accept', 'Accept', 1, null, ['switch' => true, 'help' => 'Some help']);
+            case 'checkbox.inline_help': return (string) BF::checkbox('accept', 'Accept', 1, null, ['inline' => true, 'help' => 'Some help']);
+            case 'radio.help': return (string) BF::radio('gender', 'Female', 'f', null, ['help' => 'Some help']);
+            case 'checkboxes.help': return (string) BF::checkboxes('roles', 'Roles', ['admin' => 'Admin', 'editor' => 'Editor'], null, ['help' => 'Some help']);
+
             case 'required.text': return (string) BF::text('email', 'Email', null, ['required' => true]);
             case 'required.text_html': return (string) BF::text('email', 'Email', null, ['required' => true, 'required_mark' => ' <span class="text-danger">*</span>']);
             case 'required.checkbox': return (string) BF::checkbox('accept', 'I accept', 1, null, ['required' => true]);
@@ -94,6 +103,11 @@ class GoldenSnapshotB5Test extends TestCase
                 return $h;
             case 'layout.horizontal_checkbox': BF::horizontal(['url' => '/x']);
                 $h = (string) BF::checkbox('accept', 'Accept', 1);
+                BF::close();
+
+                return $h;
+            case 'layout.horizontal_checkbox_help': BF::horizontal(['url' => '/x']);
+                $h = (string) BF::checkbox('accept', 'Accept', 1, null, ['help' => 'Some help']);
                 BF::close();
 
                 return $h;
@@ -120,6 +134,16 @@ class GoldenSnapshotB5Test extends TestCase
                 $this->withErrors(['other' => ['err']]);
 
                 return (string) BF::text('login', null, null, ['show_valid_feedback' => true, 'success' => 'Looks good!']);
+
+                // Check feedback stays inside the .form-check wrapper, help after it
+            case 'error.checkbox_help':
+                $this->withErrors(['accept' => ['You must accept.']]);
+
+                return (string) BF::checkbox('accept', 'Accept', 1, null, ['help' => 'Some help']);
+            case 'valid.checkbox_success':
+                $this->withErrors(['other' => ['err']]);
+
+                return (string) BF::checkbox('accept', 'Accept', 1, null, ['show_valid_feedback' => true, 'success' => 'Looks good!', 'help' => 'Some help']);
         }
 
         $this->fail("Unknown fixture: {$name}");

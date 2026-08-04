@@ -100,6 +100,16 @@ an `invalid-feedback` message wired via `aria-describedby`:
 - **`show_all_errors => true`** renders all messages for the field instead of only the first.
 - **`error_bag => 'name'`** targets a named bag (e.g. multiple forms on a page).
 - **Choice collections** render one `invalid-feedback d-block` at the collection level (not per child).
+- **Standalone `checkbox` / `radio`** place the message **inside** the `.form-check` wrapper, right after
+  the label: Bootstrap only displays it as a sibling of the input (`.is-invalid ~ .invalid-feedback`), so
+  no `d-block` is needed there. The `help` text stays **outside** the wrapper, full width. Each block is
+  emitted exactly once.
+
+  ```html
+  <div id="accept-group" class="is-invalid mb-3"><div><div class="form-check"><input id="accept" class="form-check-input is-invalid" aria-describedby="accept-error accept-help" aria-invalid="true" name="accept" type="checkbox" value="1"><label for="accept" class="form-check-label">Accept</label><div class="invalid-feedback" id="accept-error">You must accept.</div></div><small id="accept-help" class="form-text">Some help</small></div></div>
+  ```
+- **`disable_errors => true`** on a check suppresses its feedback entirely (message *and* aria wiring);
+  the group still carries `is-invalid`. Choice children use it — the collection renders the message once.
 
 ---
 
@@ -114,4 +124,6 @@ message renders a `valid-feedback`:
 <input id="login" class="form-control is-valid" aria-describedby="login-valid" aria-invalid="false" name="login" type="text"><div class="valid-feedback" id="login-valid">Looks good!</div>
 ```
 
-Valid and invalid states are mutually exclusive (a field is only marked valid when it has no error).
+Valid and invalid states are mutually exclusive (a field is only marked valid when it has no error). On a
+standalone `checkbox` / `radio` the `valid-feedback` sits **inside** the `.form-check` wrapper, like the
+error message above.

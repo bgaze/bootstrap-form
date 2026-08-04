@@ -225,6 +225,29 @@ abstract class Input
     }
 
     /**
+     * The validation feedback blocks (error message, then valid message), or '' when the
+     * field does not render its own feedback. Single source of both call sites, so the
+     * feedback can never be emitted twice.
+     */
+    protected function feedbackBlocks(): string
+    {
+        if (! $this->rendersOwnFeedback()) {
+            return '';
+        }
+
+        return $this->errors.$this->validFeedback();
+    }
+
+    /**
+     * Whether inputGroup() already emits the validation feedback inside its own wrapper,
+     * so the group column must not repeat it.
+     */
+    protected function inputGroupRendersFeedback(): bool
+    {
+        return false;
+    }
+
+    /**
      * Whether the field renders as a single describable control. Choice collections
      * render several inputs, so there is no single element to wire aria attributes to.
      */
@@ -506,8 +529,13 @@ abstract class Input
     protected function rightGroupColumn(): string
     {
         $content = $this->inputGroup();
-        $content .= $this->errors;
-        $content .= $this->validFeedback();
+
+        // Fields whose inputGroup() places the feedback in its own wrapper (checks) have
+        // already emitted it; the help text always renders here, full width.
+        if (! $this->inputGroupRendersFeedback()) {
+            $content .= $this->feedbackBlocks();
+        }
+
         $content .= $this->help();
 
         $attributes = Attributes::make();

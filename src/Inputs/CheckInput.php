@@ -92,21 +92,23 @@ class CheckInput extends Input
         return $this->elements->{$this->tag}($this->name, $this->value, $this->checked, $this->input_attributes->toArray())->toHtml();
     }
 
+    /**
+     * The feedback belongs inside the .form-check wrapper: Bootstrap only displays it as
+     * a sibling of the input (.is-invalid ~ .invalid-feedback), so no d-block is needed.
+     * The help text stays out, rendered full width by the group column.
+     */
     public function inputGroup(): string
     {
         $content = $this->input();
         $content .= $this->label();
-
-        if (! $this->disable_errors) {
-            $content .= $this->errors;
-            $content .= $this->validFeedback();
-        }
-
-        if ($this->help) {
-            $content .= $this->help();
-        }
+        $content .= $this->feedbackBlocks();
 
         return $this->html->tag('div', $content, ['class' => $this->check_classes['wrapper']])->toHtml();
+    }
+
+    protected function inputGroupRendersFeedback(): bool
+    {
+        return true;
     }
 
     /**
