@@ -25,11 +25,11 @@ previous (**cascade**):
 
 A per-field override switches the **driver** (component classes) for that field; layout settings
 (`group_class`, `left_class`, spacing, …) stay inherited from the form. So a Bootstrap 4 field
-inside a Bootstrap 5 form keeps the form's `group_class` (`mb-3`) — pass `group_class` alongside,
-or pin the version at form level, when you need the other version's group class:
+inside a Bootstrap 5 form keeps the form's group class (`mb-3`) — style the group, or pin the
+version at form level, when you need the other version's:
 
 ```php
-BF::text('login', null, null, ['bootstrap_version' => 4, 'group_class' => 'form-group']);
+BF::text('login', null, null, ['bootstrap_version' => 4, 'group' => ['class' => 'form-group']]);
 ```
 
 ```php
@@ -79,6 +79,7 @@ Representative Bootstrap 5 output:
   supported on both versions.
 - Component classes are fixed driver code — only the layout-level options in the `bootstrap4` /
   `bootstrap5` config sections are tunable. See [config.md](config.md).
-- **`group_class` and `choices_label_class` are *not* component classes.** `mb-3` and `pt-0` are
-  spacing/alignment utilities, so they live in the config sections and follow the regular cascade
-  (config → form → field), `false` to disable. Everything else in the table above is driver code.
+- **`group_class` is *not* a component class.** `mb-3` is a spacing utility, so it lives in the
+  config version sections rather than in the driver; style the group to override it
+  ([options-and-attributes.md](options-and-attributes.md)). Everything else in the table above is
+  driver code, and driver classes always survive an application-supplied class.

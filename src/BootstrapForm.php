@@ -35,7 +35,6 @@ use Illuminate\Support\Traits\Macroable;
  * @property int $bootstrap_version
  * @property bool $custom
  * @property string|false $group_class
- * @property string|false $choices_label_class
  * @property string $left_class
  * @property string $right_class
  * @property string|false $hspace

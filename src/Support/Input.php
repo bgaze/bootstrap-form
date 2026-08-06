@@ -30,7 +30,6 @@ use Illuminate\Support\Str;
  * @property bool $show_valid_feedback
  * @property string|false|null $required_mark
  * @property string|false $group_class
- * @property string|false $choices_label_class
  * @property string|false $pull_right
  * @property string $left_class
  * @property string $right_class
@@ -59,6 +58,21 @@ abstract class Input
      * Whether the field is in a "valid" state (submitted, no error, feature enabled).
      */
     protected bool $isValid = false;
+
+    /**
+     * Whether the application supplied a class for the group wrapper / the label.
+     *
+     * Captured at construction, before any driver or state class is appended: getErrors()
+     * already puts is-invalid on the group bag, so reading the bag at render time would
+     * mistake an invalid field for an application-styled one.
+     *
+     * When true, the element keeps only its driver classes — every config-sourced class
+     * (group_class, hspace, vspace, left_class, lspace) is skipped, so what the
+     * application writes is what it gets.
+     */
+    protected bool $hasCustomGroupClass = false;
+
+    protected bool $hasCustomLabelClass = false;
 
     public function __construct(string $name, mixed $label = null, mixed $value = null, array $options = [])
     {
@@ -131,6 +145,8 @@ abstract class Input
         } else {
             $this->label_attributes = Attributes::make();
         }
+
+        $this->hasCustomLabelClass = $this->label_attributes->class !== null;
     }
 
     protected function setGroupAttributes(array $options): void
@@ -151,6 +167,8 @@ abstract class Input
         } else {
             $this->group_attributes = Attributes::make();
         }
+
+        $this->hasCustomGroupClass = $this->group_attributes->class !== null;
 
         if (! $this->group_attributes->id) {
             $this->group_attributes->id = $this->flattenName($this->name, '-').'-group';
@@ -479,20 +497,23 @@ abstract class Input
             return $this->inputGroup();
         }
 
-        if ($this->group_class) {
-            $this->group_attributes->addClass((string) $this->group_class);
+        // Config-sourced classes only apply when the application styled nothing itself.
+        if (! $this->hasCustomGroupClass) {
+            if ($this->group_class) {
+                $this->group_attributes->addClass((string) $this->group_class);
+            }
+
+            if ($this->layout === 'inline' && $this->hspace) {
+                $this->group_attributes->addClass($this->hspace);
+            }
+
+            if ($this->layout === 'inline' && $this->vspace) {
+                $this->group_attributes->addClass($this->vspace);
+            }
         }
 
         if ($this->layout === 'horizontal') {
             $this->group_attributes->addClass($this->driver->rowClass());
-        }
-
-        if ($this->layout === 'inline' && $this->hspace) {
-            $this->group_attributes->addClass($this->hspace);
-        }
-
-        if ($this->layout === 'inline' && $this->vspace) {
-            $this->group_attributes->addClass($this->vspace);
         }
 
         $content = $this->leftGroupColumn().$this->rightGroupColumn();
@@ -515,12 +536,18 @@ abstract class Input
         }
 
         if ($this->layout === 'horizontal') {
-            $this->label_attributes->addClass($this->driver->colFormLabelClass())->addClass($this->left_class);
+            $this->label_attributes->addClass($this->driver->colFormLabelClass());
+
+            // The column width is config-sourced: an application-supplied class owns the
+            // label's layout, width included (see hasCustomLabelClass).
+            if (! $this->hasCustomLabelClass) {
+                $this->label_attributes->addClass($this->left_class);
+            }
         } elseif ($labelClass = $this->driver->labelClass()) {
             $this->label_attributes->addClass($labelClass);
         }
 
-        if ($this->layout === 'inline' && $this->lspace) {
+        if ($this->layout === 'inline' && $this->lspace && ! $this->hasCustomLabelClass) {
             $this->label_attributes->addClass($this->lspace);
         }
 

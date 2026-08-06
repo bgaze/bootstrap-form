@@ -24,14 +24,15 @@ read it before assuming a value (see the [hub](index.md) §1.1).
 | `components` | `bool` = `true` | Register the `bf` x-component namespace (`<x-bf::text/>`, …). Facade & directives stay available regardless. |
 | `bootstrap_version` | `4` \| `5` = `5` | Selects the version driver (markup vocabulary). Default `5`; set `4` for legacy Bootstrap 4 (fully supported). Overridable per form / per field. See [bootstrap5.md](bootstrap5.md). |
 | `layout` | `vertical` \| `horizontal` \| `inline` \| `floating` = `vertical` | Default form layout. See [layouts.md](layouts.md). |
-| `group` | `array` = `[]` | Application-wide default HTML attributes for the form-group wrapper. A class declared here is **added** to `group_class`, never replaces it; `false` drops the wrapper entirely. |
+| `group` | `array` = `[]` | Application-wide default HTML attributes for the form-group wrapper. A `class` declared here **replaces** `group_class`; `false` drops the wrapper entirely. |
 | `show_all_errors` | `bool` = `false` | Render all of a field's error messages instead of only the first. See [model-binding.md](model-binding.md). |
 | `show_valid_feedback` | `bool` = `false` | After a failed submit, mark error-free fields valid (`is-valid`); a per-field `success` message then renders a `valid-feedback`. |
 | `required_mark` | `string` \| `false` = `' *'` | Mark appended to the label of any field carrying the HTML `required` attribute. HTML accepted verbatim; `false` disables. See below. |
 
 The `bootstrap_version` and `layout` values, plus `custom`, `show_all_errors`, `show_valid_feedback`,
 `required_mark` and the version-section keys below, are **inheritable settings**: a form default
-cascades to its fields, and each field may override.
+cascades to its fields, and each field may override. The one exception is `group_class`, which is
+set in config only (see below).
 
 ### `required_mark`
 
@@ -68,8 +69,7 @@ Layout-level, app-tunable options applied for the active version. Component clas
 | Key | `bootstrap4` default | `bootstrap5` default | Effect |
 |---|---|---|---|
 | `custom` | `false` | *(n/a — no-op)* | Use Bootstrap 4 custom-styled controls by default. |
-| `group_class` | `form-group` | `mb-3` | Class(es) on every form-group wrapper (`false` to disable). See below. |
-| `choices_label_class` | `pt-0` | `pt-0` | Horizontal: class(es) on the **global** label of a `checkboxes` / `radios` collection, aligning it with the first choice (`false` to disable). See [choice-fields.md](choice-fields.md). |
+| `group_class` | `form-group` | `mb-3` | **Default** class(es) on every form-group wrapper (`false` for none). Config-level only. See below. |
 | `left_class` | `col-lg-2 col-xl-3` | `col-lg-2 col-xl-3` | Horizontal: label column width. |
 | `right_class` | `col-lg-10 col-xl-9` | `col-lg-10 col-xl-9` | Horizontal: control column width. |
 | `pull_right` | `hidden-md-down col-lg-2 col-xl-3` | `d-none d-lg-block col-lg-2 col-xl-3` | Horizontal: spacer column for label-less fields (`false` to disable). |
@@ -83,28 +83,29 @@ setting so it is never emitted as an HTML attribute.
 
 ### `group_class`
 
-The class(es) applied to the form-group wrapper of **every** field. Like all version-section keys it
-is an inheritable setting: config → form → field, `false` to disable.
+The **default** class(es) on the form-group wrapper of every field. Unlike the other version-section
+keys it is set **here only** — there is a single way to override it at a call site, and it is the
+group's own attribute bag:
 
 ```php
-// App-wide: config/bootstrap_form.php → 'bootstrap5' => ['group_class' => 'mb-4', …]
+// App-wide default: config/bootstrap_form.php → 'bootstrap5' => ['group_class' => 'mb-4', …]
 
-BF::open(['group_class' => 'mb-4']);                          // this form
-BF::text('login', null, null, ['group_class' => 'mb-0']);     // this field
-BF::text('login', null, null, ['group_class' => false]);      // <div id="login-group">
+BF::open(['group' => ['class' => 'mb-4']]);                        // this form and all its fields
+BF::text('login', null, null, ['group' => ['class' => 'mb-0']]);   // this field
+BF::text('login', null, null, ['group' => ['class' => false]]);    // <div id="login-group">
 ```
 
-Not to be confused with the root `group` key, which carries the wrapper's **HTML attributes**:
+A supplied class **replaces** the default rather than adding to it, and also takes over the inline
+spacing — see the class-ownership rule in
+[options-and-attributes.md](options-and-attributes.md). Driver classes always survive:
 
-| Option | Effect |
+| Option | Result |
 |---|---|
-| `group_class => 'mb-4'` | **replaces** the group class → `<div id="x-group" class="mb-4">` |
-| `group_class => false` | wrapper kept, no class → `<div id="x-group">` |
-| `group => ['class' => 'border']` | **adds** to it → `<div class="border mb-3" id="x-group">` |
+| *(nothing)* | `<div id="x-group" class="mb-3">` |
+| `group => ['class' => 'mb-4']` | `<div class="mb-4" id="x-group">` |
+| `group => ['class' => false]` | `<div id="x-group">` |
 | `group => false` | **no wrapper at all** — the control is rendered bare |
-
-In the `horizontal` and `inline` layouts the layout's own classes (`row`, `hspace`, `vspace`) are
-appended after `group_class`: `<div id="login-group" class="mb-4 me-3 my-1">`.
+| `group => ['class' => 'mb-4']`, horizontal | `<div class="mb-4 row" id="x-group">` — `row` is driver-owned |
 
 ### Partial version sections
 

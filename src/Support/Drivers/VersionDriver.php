@@ -79,6 +79,16 @@ abstract class VersionDriver
         return 'row';
     }
 
+    /**
+     * Top-padding reset aligning the global label of a choice collection with its first
+     * choice, in the horizontal layout. Driver-owned: it is an alignment requirement of
+     * that layout, not a styling default, so it survives an application-supplied class.
+     */
+    public function checkChoiceLabelClass(): string
+    {
+        return 'pt-0';
+    }
+
     // ## VERSION DELTAS #########################################################
 
     abstract public function labelClass(): string;

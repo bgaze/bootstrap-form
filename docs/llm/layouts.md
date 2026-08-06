@@ -35,10 +35,11 @@ Label above the control. The form carries no layout class; each field is a form 
 <div id="field-group" class="mb-3"><label for="field" class="form-label">Field</label><div><input id="field" class="form-control" name="field" type="text"></div></div>
 ```
 
-The group class is the `group_class` setting (config `bootstrap4` / `bootstrap5` sections), not a
-fixed value: override it per form or per field, or set it to `false` for an unclassed wrapper —
-`BF::open(['group_class' => 'mb-4'])`. The layout classes below are appended **after** it. See
-[config.md](config.md).
+The group class is the `group_class` config key (`bootstrap4` / `bootstrap5` sections), not a fixed
+value. To override it, style the group — `BF::open(['group' => ['class' => 'mb-4']])` for a whole
+form, the same option per field, `false` for an unclassed wrapper. Doing so also takes over the
+inline spacing below; `row` is driver-owned and always survives. See
+[options-and-attributes.md](options-and-attributes.md).
 
 ---
 

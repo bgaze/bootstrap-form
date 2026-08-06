@@ -6,10 +6,12 @@ use BF;
 use Illuminate\Support\Facades\Blade;
 
 /**
- * The two utility classes that used to be hardcoded in the version drivers are settings
- * of the version config sections: group_class (the form group wrapper) and
- * choices_label_class (the global label of a choice collection, horizontal layout).
- * Both follow the regular cascade — config, then form, then field — and false disables.
+ * One channel per element: supplying a class takes over that element's styling.
+ *
+ * The package then adds only what the version driver requires (component, grid and state
+ * classes); every config-sourced class — group_class, hspace, vspace, left_class, lspace —
+ * is skipped. group_class itself is configured in the version sections and overridden by
+ * styling the group, at form or field level.
  */
 class ConfigurableClassesTest extends TestCase
 {
@@ -36,47 +38,41 @@ class ConfigurableClassesTest extends TestCase
         $this->assertStringNotContainsString('mb-3', $html);
     }
 
-    public function test_group_class_is_overridable_per_form(): void
-    {
-        BF::open(['group_class' => 'mb-4']);
-        $html = (string) BF::text('login');
-        BF::close();
-
-        $this->assertStringContainsString('<div id="login-group" class="mb-4">', $html);
-        $this->assertStringNotContainsString('mb-3', $html);
-    }
-
-    public function test_group_class_is_overridable_per_field(): void
-    {
-        BF::open(['group_class' => 'mb-4']);
-        $inherited = (string) BF::text('login');
-        $overridden = (string) BF::text('email', null, null, ['group_class' => 'mb-0 border']);
-        BF::close();
-
-        $this->assertStringContainsString('<div id="login-group" class="mb-4">', $inherited);
-        $this->assertStringContainsString('<div id="email-group" class="mb-0 border">', $overridden);
-    }
-
-    public function test_group_class_false_leaves_the_wrapper_without_a_class(): void
-    {
-        $html = (string) BF::text('login', null, null, ['group_class' => false]);
-
-        $this->assertStringContainsString('<div id="login-group">', $html);
-        $this->assertStringNotContainsString('mb-3', $html);
-    }
-
-    public function test_group_class_is_a_setting_never_an_html_attribute(): void
-    {
-        $html = (string) BF::text('login', null, null, ['group_class' => 'mb-4']);
-
-        $this->assertStringNotContainsString('group_class', $html);
-    }
-
-    public function test_group_attributes_add_to_the_group_class_they_never_replace_it(): void
+    public function test_a_group_class_replaces_the_default_it_never_adds_to_it(): void
     {
         $html = (string) BF::text('login', null, null, ['group' => ['class' => 'border']]);
 
-        $this->assertStringContainsString('<div class="border mb-3" id="login-group">', $html);
+        $this->assertStringContainsString('<div class="border" id="login-group">', $html);
+        $this->assertStringNotContainsString('mb-3', $html);
+    }
+
+    public function test_a_form_level_group_class_covers_every_field(): void
+    {
+        BF::open(['group' => ['class' => 'mb-4']]);
+        $login = (string) BF::text('login');
+        $email = (string) BF::text('email');
+        BF::close();
+
+        $this->assertStringContainsString('<div class="mb-4" id="login-group">', $login);
+        $this->assertStringContainsString('<div class="mb-4" id="email-group">', $email);
+        $this->assertStringNotContainsString('mb-3', $login.$email);
+    }
+
+    public function test_a_field_group_class_wins_over_the_form_one(): void
+    {
+        BF::open(['group' => ['class' => 'mb-4']]);
+        $html = (string) BF::text('login', null, null, ['group' => ['class' => 'mb-0']]);
+        BF::close();
+
+        $this->assertStringContainsString('<div class="mb-0" id="login-group">', $html);
+        $this->assertStringNotContainsString('mb-4', $html);
+    }
+
+    public function test_a_false_group_class_leaves_the_wrapper_without_any_class(): void
+    {
+        $html = (string) BF::text('login', null, null, ['group' => ['class' => false]]);
+
+        $this->assertStringContainsString('<div id="login-group"><label', $html);
     }
 
     public function test_group_false_still_drops_the_wrapper_entirely(): void
@@ -87,90 +83,116 @@ class ConfigurableClassesTest extends TestCase
         $this->assertStringNotContainsString('mb-3', $html);
     }
 
-    public function test_group_class_survives_the_horizontal_and_inline_extra_classes(): void
+    public function test_group_class_is_never_emitted_as_an_html_attribute(): void
     {
-        BF::inline(['url' => '/foo', 'group_class' => 'mb-4']);
+        $this->assertStringNotContainsString('group_class', (string) BF::text('login'));
+    }
+
+    // ## GROUP CLASS × DRIVER CLASSES ###########################################
+
+    /**
+     * getErrors() puts is-invalid on the group bag during construction. The "styled by the
+     * application" flag is captured before that, so an invalid field keeps its group_class.
+     */
+    public function test_an_invalid_field_keeps_its_default_group_class(): void
+    {
+        $this->withErrors(['login' => ['Required.']]);
+
+        $html = (string) BF::text('login');
+
+        $this->assertStringContainsString('<div id="login-group" class="is-invalid mb-3">', $html);
+    }
+
+    public function test_an_invalid_styled_field_keeps_its_own_class_and_the_state_class(): void
+    {
+        $this->withErrors(['login' => ['Required.']]);
+
+        $html = (string) BF::text('login', null, null, ['group' => ['class' => 'border']]);
+
+        $this->assertStringContainsString('<div class="border is-invalid" id="login-group">', $html);
+        $this->assertStringNotContainsString('mb-3', $html);
+    }
+
+    public function test_the_horizontal_row_class_survives_a_group_class(): void
+    {
+        BF::horizontal(['url' => '/foo', 'group' => ['class' => 'mb-4']]);
         $html = (string) BF::text('login');
         BF::close();
 
-        $this->assertStringContainsString('<div id="login-group" class="mb-4 me-3 my-1">', $html);
+        $this->assertStringContainsString('<div class="mb-4 row" id="login-group">', $html);
     }
 
-    // ## CHOICES LABEL CLASS ####################################################
+    public function test_a_group_class_takes_over_the_inline_spacing(): void
+    {
+        BF::inline(['url' => '/foo']);
+        $inherited = (string) BF::text('login');
+        $styled = (string) BF::text('email', null, null, ['group' => ['class' => 'mb-4']]);
+        BF::close();
 
-    public function test_choices_label_class_defaults_to_pt0_in_horizontal_layout(): void
+        $this->assertStringContainsString('<div id="login-group" class="mb-3 me-3 my-1">', $inherited);
+        $this->assertStringContainsString('<div class="mb-4" id="email-group">', $styled);
+        $this->assertStringNotContainsString('me-3', $styled);
+        $this->assertStringNotContainsString('my-1', $styled);
+    }
+
+    // ## LABEL CLASS ############################################################
+
+    public function test_a_label_class_takes_over_the_horizontal_column_width(): void
     {
         BF::horizontal(['url' => '/foo']);
-        $html = (string) BF::checkboxes('tags', null, ['a' => 'A']);
+        $inherited = (string) BF::text('login');
+        $styled = (string) BF::text('email', null, null, ['label' => ['class' => 'col-lg-4']]);
         BF::close();
 
-        $this->assertStringContainsString('<label for="tags" class="pt-0 col-form-label col-lg-2 col-xl-3">', $html);
+        $this->assertStringContainsString('<label for="login" class="col-form-label col-lg-2 col-xl-3">', $inherited);
+        // What the application writes is what it gets: no competing col-lg-* is appended.
+        $this->assertStringContainsString('<label for="email" class="col-lg-4 col-form-label">', $styled);
+        $this->assertStringNotContainsString('col-lg-2', $styled);
     }
 
-    public function test_choices_label_class_is_overridable_per_form(): void
+    public function test_a_label_class_keeps_the_component_class(): void
     {
-        BF::horizontal(['url' => '/foo', 'choices_label_class' => 'pt-1']);
-        $html = (string) BF::checkboxes('tags', null, ['a' => 'A']);
+        $html = (string) BF::text('login', null, null, ['label' => ['class' => 'fw-bold']]);
+
+        $this->assertStringContainsString('<label for="login" class="fw-bold form-label">', $html);
+    }
+
+    public function test_a_label_class_takes_over_the_inline_label_spacing(): void
+    {
+        BF::inline(['url' => '/foo']);
+        $html = (string) BF::text('login', null, null, ['label' => ['class' => 'fw-bold']]);
         BF::close();
 
-        $this->assertStringContainsString('<label for="tags" class="pt-1 col-form-label col-lg-2 col-xl-3">', $html);
+        $this->assertStringContainsString('<label for="login" class="fw-bold form-label">', $html);
+        $this->assertStringNotContainsString('me-2', $html);
     }
 
-    public function test_choices_label_class_is_overridable_per_field(): void
-    {
-        BF::horizontal(['url' => '/foo']);
-        $html = (string) BF::radios('tags', null, ['a' => 'A'], null, ['choices_label_class' => 'pt-2']);
-        BF::close();
-
-        $this->assertStringContainsString('<label for="tags" class="pt-2 col-form-label col-lg-2 col-xl-3">', $html);
-    }
-
-    public function test_choices_label_class_false_drops_the_alignment_class(): void
-    {
-        BF::horizontal(['url' => '/foo', 'choices_label_class' => false]);
-        $html = (string) BF::checkboxes('tags', null, ['a' => 'A']);
-        BF::close();
-
-        $this->assertStringContainsString('<label for="tags" class="col-form-label col-lg-2 col-xl-3">', $html);
-        $this->assertStringNotContainsString('pt-0', $html);
-    }
-
-    public function test_choices_label_class_only_applies_to_the_horizontal_layout(): void
-    {
-        $html = (string) BF::checkboxes('tags', null, ['a' => 'A']);
-
-        $this->assertStringContainsString('<label for="tags" class="form-label">', $html);
-        $this->assertStringNotContainsString('pt-0', $html);
-    }
-
-    public function test_choices_label_class_is_a_setting_never_an_html_attribute(): void
+    /**
+     * pt-0 is driver-owned: it aligns the collection label with its first choice, which is
+     * a requirement of the horizontal layout rather than a styling default.
+     */
+    public function test_the_choice_collection_alignment_class_survives_a_label_class(): void
     {
         BF::horizontal(['url' => '/foo']);
-        $html = (string) BF::checkboxes('tags', null, ['a' => 'A'], null, ['choices_label_class' => 'pt-2']);
+        $html = (string) BF::checkboxes('tags', null, ['a' => 'A'], null, ['label' => ['class' => 'fw-bold']]);
         BF::close();
 
-        $this->assertStringNotContainsString('choices_label_class', $html);
+        $this->assertStringContainsString('<label for="tags" class="fw-bold pt-0 col-form-label">', $html);
+        $this->assertStringNotContainsString('col-lg-2', $html);
     }
 
-    // ## X-COMPONENT PROJECTION #################################################
+    // ## X-COMPONENT PARITY #####################################################
 
-    public function test_components_project_the_kebab_case_settings(): void
+    public function test_components_project_the_group_and_label_class(): void
     {
         $this->assertSame(
-            (string) BF::text('login', null, null, ['group_class' => 'mb-4']),
-            trim(Blade::render('<x-bf::text name="login" group-class="mb-4"/>'))
+            (string) BF::text('login', null, null, ['group' => ['class' => 'mb-4']]),
+            trim(Blade::render('<x-bf::text name="login" group:class="mb-4"/>'))
         );
 
         $this->assertSame(
-            (string) BF::text('login', null, null, ['group_class' => false]),
-            trim(Blade::render('<x-bf::text name="login" :group-class="false"/>'))
+            (string) BF::text('login', null, null, ['label' => ['class' => 'fw-bold']]),
+            trim(Blade::render('<x-bf::text name="login" label:class="fw-bold"/>'))
         );
-
-        BF::horizontal(['url' => '/foo']);
-        $expected = (string) BF::checkboxes('tags', null, ['a' => 'A'], null, ['choices_label_class' => 'pt-2']);
-        $rendered = trim(Blade::render('<x-bf::checkboxes name="tags" :choices="[\'a\' => \'A\']" choices-label-class="pt-2"/>'));
-        BF::close();
-
-        $this->assertSame($expected, $rendered);
     }
 }

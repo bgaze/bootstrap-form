@@ -109,9 +109,12 @@ Almost every field shares the signature **`(name, label, value, options)`** (dev
 **`id` policy:** auto-generated from the name unless you pass one; `id => false` disables it; the
 group wrapper id is `{id}-group`.
 
-**Group wrapper class:** `group_class` (config `bootstrap4`/`bootstrap5` sections — `form-group` /
-`mb-3`), overridable per form and per field, `false` to disable. `group => ['class' => …]` **adds**
-to it; `group => false` drops the wrapper entirely. See [config.md](config.md).
+**Class ownership:** supply a class for an element and you own its styling — the package then adds
+only what the driver requires, skipping every config-sourced class. `group => ['class' => …]` /
+`group:class` **replaces** `group_class` (config `bootstrap4`/`bootstrap5` sections — `form-group` /
+`mb-3`) and the inline spacing; `label => ['class' => …]` / `label:class` replaces `left_class` and
+`lspace`. `class => false` renders none; `group => false` drops the wrapper entirely. See
+[options-and-attributes.md](options-and-attributes.md).
 
 ---
 
@@ -120,9 +123,10 @@ to it; `group => false` drops the wrapper entirely. See [config.md](config.md).
 Anything **not** in this list is treated as an HTML attribute.
 
 - **Inherited from the form** (form default cascades to its fields): `layout`, `bootstrap_version`,
-  `custom`, `error_bag`, `show_all_errors`, `show_valid_feedback`, `required_mark`, `group_class`,
-  `choices_label_class`, `left_class`, `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`,
-  `group`.
+  `custom`, `error_bag`, `show_all_errors`, `show_valid_feedback`, `required_mark`, `left_class`,
+  `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`, `group`.
+- **Config-level only** (recognized, never rendered, set in the version sections): `group_class` —
+  override it at a call site by styling the group (`group => ['class' => …]`).
 - **Per field, all types:** `label`, `help`, `success`.
 - **Per field, text-like inputs only** (text/email/url/tel/number/date/time/datetime-local/month/
   week/search/color/textarea/password): `size` (`'sm'`|`'lg'`), `prepend`, `append`.

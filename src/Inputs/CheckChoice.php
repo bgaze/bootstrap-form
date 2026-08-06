@@ -48,8 +48,8 @@ class CheckChoice extends Input
     {
         parent::setLabelAttributes($options);
 
-        if ($this->layout === 'horizontal' && $this->choices_label_class) {
-            $this->label_attributes->addClass((string) $this->choices_label_class);
+        if ($this->layout === 'horizontal') {
+            $this->label_attributes->addClass($this->driver->checkChoiceLabelClass());
         }
     }
 

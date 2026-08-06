@@ -97,8 +97,9 @@ BF::text('q', 'Search', null, ['label' => ['class' => 'fw-bold']]);
 The form group is the `<div>` wrapper around label + control + feedback.
 
 - **`group => false`** → render the control **without** the wrapper.
-- **`group => [...]`** → HTML attributes merged onto the wrapper (the form group class is always added;
-  the id defaults to `{id}-group`). Application-wide defaults come from the `group` config key.
+- **`group => [...]`** → HTML attributes for the wrapper (the id defaults to `{id}-group`).
+  Application-wide defaults come from the `group` config key. Setting a `class` here takes over the
+  wrapper's styling — see the rule below.
 
 ```php
 BF::text('q', 'Search', null, ['group' => false]);            // bare, no wrapper
@@ -106,6 +107,41 @@ BF::text('q', 'Search', null, ['group' => ['class' => 'mb-4']]);
 ```
 
 In x-components: `group="false"` disables it, `group:class="mb-4"` sets attributes.
+
+---
+
+## Class ownership — one channel per element
+
+> **Supply a class for an element and you own its styling: the package then adds only the classes
+> its version driver requires. Every config-sourced class is skipped.**
+
+There is exactly **one** way to style each element — its own attribute bag — and it always replaces,
+never appends. `class => false` renders no class at all.
+
+| Element | Your attribute | Always added (driver) | Skipped (config) |
+|---|---|---|---|
+| Form group | `group => ['class']` / `group:class` | `row` (horizontal), `is-invalid` / `is-valid` | `group_class`, `hspace`, `vspace` |
+| Label | `label => ['class']` / `label:class` | `form-label`, `col-form-label`, `form-check-label`, `pt-0` | `left_class`, `lspace` |
+| Control | `class` | `form-control`, `form-select`, `form-check-input`, size, state | *(none apply)* |
+
+```php
+BF::text('q', 'Search');                                          // <div id="q-group" class="mb-3">
+BF::text('q', 'Search', null, ['group' => ['class' => 'mb-4']]);  // <div class="mb-4" id="q-group">
+BF::text('q', 'Search', null, ['group' => ['class' => false]]);   // <div id="q-group">
+```
+
+The driver classes always survive, so a styled element never stops being the right Bootstrap
+component. Everything else is yours — including the horizontal column width, which comes from the
+`left_class` config key:
+
+```php
+// Horizontal layout — restate the width when you style the label:
+BF::text('q', 'Search', null, ['label' => ['class' => 'fw-bold col-lg-2 col-xl-3']]);
+```
+
+**Set the defaults in config, not at call sites.** `group_class` (version sections) is the class
+every group gets; `BF::open(['group' => ['class' => 'mb-4']])` covers a whole form, since `group` is
+inherited by its fields. See [config.md](config.md).
 
 ---
 

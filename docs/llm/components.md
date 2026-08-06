@@ -46,17 +46,18 @@ The attribute bag is translated into a `BF` options array by these rules:
 | Attribute pattern | Becomes |
 |---|---|
 | `label:*` | a `<label>` HTML attribute (`label:class="fw-bold"`) |
-| `group:*` | a form-group wrapper attribute — **added** to the group class (`group:class="border"`) |
+| `group:*` | a form-group wrapper attribute (`group:class="mb-4"`, `:group:class="false"`) — a `class` **replaces** the configured default |
 | `group` | `false` disables the wrapper; an array sets its attributes |
-| `group-class` | **replaces** the group class (`group-class="mb-4"`, `:group-class="false"`) |
 | `input:*` | a **literal** input HTML attribute — the x-component equivalent of the `~` escape (`input:size="10"`) |
 | `option:*` / `optgroup:*` | blanket child attributes — **only** on `<x-bf::select>`, `<x-bf::checkboxes>`, `<x-bf::radios>` |
 | a known setting name (kebab/camel) | normalized to the snake_case setting (`error-bag` → `error_bag`, `show-all-errors` → `show_all_errors`) |
 | anything else | an HTML attribute on the control, verbatim (`data-*`, `aria-*`, `placeholder`, `required`, …) |
 
 Boolean attributes follow Blade: a bare attribute (`required`, `switch`, `inline`, `multiple`) passes
-`true`. See [options-and-attributes.md](options-and-attributes.md) for the underlying partition and the
-`~` / `input:` escape, and [choice-fields.md](choice-fields.md) for `option:` / `optgroup:`.
+`true`. See [options-and-attributes.md](options-and-attributes.md) for the underlying partition, the
+`~` / `input:` escape and the **class-ownership rule** (`group:class` / `label:class` replace the
+configured defaults instead of adding to them), and [choice-fields.md](choice-fields.md) for
+`option:` / `optgroup:`.
 
 ---
 

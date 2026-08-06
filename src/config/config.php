@@ -62,9 +62,12 @@ return [
     |
     | Here you may specify application wide default attributes for input groups.
     | An array is expected, any other value will be ignored.
-    | The group class itself is the "group_class" option of the version sections
-    | below: a class declared here is added to it, never replaces it. Set this
-    | option to false to drop the group wrapper entirely.
+    |
+    | Declaring a "class" here takes over the group styling: it replaces the
+    | "group_class" default of the version sections below (and the inline spacing),
+    | keeping only the classes the Bootstrap driver requires. It can be set per form
+    | and per field the same way, e.g. BF::open(['group' => ['class' => 'mb-4']]).
+    | Set this option to false to drop the group wrapper entirely.
     |
     */
 
@@ -134,12 +137,10 @@ return [
         // Whether Bootstrap custom style should be used by default when available.
         'custom' => false,
 
-        // Class(es) applied to every form group wrapper. False to disable.
+        // Default class(es) of every form group wrapper. False for none. Configured
+        // here only: to override it, style the group itself ('group' => ['class' => ...]),
+        // which can be set per form and per field.
         'group_class' => 'form-group',
-
-        // Horizontal forms: class(es) applied to the global label of a checkboxes /
-        // radios collection, to align it with the first choice. False to disable.
-        'choices_label_class' => 'pt-0',
 
         // Horizontal forms: width of the left (labels) and right (fields) columns.
         'left_class' => 'col-lg-2 col-xl-3',
@@ -173,12 +174,10 @@ return [
 
     'bootstrap5' => [
 
-        // Class(es) applied to every form group wrapper. False to disable.
+        // Default class(es) of every form group wrapper. False for none. Configured
+        // here only: to override it, style the group itself ('group' => ['class' => ...]),
+        // which can be set per form and per field.
         'group_class' => 'mb-3',
-
-        // Horizontal forms: class(es) applied to the global label of a checkboxes /
-        // radios collection, to align it with the first choice. False to disable.
-        'choices_label_class' => 'pt-0',
 
         // Horizontal forms: width of the left (labels) and right (fields) columns.
         'left_class' => 'col-lg-2 col-xl-3',

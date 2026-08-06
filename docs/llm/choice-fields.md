@@ -187,16 +187,11 @@ Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom
   ```
 
 - **Horizontal layout — global label alignment.** In the `horizontal` layout the collection's global
-  label gets an extra `choices_label_class` (default `pt-0`, both versions) so it lines up with the
-  first choice rather than with the column. It is an inheritable setting: override it per form or per
-  field, or set it to `false` to drop it. It never touches the individual choice labels
-  (`form-check-label`). See [config.md](config.md).
+  label gets `pt-0` so it lines up with the first choice rather than with the column. It is
+  driver-owned (an alignment requirement of that layout), so it survives a `label:class` of your own
+  — unlike the column width, which you then take over. It never touches the individual choice labels
+  (`form-check-label`). See [options-and-attributes.md](options-and-attributes.md).
 
-  ```php
-  BF::horizontal(['url' => '/x']);
-  BF::checkboxes('tags', null, ['a' => 'A']);                                   // pt-0
-  BF::checkboxes('tags', null, ['a' => 'A'], null, ['choices_label_class' => false]);
-  ```
   ```html
   <div id="tags-group" class="mb-3 row"><label for="tags" class="pt-0 col-form-label col-lg-2 col-xl-3">Tags</label><div class="col"><div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a"><label for="tags-a" class="form-check-label">A</label></div></div></div>
   ```
