@@ -15,11 +15,6 @@ use Bgaze\BootstrapForm\Support\Html;
  */
 class Bootstrap5Driver extends VersionDriver
 {
-    public function formGroupClass(): string
-    {
-        return 'mb-3';
-    }
-
     public function labelClass(): string
     {
         return 'form-label';

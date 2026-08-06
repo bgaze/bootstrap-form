@@ -12,11 +12,6 @@ use Bgaze\BootstrapForm\Support\Html;
  */
 class Bootstrap4Driver extends VersionDriver
 {
-    public function formGroupClass(): string
-    {
-        return 'form-group';
-    }
-
     public function labelClass(): string
     {
         return '';

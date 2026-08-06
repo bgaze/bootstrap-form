@@ -42,12 +42,31 @@ class VersionOverrideTest extends TestCase
         $this->assertStringNotContainsString('form-group', $html);
     }
 
-    public function test_per_field_override_switches_to_bootstrap4(): void
+    /**
+     * A per-field override switches the driver — hence the component classes — but layout
+     * settings stay inherited from the form. group_class is such a setting (it lives in the
+     * version sections of the config), so the field keeps the form's value: pin the version
+     * at form level, or pass group_class alongside, to get the other version's group class.
+     */
+    public function test_per_field_override_switches_component_classes_only(): void
     {
         $html = (string) BF::text('login', null, null, ['bootstrap_version' => 4]);
 
+        // Component classes follow the driver: Bootstrap 4 has no .form-label.
+        $this->assertStringNotContainsString('form-label', $html);
+        // Layout settings stay inherited from the (Bootstrap 5) form.
+        $this->assertStringContainsString('class="mb-3"', $html);
+        $this->assertStringNotContainsString('bootstrap_version', $html);
+    }
+
+    public function test_per_field_override_can_carry_its_own_group_class(): void
+    {
+        $html = (string) BF::text('login', null, null, [
+            'bootstrap_version' => 4,
+            'group_class' => 'form-group',
+        ]);
+
         $this->assertStringContainsString('class="form-group"', $html);
         $this->assertStringNotContainsString('mb-3', $html);
-        $this->assertStringNotContainsString('bootstrap_version', $html);
     }
 }

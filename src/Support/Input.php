@@ -29,6 +29,8 @@ use Illuminate\Support\Str;
  * @property bool $show_all_errors
  * @property bool $show_valid_feedback
  * @property string|false|null $required_mark
+ * @property string|false $group_class
+ * @property string|false $choices_label_class
  * @property string|false $pull_right
  * @property string $left_class
  * @property string $right_class
@@ -477,7 +479,9 @@ abstract class Input
             return $this->inputGroup();
         }
 
-        $this->group_attributes->addClass($this->driver->formGroupClass());
+        if ($this->group_class) {
+            $this->group_attributes->addClass((string) $this->group_class);
+        }
 
         if ($this->layout === 'horizontal') {
             $this->group_attributes->addClass($this->driver->rowClass());
@@ -541,7 +545,7 @@ abstract class Input
         $attributes = Attributes::make();
 
         if ($this->layout === 'horizontal') {
-            $attributes->addClass($this->pull_right ? 'col' : $this->right_class);
+            $attributes->addClass($this->pull_right ? $this->driver->colClass() : $this->right_class);
         }
 
         return $this->html->tag('div', $content, $attributes->toArray())->toHtml();

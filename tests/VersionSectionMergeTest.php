@@ -26,8 +26,9 @@ class VersionSectionMergeTest extends TestCase
         $html = (string) BF::text('login');
         BF::close();
 
-        // hspace (me-3), vspace (my-1) and lspace (me-2) are absent from the published
-        // section, yet still applied.
+        // group_class (mb-3), hspace (me-3), vspace (my-1) and lspace (me-2) are absent
+        // from the published section, yet still applied. group_class is the critical one:
+        // resolving it to null would strip the class off every form group in the app.
         $expected = '<div id="login-group" class="mb-3 me-3 my-1">'
             .'<label for="login" class="form-label me-2">Login</label>'
             .'<div><input id="login" class="form-control" name="login" type="text"></div></div>';

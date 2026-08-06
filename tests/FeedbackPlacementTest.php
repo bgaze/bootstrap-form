@@ -90,7 +90,11 @@ class FeedbackPlacementTest extends TestCase
             .'<label for="demo" class="form-check-label">Label</label></div>'
             .'<small id="demo-help" class="form-text">Some help</small></div></div>';
 
-        $html = (string) BF::checkbox('demo', 'Label', 1, false, ['bootstrap_version' => 4, 'help' => 'Some help']);
+        // Pinned at form level: a per-field version override switches the driver but
+        // keeps the form's layout settings, group_class included (see VersionOverrideTest).
+        BF::open(['bootstrap_version' => 4]);
+        $html = (string) BF::checkbox('demo', 'Label', 1, false, ['help' => 'Some help']);
+        BF::close();
 
         $this->assertSame($expected, $html);
     }

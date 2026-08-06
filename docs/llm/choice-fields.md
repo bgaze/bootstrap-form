@@ -185,3 +185,18 @@ Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom
   ```html
   <div id="roles-group" class="mb-3"><label for="roles" class="form-label">Roles *</label><div><div class="form-check"><input required id="roles-admin" class="form-check-input" name="roles" type="checkbox" value="admin"><label for="roles-admin" class="form-check-label">Admin</label></div><div class="form-check"><input required id="roles-editor" class="form-check-input" name="roles" type="checkbox" value="editor"><label for="roles-editor" class="form-check-label">Editor</label></div></div></div>
   ```
+
+- **Horizontal layout — global label alignment.** In the `horizontal` layout the collection's global
+  label gets an extra `choices_label_class` (default `pt-0`, both versions) so it lines up with the
+  first choice rather than with the column. It is an inheritable setting: override it per form or per
+  field, or set it to `false` to drop it. It never touches the individual choice labels
+  (`form-check-label`). See [config.md](config.md).
+
+  ```php
+  BF::horizontal(['url' => '/x']);
+  BF::checkboxes('tags', null, ['a' => 'A']);                                   // pt-0
+  BF::checkboxes('tags', null, ['a' => 'A'], null, ['choices_label_class' => false]);
+  ```
+  ```html
+  <div id="tags-group" class="mb-3 row"><label for="tags" class="pt-0 col-form-label col-lg-2 col-xl-3">Tags</label><div class="col"><div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a"><label for="tags-a" class="form-check-label">A</label></div></div></div>
+  ```

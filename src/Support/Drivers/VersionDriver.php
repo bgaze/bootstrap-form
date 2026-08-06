@@ -79,14 +79,7 @@ abstract class VersionDriver
         return 'row';
     }
 
-    public function checkChoiceLabelClass(): string
-    {
-        return 'pt-0';
-    }
-
     // ## VERSION DELTAS #########################################################
-
-    abstract public function formGroupClass(): string;
 
     abstract public function labelClass(): string;
 
