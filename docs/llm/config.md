@@ -1,5 +1,5 @@
 <!--
-Sources: src/config/config.php, src/BootstrapFormServiceProvider.php
+Sources: src/config/config.php, src/BootstrapFormServiceProvider.php, src/BootstrapForm.php
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -78,6 +78,14 @@ Layout-level, app-tunable options applied for the active version. Component clas
 The `bootstrap5` section uses the `-e`/`-s` spacing suffixes (`me-*`, `ms-*`) in place of Bootstrap 4's
 `-r`/`-l`. `custom` is intentionally absent from `bootstrap5` (no-op there) but stays a recognized
 setting so it is never emitted as an HTML attribute.
+
+### Partial version sections
+
+Laravel's `mergeConfigFrom()` merges only the **top level** of a config file, so a published
+`config/bootstrap_form.php` **replaces** the whole `bootstrap4` / `bootstrap5` array. The package
+defaults act as a **floor** under each section: a key absent from the published section falls back
+to its packaged default rather than to `null`. A config file published before a key existed keeps
+rendering correctly — only the keys you actually declare override the package.
 
 > Migrating a published v2 config to v3+: move the layout options (`custom`, `left_class`,
 > `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`) under the `bootstrap4` (and/or

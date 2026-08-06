@@ -54,6 +54,11 @@ class BootstrapForm
     const RESERVED = ['model', 'url', 'route', 'action', 'update', 'store'];
 
     /**
+     * Cache of the package's shipped configuration (see packageDefaults).
+     */
+    protected static ?array $packageDefaults = null;
+
+    /**
      * The form attribute set.
      */
     protected Attributes $attributes;
@@ -135,10 +140,33 @@ class BootstrapForm
 
     /**
      * Get the layout options declared for a Bootstrap version.
+     *
+     * The package defaults sit *under* the application's: mergeConfigFrom() merges only
+     * the top level of the config, so a published config file replaces a whole
+     * "bootstrapN" section. Without this floor, a file published before a key existed
+     * would silently drop it — and a missing group_class means no class at all on every
+     * form group.
      */
     protected function versionLayout(int $version): array
     {
-        return config('bootstrap_form.bootstrap'.$version, []);
+        return array_merge(
+            static::packageDefaults()['bootstrap'.$version] ?? [],
+            config('bootstrap_form.bootstrap'.$version, []),
+        );
+    }
+
+    /**
+     * The package's own shipped configuration. Resolved once: the file is immutable.
+     */
+    protected static function packageDefaults(): array
+    {
+        if (self::$packageDefaults === null) {
+            /** @var array $defaults */
+            $defaults = require __DIR__.'/config/config.php';
+            self::$packageDefaults = $defaults;
+        }
+
+        return self::$packageDefaults;
     }
 
     /**
