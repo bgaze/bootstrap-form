@@ -267,6 +267,23 @@ class Bootstrap5Test extends TestCase
         $this->assertSame($expected, $html);
     }
 
+    public function test_horizontal_choice_collection_label_is_top_aligned(): void
+    {
+        BF::horizontal(['url' => '/foo']);
+        $html = (string) BF::checkboxes('tags', null, ['a' => 'A', 'b' => 'B']);
+        BF::close();
+
+        $expected = '<div id="tags-group" class="mb-3 row">'
+            .'<label for="tags" class="pt-0 col-form-label col-lg-2 col-xl-3">Tags</label>'
+            .'<div class="col">'
+            .'<div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a">'
+            .'<label for="tags-a" class="form-check-label">A</label></div>'
+            .'<div class="form-check"><input id="tags-b" class="form-check-input" name="tags" type="checkbox" value="b">'
+            .'<label for="tags-b" class="form-check-label">B</label></div></div></div>';
+
+        $this->assertSame($expected, $html);
+    }
+
     public function test_inline_text_uses_me_spacing(): void
     {
         BF::inline(['url' => '/foo']);
