@@ -22,6 +22,20 @@ custom fields, input groups, and more.
 Any contribution or feedback is highly welcomed, please feel free to create a pull request
 or [submit a new issue](https://github.com/bgaze/bootstrap-form/issues/new).
 
+## ⚠️ v4 has breaking changes
+
+v4 drops the historical `laravelcollective/html` dependency in favor of an internal, iso-rendering HTML/form layer,
+and renders Bootstrap 5 by default. 
+
+Before upgrading an existing application, read [Upgrading from v3](https://packages.bgaze.fr/bootstrap-form#upgrading-from-v3).
+
+To keep using a previous major version, require it explicitly and refer to its dedicated branch:
+
+| Version                                 | Install                                        | Docs                                                                                                        |
+|-----------------------------------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| **v3** (Bootstrap 4 default, B5 opt-in) | `composer require "bgaze/bootstrap-form:^3.0"` | [v3 branch](https://github.com/bgaze/bootstrap-form/tree/v3) · [archived docs](https://packages.bgaze.fr/bootstrap-form/v3) |
+| **v2** (Bootstrap 4 only)               | `composer require "bgaze/bootstrap-form:^2.0"` | [v2 branch](https://github.com/bgaze/bootstrap-form/tree/v2) · [archived docs](https://packages.bgaze.fr/bootstrap-form/v3) |
+
 ## Documentation
 
 Full documentation and examples are available
@@ -33,19 +47,6 @@ check [this gist](https://gist.github.com/bgaze/1f559782c85511dc2671cdb6b453f0c6
 
 If you build forms with the help of an AI coding assistant, this repository also ships an LLM-optimized usage
 guide: [`docs/llm/index.md`](docs/llm/index.md), indexed by [`llms.txt`](llms.txt).
-
-## ⚠️ Upgrading — v4 has breaking changes
-
-v4 drops the historical `laravelcollective/html` dependency in favor of an internal, iso-rendering HTML/form layer,
-and renders Bootstrap 5 by default. Before upgrading an existing application,
-read [Upgrading from v3](https://packages.bgaze.fr/bootstrap-form#upgrading-from-v3).
-
-To keep using a previous major version, require it explicitly and refer to its dedicated branch:
-
-| Version                                 | Install                                        | Docs                                                                                                        |
-|-----------------------------------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
-| **v3** (Bootstrap 4 default, B5 opt-in) | `composer require "bgaze/bootstrap-form:^3.0"` | [v3 branch](https://github.com/bgaze/bootstrap-form/tree/v3) · [archived docs](https://packages.bgaze.fr/bootstrap-form/v3) |
-| **v2** (Bootstrap 4 only)               | `composer require "bgaze/bootstrap-form:^2.0"` | [v2 branch](https://github.com/bgaze/bootstrap-form/tree/v2) · [archived docs](https://packages.bgaze.fr/bootstrap-form/v3) |
 
 ## Quick start
 
