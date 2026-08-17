@@ -7,6 +7,10 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/bgaze/bootstrap-form?style=flat)](https://github.com/bgaze/bootstrap-form/stargazers)
 ![Packagist](https://img.shields.io/packagist/dt/bgaze/bootstrap-form)
 
+<p align="center">
+    <img src="https://packages.bgaze.fr/images/bootstrap-form.png" alt="Bootstrap 4 & 5 forms builder for Laravel 12+">
+</p>
+
 This package simplifies Bootstrap forms creation in Laravel applications, rendering all markup through its own
 lightweight HTML/form layer.
 
@@ -18,47 +22,30 @@ custom fields, input groups, and more.
 Any contribution or feedback is highly welcomed, please feel free to create a pull request
 or [submit a new issue](https://github.com/bgaze/bootstrap-form/issues/new).
 
-## ℹ️ v4 status — functional, documentation in progress
+## Documentation
 
-v4 is functional and tested, but its full documentation is still being written.
+Full documentation and examples are available
+at [https://packages.bgaze.fr/bootstrap-form](https://packages.bgaze.fr/bootstrap-form)
 
-In the meantime, the [LLM usage guide](docs/llm/index.md) shipped in this repository is the **authoritative,
-up-to-date reference** (dense but exact — usable by humans and AI assistants alike).
+If you use **PhpStorm IDE**, you can also
+check [this gist](https://gist.github.com/bgaze/1f559782c85511dc2671cdb6b453f0c6) which allow to easily configure
+**syntax highlighting** and **live templates** for this package's custom Blade directives.
 
-> The [full documentation site](https://packages.bgaze.fr/bootstrap-form) still reflects v3 and will be regenerated
-> for v4.
+If you build forms with the help of an AI coding assistant, this repository also ships an LLM-optimized usage
+guide: [`docs/llm/index.md`](docs/llm/index.md), indexed by [`llms.txt`](llms.txt).
 
 ## ⚠️ Upgrading — v4 has breaking changes
 
-v4 introduces **breaking changes** over v3 (see [What's new](#whats-new-in-v4) below).
+v4 drops the historical `laravelcollective/html` dependency in favor of an internal, iso-rendering HTML/form layer,
+and renders Bootstrap 5 by default. Before upgrading an existing application,
+read [Upgrading from v3](https://packages.bgaze.fr/bootstrap-form#upgrading-from-v3).
 
 To keep using a previous major version, require it explicitly and refer to its dedicated branch:
 
-| Version                                 | Install                                        | Docs                                                                                                            |
-|-----------------------------------------|------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| **v3** (Bootstrap 4 default, B5 opt-in) | `composer require "bgaze/bootstrap-form:^3.0"` | [v3 branch](https://github.com/bgaze/bootstrap-form/tree/v3) · [site](https://packages.bgaze.fr/bootstrap-form) |
-| **v2** (Bootstrap 4 only)               | `composer require "bgaze/bootstrap-form:^2.0"` | [v2 branch](https://github.com/bgaze/bootstrap-form/tree/v2) · [site](https://packages.bgaze.fr/bootstrap-form) |
-
-## What's new in v4
-
-- **No more third-party dependency**  
-  The historical `laravelcollective/html` dependency is gone, replaced by an
-  internal, iso-rendering HTML/form layer owned by the package.
-- **Bootstrap 5 is now the default**  
-  Bootstrap 4 remains fully supported for backward compatibility (frozen),
-  switchable via `bootstrap_version` globally, per form (`BF::open(['bootstrap_version' => 4])`), or per field.
-- **Laravel 12 & 13, PHP 8.2+**  
-  Older versions dropped.
-- **x-components**  
-  A new Blade component syntax (`<x-bf::text .../>`) alongside the directives and the `BF` facade; all three render
-  identical markup.
-- **Richer choice grammar for select/checkboxes/radios**  
-  Optgroups, per-option attributes, accepting any `iterable` (array, Collection, generator).
-- **New field types & layouts**  
-  `datetime-local`, `month`, `week`, `search` inputs, Bootstrap 5 floating labels, opt-in valid feedback, and accessible
-  `aria-describedby` / `aria-invalid` wiring.
-- **LLM-optimized documentation**  
-  See [`docs/llm/`](docs/llm/index.md) (+ [`llms.txt`](llms.txt)).
+| Version                                 | Install                                        | Docs                                                                                                        |
+|-----------------------------------------|------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
+| **v3** (Bootstrap 4 default, B5 opt-in) | `composer require "bgaze/bootstrap-form:^3.0"` | [v3 branch](https://github.com/bgaze/bootstrap-form/tree/v3) · [archived docs](https://packages.bgaze.fr/bootstrap-form/v3) |
+| **v2** (Bootstrap 4 only)               | `composer require "bgaze/bootstrap-form:^2.0"` | [v2 branch](https://github.com/bgaze/bootstrap-form/tree/v2) · [archived docs](https://packages.bgaze.fr/bootstrap-form/v3) |
 
 ## Quick start
 
@@ -83,32 +70,38 @@ php artisan vendor:publish --provider="Bgaze\BootstrapForm\BootstrapFormServiceP
 
 ### Usage
 
-Forms can be built through three interchangeable syntaxes that produce byte-identical HTML:
+Forms can be built through three interchangeable syntaxes that produce byte-identical HTML.
 
-**x-components**
+Blade x-components:
 
 ```blade
-<x-bf::form url="/x">
-    <x-bf::text name="field"/>
-    <x-bf::submit>Save</x-bf::submit>
+<x-bf::form url="/my/url" novalidate>
+    <x-bf::text name="login"/>
+    <x-bf::email name="email"/>
+    <x-bf::checkbox name="remember_me" switch inline/>
+    <x-bf::submit>Login</x-bf::submit>
 </x-bf::form>
 ```
 
-**Blade directives**
+Blade directives:
 
 ```blade
-@open(['url' => '/x'])
-@text('field')
-@submit('Save')
+@open(['url' => '/my/url', 'novalidate' => true])
+@text('login')
+@email('email')
+@checkbox('remember_me', null, 1, null, ['switch' => true, 'inline' => true])
+@submit('Login')
 @close
 ```
 
-**BF facade**
+The `BF` facade, in any PHP context:
 
 ```php
-echo BF::open(['url' => '/x']);
-echo BF::text('field');
-echo BF::submit('Save');
+echo BF::open(['url' => '/my/url', 'novalidate' => true]);
+echo BF::text('login');
+echo BF::email('email');
+echo BF::checkbox('remember_me', null, 1, null, ['switch' => true, 'inline' => true]);
+echo BF::submit('Login');
 echo BF::close();
 ```
 
