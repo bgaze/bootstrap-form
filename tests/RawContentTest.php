@@ -15,8 +15,8 @@ use BF;
  *    in the version's text addon. The decision is taken by the value, not by the caller.
  *
  * Escaping content that comes from user input, the database or translation files is therefore the
- * application's responsibility. See https://github.com/bgaze/bootstrap-form/issues/20 for the
- * opt-in escaping option.
+ * application's responsibility. The opt-in `escape` setting inverts both regimes — it is
+ * characterized in EscapeSettingTest.
  */
 class RawContentTest extends TestCase
 {

@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Bgaze\BootstrapForm\Support\Traits;
 
+use Illuminate\Contracts\Support\Htmlable;
+
 /**
  * @property mixed $prepend
  * @property mixed $append
+ * @property bool $escape
  */
 trait HasAddons
 {
@@ -52,26 +55,40 @@ trait HasAddons
         $items = is_array($addon) ? $addon : [$addon];
 
         return implode('', array_map(
-            fn (mixed $item): string => $this->resolveAddonItem((string) $item),
+            fn (mixed $item): string => $this->resolveAddonItem($item),
             $items,
         ));
     }
 
     /**
-     * Resolve a single addon item. A value carrying HTML is emitted verbatim — the caller
-     * owns the markup (an .input-group-text span, a button, a dropdown…). A plain-text value
-     * is escaped and wrapped by the driver into the version's text addon, so the common
-     * units / currency case needs no boilerplate.
+     * Resolve a single addon item.
+     *
+     * With `escape` off (the default), the VALUE decides: an item carrying HTML is emitted
+     * verbatim — the caller owns the markup (an .input-group-text span, a button, a dropdown…) —
+     * while a plain-text item is escaped and wrapped by the driver into the version's text addon,
+     * so the common units / currency case needs no boilerplate.
+     *
+     * With `escape` on, that heuristic is retired and the CALL SITE decides: the item is text,
+     * always. A Htmlable item is markup by construction (an explicit HtmlString, a Blade slot),
+     * so it keeps the default regime either way — the bypass skips the escaping decision, not
+     * the wrapping one, which is why a tag-free Htmlable is still wrapped as a text addon.
      */
-    protected function resolveAddonItem(string $item): string
+    protected function resolveAddonItem(mixed $item): string
     {
-        if ($item === '') {
+        $isMarkup = $item instanceof Htmlable;
+        $raw = $isMarkup ? $item->toHtml() : (string) $item;
+
+        if ($raw === '') {
             return '';
         }
 
-        return $this->addonContainsHtml($item)
-            ? $item
-            : $this->driver->addonText($this->html, $item);
+        if ($this->escape && ! $isMarkup) {
+            return $this->driver->addonText($this->html, $raw);
+        }
+
+        return $this->addonContainsHtml($raw)
+            ? $raw
+            : $this->driver->addonText($this->html, $raw);
     }
 
     /**

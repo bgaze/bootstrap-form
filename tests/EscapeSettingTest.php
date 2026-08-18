@@ -147,6 +147,75 @@ class EscapeSettingTest extends TestCase
         );
     }
 
+    // ## THE ADDON SINK #########################################################
+    //
+    // The truth table, all four rows (see docs/llm/input-groups.md):
+    //
+    //   value              | escape => false          | escape => true
+    //   -------------------|--------------------------|--------------------------
+    //   string, no tag     | escaped + wrapped        | escaped + wrapped
+    //   string, with tag   | raw, unwrapped           | escaped + wrapped
+    //   Htmlable, no tag   | escaped + wrapped        | escaped + wrapped
+    //   Htmlable, with tag | raw, unwrapped           | raw, unwrapped
+
+    public function test_a_tag_free_string_addon_is_escaped_and_wrapped(): void
+    {
+        $this->assertStringContainsString(
+            '<span class="input-group-text">a &amp; b</span>',
+            (string) BF::text('amt', 'Amt', null, ['prepend' => 'a & b', 'escape' => true]),
+        );
+    }
+
+    /**
+     * The heuristic is retired: a value that happens to carry a tag no longer escapes the
+     * escaping. This is the regime the setting exists for.
+     */
+    public function test_a_string_addon_carrying_a_tag_is_escaped_and_wrapped(): void
+    {
+        $html = (string) BF::text('amt', 'Amt', null, ['prepend' => '<script>alert(1)</script>', 'escape' => true]);
+
+        $this->assertStringContainsString(
+            '<span class="input-group-text">&lt;script&gt;alert(1)&lt;/script&gt;</span>',
+            $html,
+        );
+        $this->assertStringNotContainsString('<script>', $html);
+    }
+
+    public function test_a_htmlable_addon_carrying_a_tag_stays_raw_and_unwrapped(): void
+    {
+        $this->assertStringContainsString(
+            '<div class="input-group"><button type="button">Go</button><input id="amt"',
+            (string) BF::text('amt', 'Amt', null, [
+                'prepend' => new HtmlString('<button type="button">Go</button>'),
+                'escape' => true,
+            ]),
+        );
+    }
+
+    /**
+     * A tag-free Htmlable is still wrapped as a text addon: the bypass skips the escaping
+     * decision, not the wrapping one. This is what keeps a `<x-slot:prepend>$</x-slot:prepend>`
+     * rendering its .input-group-text span.
+     */
+    public function test_a_tag_free_htmlable_addon_stays_in_the_text_regime(): void
+    {
+        $this->assertStringContainsString(
+            '<span class="input-group-text">$</span>',
+            (string) BF::text('amt', 'Amt', null, ['prepend' => new HtmlString('$'), 'escape' => true]),
+        );
+    }
+
+    public function test_an_addon_array_resolves_each_item_on_its_own(): void
+    {
+        $html = (string) BF::text('amt', 'Amt', null, [
+            'prepend' => ['<b>$</b>', new HtmlString('<button type="button">Go</button>')],
+            'escape' => true,
+        ]);
+
+        $this->assertStringContainsString('<span class="input-group-text">&lt;b&gt;$&lt;/b&gt;</span>', $html);
+        $this->assertStringContainsString('<button type="button">Go</button>', $html);
+    }
+
     // ## THE PRIMITIVE ##########################################################
 
     public function test_content_is_emitted_verbatim_by_default(): void
