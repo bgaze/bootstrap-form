@@ -139,7 +139,8 @@ must know:
   taken by the *value*, not by the call site.
 
 **Opt in to escaping with `escape => true`** (config → per form → per field): the field `label`,
-`help`, `success` and the addons are then escaped, and the addon heuristic is retired. A `Htmlable`
+`help`, `success`, the addons and the B4 custom-file `text` label are then escaped, and the addon
+heuristic is retired. A `Htmlable`
 value (an `HtmlString`, a Blade slot) is markup by construction and is never escaped — the per-value
 opt-out. `required_mark` and validation messages are not covered.
 

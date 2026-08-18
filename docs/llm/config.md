@@ -28,7 +28,7 @@ read it before assuming a value (see the [hub](index.md) §1.1).
 | `show_all_errors` | `bool` = `false` | Render all of a field's error messages instead of only the first. See [model-binding.md](model-binding.md). |
 | `show_valid_feedback` | `bool` = `false` | After a failed submit, mark error-free fields valid (`is-valid`); a per-field `success` message then renders a `valid-feedback`. |
 | `required_mark` | `string` \| `false` = `' *'` | Mark appended to the label of any field carrying the HTML `required` attribute. HTML accepted verbatim; `false` disables. See below. |
-| `escape` | `bool` = `false` | Escape the content sinks (`label`, `help`, `success`, `prepend`/`append`) instead of emitting raw HTML. Opt-in; a `Htmlable` value is never escaped. See below. |
+| `escape` | `bool` = `false` | Escape the content sinks (`label`, `help`, `success`, `prepend`/`append`, B4 custom-file `text`) instead of emitting raw HTML. Opt-in; a `Htmlable` value is never escaped. See below. |
 
 The `bootstrap_version` and `layout` values, plus `custom`, `show_all_errors`, `show_valid_feedback`,
 `required_mark`, `escape` and the version-section keys below, are **inheritable settings**: a form default
@@ -62,8 +62,9 @@ BF::open(['required_mark' => false]);
 
 ### `escape`
 
-The content sinks — the field `label`, `help`, `success` and the `prepend` / `append` addons — emit
-their value as **raw HTML**, because injecting markup is a supported use case. `escape => true` makes
+The content sinks — the field `label`, `help`, `success`, the `prepend` / `append` addons and the
+Bootstrap 4 custom-file `text` label — emit their value as **raw HTML**, because injecting markup is a
+supported use case. `escape => true` makes
 them escape it instead. Notes:
 
 - **Opt-in, `false` by default** — nothing changes for an existing application.

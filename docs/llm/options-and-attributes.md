@@ -70,9 +70,10 @@ The x-component equivalent is the **`input:`** prefix (see [components.md](compo
 
 ## Content escaping — the `escape` setting
 
-The **content sinks** — the field `label`, `help`, `success` and the `prepend` / `append` addons — emit
-their value as raw HTML, because injecting markup into a label or an addon is a real need.
-`escape => true` makes them escape it instead. Default `false`, so nothing changes for an existing
+The **content sinks** — the field `label`, `help`, `success`, the `prepend` / `append` addons and (on a
+Bootstrap 4 `custom` file field) the `text` browse label — emit their value as raw HTML, because
+injecting markup into a label or an addon is a real need. `escape => true` makes them escape it
+instead. Default `false`, so nothing changes for an existing
 application; it is an **inherited setting** (config → per form → per field).
 
 ```php
@@ -86,6 +87,7 @@ BF::text('q', '<b>Bold</b> & co', null, ['escape' => true]);
 | Sink | `escape => false` (default) | `escape => true` |
 |---|---|---|
 | `label`, `help`, `success` | raw | escaped |
+| `text` (B4 `custom` file browse label) | raw | escaped |
 | `prepend` / `append` | raw **when the value carries a tag**, otherwise escaped and wrapped in `.input-group-text` | always escaped and wrapped — the heuristic is retired |
 
 **Addons are where it earns the most.** By default the escaping decision is taken by the *value*, so
@@ -268,7 +270,7 @@ An **empty anchor is a defect**: it marks a behaviour this guide claims and noth
 | `inline` | `false` | bool | checkable | `tests/golden/b4/check.inline.html` |
 | `switch` | `false` | bool | checkbox, checkboxes | `tests/golden/b5/checkbox.switch.html` |
 | `disable_errors` | `false` | bool | checkbox, radio | `tests/FeedbackPlacementTest.php` |
-| `text` | `'Choose file'` | string | file, **B4 `custom` only** | `tests/FileInputTest.php` |
+| `text` | `'Choose file'` | string (**raw HTML**) | file, **B4 `custom` only** | `tests/FileInputTest.php` |
 | `button` | `null` | string | file, **B4 `custom` only** | `tests/FileInputTest.php` |
 | `tag` | per field | — | text-like, checkable — **always overwritten, never usable** | `tests/SettingsPartitionTest.php` |
 

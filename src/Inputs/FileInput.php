@@ -71,12 +71,16 @@ class FileInput extends Input
             return $input;
         }
 
-        // Prepare the browse button label.
+        // Prepare the browse button label. The escaping happens here rather than through the
+        // element's own escape flag, which routes to the legacy htmlentities() path (it entitises
+        // accented characters); Html::content is the package-wide policy. "button" needs nothing:
+        // it lands in the data-browse ATTRIBUTE, which is always escaped.
         $attr = ['class' => $this->driver->customFileLabelClass()];
         if ($this->button) {
             $attr['data-browse'] = $this->button;
         }
-        $button = $this->elements->label($this->input_attributes->id, $this->text, $attr, false);
+        $text = $this->html->content($this->text, (bool) $this->escape);
+        $button = $this->elements->label($this->input_attributes->id, $text, $attr, false);
 
         // Wrap into the custom-file block.
         $input = $this->html->tag('div', $input.$button, [

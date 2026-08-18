@@ -3,7 +3,8 @@ Sources: src/Support/Drivers/VersionDriver.php, src/Support/Drivers/Bootstrap4Dr
          src/Support/Drivers/Bootstrap5Driver.php, src/Support/Drivers/DriverManager.php,
          src/BootstrapForm.php (resetForm/initForm version resolution, driver()), src/config/config.php
 Goldens: tests/golden/b5/*.html
-Tests:   tests/FileInputTest.php (B4 custom-file labels)
+Tests:   tests/FileInputTest.php (B4 custom-file labels),
+         tests/EscapeSettingB4Test.php (the escaped browse label)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -78,7 +79,9 @@ Representative Bootstrap 5 output:
 - **`custom-file` carries two settings of its own, B4 only:** `text` — the label rendered inside the
   control (default `'Choose file'`) — and `button`, which sets the browse-button label through
   `data-browse`. Both are swallowed with no effect unless the field is `custom` **and** the version
-  is 4:
+  is 4. `text` is a content sink: raw HTML by default, escaped under `escape => true` (see
+  [options-and-attributes.md](options-and-attributes.md)); `button` lands in an attribute and is
+  always escaped:
 
   ```php
   BF::file('avatar', null, ['custom' => true, 'text' => 'Pick a file', 'button' => 'Browse']);
