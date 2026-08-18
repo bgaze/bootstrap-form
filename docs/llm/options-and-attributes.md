@@ -3,7 +3,7 @@ Sources: src/Support/Options.php, src/Support/Attributes.php, src/Support/Input.
          src/Support/Html.php (content), src/Support/Traits/HasAddons.php,
          src/View/Components/Concerns/ResolvesBootstrapAttributes.php
 Goldens: tests/golden/b4/text.id_explicit.html, tests/golden/b4/text.id_false.html,
-         tests/golden/b4/check.option_id_override.html
+         tests/golden/b4/check.option_id_override.html, tests/golden/b5/text.escape.html
 Tests:   tests/ConfigurableClassesTest.php (class ownership, control vs group),
          tests/SettingsPartitionTest.php (both directions of the partition, `tag`, `~size`)
          tests/SettingsTableCoverageTest.php (this file's reference table vs the code),

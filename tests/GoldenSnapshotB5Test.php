@@ -24,7 +24,7 @@ class GoldenSnapshotB5Test extends TestCase
     public static function fixtures(): array
     {
         $names = [
-            'text', 'text.help', 'text.prepend_append',
+            'text', 'text.help', 'text.prepend_append', 'text.escape',
             'select.native', 'select.selected', 'select.optgroup', 'select.placeholder',
             'checkbox', 'checkbox.switch', 'radios.checked', 'checkboxes.option_attributes',
             'checkbox.help', 'checkbox.switch_help', 'checkbox.inline_help', 'radio.help', 'checkboxes.help',
@@ -64,6 +64,11 @@ class GoldenSnapshotB5Test extends TestCase
         switch ($name) {
             case 'text': return (string) BF::text('field');
             case 'text.help': return (string) BF::text('login', null, null, ['help' => 'Some help']);
+            case 'text.escape': return (string) BF::text('q', '<b>Q</b> & co', null, [
+                'help' => '<i>Help</i> & co',
+                'prepend' => '<b>$</b>',
+                'escape' => true,
+            ]);
             case 'text.prepend_append': return (string) BF::text('amount', 'Amount', null, ['prepend' => '$', 'append' => '.00']);
 
             case 'select.native': return (string) BF::select('sel', null, $choices);
