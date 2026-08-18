@@ -82,4 +82,22 @@ class LayoutTest extends Bootstrap4TestCase
 
         $this->assertSame($expected, $html);
     }
+
+    /**
+     * pull_right is the empty left column that keeps a label-less control aligned in the
+     * horizontal layout. Set it to false and the spacer disappears — the control column then falls
+     * back to right_class instead of the plain "col" it gets beside a spacer.
+     */
+    public function test_pull_right_false_drops_the_horizontal_spacer(): void
+    {
+        BF::horizontal(['url' => '/foo']);
+        $html = (string) BF::checkbox('remember', 'Remember me', 1, null, ['pull_right' => false]);
+        BF::close();
+
+        $this->assertStringNotContainsString('<div class="col-lg-2 col-xl-3"></div>', $html);
+        $this->assertStringContainsString(
+            '<div id="remember-group" class="form-group row"><div class="col-lg-10 col-xl-9">',
+            $html,
+        );
+    }
 }

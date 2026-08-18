@@ -142,7 +142,25 @@ See [options-and-attributes.md](options-and-attributes.md) and [input-groups.md]
 
 ## 4. Settings (recognized option keys — consumed, never rendered)
 
-Anything **not** in this list is treated as an HTML attribute.
+**Package setting names are a closed set.** If you intend library behaviour, use only a name listed
+below for that field — never infer or invent one. If the name you want is not there, **do not emit it
+as an option**: an unrecognized key is not rejected, it is rendered on the control verbatim
+(`['helper' => 'x']` → `<input helper="x">`). Conversely, every HTML attribute you can name passes
+through unprefixed, and should be valid for the target element.
+
+**Three of these names are also HTML attributes you might intend:**
+
+| Name | What happens instead | How to get the attribute |
+|---|---|---|
+| `size` | read as the Bootstrap control size (`sm`/`lg`); any other value is **lost**, on `input`, `select` and `textarea` alike | `~size` (facade / directives) or `input:size` (x-components) |
+| `value` | taken from the **constructor argument**; an option of that name is dropped, and the literal escape does **not** recover it | pass it as the `value` argument |
+| `name` | same — constructor argument only | pass it as the `name` argument |
+
+`label` collides in appearance only: on a field it targets the `<label>` element, which is the
+intent. Per-setting reference with defaults, accepted values and the test that pins each behaviour:
+**[options-and-attributes.md](options-and-attributes.md)**.
+
+The complete set follows.
 
 - **Inherited from the form** (form default cascades to its fields): `layout`
   (**[layouts.md](layouts.md)**), `bootstrap_version` and `custom` (**[bootstrap5.md](bootstrap5.md)**),

@@ -163,6 +163,68 @@ inherited by its fields. See [config.md](config.md).
 
 ---
 
+## Reference — every setting, and the test that pins it
+
+The **anchor** column names the golden or test that characterizes the setting's observable effect.
+An **empty anchor is a defect**: it marks a behaviour this guide claims and nothing verifies.
+
+### Inherited — set on the form (or in config), overridable per field
+
+| Setting | Default | Accepted | Applies to | Anchor |
+|---|---|---|---|---|
+| `layout` | `vertical` | `vertical`\|`horizontal`\|`inline`\|`floating` | form + every field | `tests/golden/b5/layout.horizontal.html` |
+| `bootstrap_version` | `5` | `4`\|`5` | form + every field | `tests/VersionOverrideTest.php` |
+| `custom` | `false` | bool | select / file / range / checkable, **B4 only** | `tests/golden/b4/select.custom.html` |
+| `error_bag` | `'default'` | string | form + every field | `tests/ErrorSettingsTest.php` |
+| `show_all_errors` | `false` | bool | form + every field | `tests/ErrorSettingsTest.php` |
+| `show_valid_feedback` | `false` | bool | form + every field | `tests/golden/b5/valid.text_success.html` |
+| `required_mark` | `' *'` | string\|`false` | form + every field | `tests/RequiredMarkTest.php` |
+| `group` | `[]` | array\|`false` | form + every field | `tests/ConfigurableClassesTest.php` |
+| `group_class` | `mb-3` (B4 `form-group`) | string\|`false` | **config only** — override by styling the group | `tests/ConfigurableClassesTest.php` |
+| `left_class` | `col-lg-2 col-xl-3` | string | horizontal | `tests/golden/b5/layout.horizontal.html` |
+| `right_class` | `col-lg-10 col-xl-9` | string | horizontal, label-less field | `tests/LayoutTest.php` |
+| `pull_right` | `d-none d-lg-block col-lg-2 col-xl-3` | string\|`false` | horizontal, label-less field | `tests/LayoutTest.php` |
+| `lspace` | `me-2` (B4 `mr-2`) | string\|`false` | inline | `tests/golden/b5/layout.inline.html` |
+| `hspace` | `me-3` (B4 `mr-3`) | string\|`false` | inline | `tests/golden/b5/layout.inline.html` |
+| `vspace` | `my-1` | string\|`false` | inline | `tests/golden/b5/layout.inline.html` |
+| `components` | `true` | bool | **config only** — recognized on fields, where it does nothing | `tests/ComponentIntegrationTest.php` |
+
+### Per field
+
+| Setting | Default | Accepted | Applies to | Anchor |
+|---|---|---|---|---|
+| `label` | auto from the name | string\|`false`\|array | every field | `tests/golden/b5/text.html` |
+| `help` | `false` | string (**raw HTML**) | every field | `tests/golden/b5/text.help.html` |
+| `success` | `false` | string (**raw HTML**) | every field | `tests/golden/b5/valid.text_success.html` |
+| `size` | `null` | `'sm'`\|`'lg'` | text-like, select | `tests/golden/b4/text.size_sm.html` |
+| `prepend` / `append` | `false` | string\|array (**raw when it carries a tag**) | text-like, select, file | `tests/golden/b5/text.prepend_append.html` |
+| `choices` | `[]` | iterable | select, checkboxes, radios | `tests/golden/b5/select.native.html` |
+| `option_attributes` | `[]` | array | select, checkboxes, radios | `tests/golden/b5/checkboxes.option_attributes.html` |
+| `optgroup_attributes` | `[]` | array | select | `tests/SelectInputTest.php` |
+| `checked` | `null` | scalar\|array | checkbox, radio, checkboxes, radios | `tests/golden/b5/radios.checked.html` |
+| `inline` | `false` | bool | checkable | `tests/golden/b4/check.inline.html` |
+| `switch` | `false` | bool | checkbox, checkboxes | `tests/golden/b5/checkbox.switch.html` |
+| `disable_errors` | `false` | bool | checkbox, radio | `tests/FeedbackPlacementTest.php` |
+| `text` | `'Choose file'` | string | file, **B4 `custom` only** | `tests/FileInputTest.php` |
+| `button` | `null` | string | file, **B4 `custom` only** | `tests/FileInputTest.php` |
+| `tag` | per field | — | text-like, checkable — **always overwritten, never usable** | `tests/SettingsPartitionTest.php` |
+
+### Form-only, never inherited
+
+| Setting | Accepted | Anchor |
+|---|---|---|
+| `model` | Eloquent model | `tests/golden/b5/model.text.html` |
+| `url` / `route` / `action` | string\|array (exactly one of the three) | `tests/FormTest.php` |
+| `store` / `update` | route name, `Controller@method`, or array | `tests/FormOptionsTest.php` |
+| `files` | bool — adds `enctype="multipart/form-data"` | `tests/FormOptionsTest.php` |
+| `method` | string — `PUT`/`PATCH`/`DELETE` are spoofed | `tests/FormTest.php` |
+
+> **Not a setting, but intercepted:** `placeholder` on a `select` is passed as an attribute and
+> consumed at render, where it becomes a leading blank pre-selected option instead of being emitted.
+> See [choice-fields.md](choice-fields.md).
+
+---
+
 ## `custom` (Bootstrap 4)
 
 `custom => true` opts a select / range / file / checkable into Bootstrap 4's custom-styled controls.
