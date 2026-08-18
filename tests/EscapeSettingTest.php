@@ -113,6 +113,40 @@ class EscapeSettingTest extends TestCase
         $this->assertStringContainsString('&lt;b&gt;Bold&lt;/b&gt;', $html);
     }
 
+    // ## THE HELP AND SUCCESS SINKS #############################################
+
+    public function test_help_text_is_escaped(): void
+    {
+        $this->assertStringContainsString(
+            '<small id="q-help" class="form-text">&lt;b&gt;Bold&lt;/b&gt; &amp; co</small>',
+            (string) BF::text('q', 'Q', null, ['help' => '<b>Bold</b> & co', 'escape' => true]),
+        );
+    }
+
+    public function test_a_htmlable_help_text_is_emitted_verbatim(): void
+    {
+        $this->assertStringContainsString(
+            '<small id="q-help" class="form-text"><b>Bold</b></small>',
+            (string) BF::text('q', 'Q', null, ['help' => new HtmlString('<b>Bold</b>'), 'escape' => true]),
+        );
+    }
+
+    public function test_a_valid_feedback_message_is_escaped(): void
+    {
+        $this->withErrors(['other' => 'Other is invalid.']);
+
+        $html = (string) BF::text('q', 'Q', null, [
+            'show_valid_feedback' => true,
+            'success' => '<b>Looks good</b>',
+            'escape' => true,
+        ]);
+
+        $this->assertStringContainsString(
+            '<div class="valid-feedback" id="q-valid">&lt;b&gt;Looks good&lt;/b&gt;</div>',
+            $html,
+        );
+    }
+
     // ## THE PRIMITIVE ##########################################################
 
     public function test_content_is_emitted_verbatim_by_default(): void

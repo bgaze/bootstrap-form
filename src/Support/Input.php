@@ -242,7 +242,7 @@ abstract class Input
             $attributes['id'] = $this->fieldId().'-valid';
         }
 
-        return $this->html->tag('div', $this->success, $attributes)->toHtml();
+        return $this->html->tag('div', $this->html->content($this->success, (bool) $this->escape), $attributes)->toHtml();
     }
 
     /**
@@ -493,7 +493,7 @@ abstract class Input
         }
         $attributes['class'] = $this->driver->helpClass();
 
-        return $this->html->tag('small', $this->help, $attributes)->toHtml();
+        return $this->html->tag('small', $this->html->content($this->help, (bool) $this->escape), $attributes)->toHtml();
     }
 
     public function group(): string
