@@ -123,6 +123,31 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Content escaping
+    |--------------------------------------------------------------------------
+    |
+    | The content sinks — label, help, success and the prepend/append addons —
+    | emit their value as raw HTML, so markup can be injected deliberately.
+    | Enable this option to escape them instead. Disabled by default, so nothing
+    | changes for an existing application.
+    |
+    | It can be overridden per form or per field, e.g.:
+    |
+    |     BF::open(['escape' => true])
+    |     BF::text('q', 'Q', null, ['escape' => true])
+    |
+    | A value implementing Htmlable (an HtmlString, a Blade slot) is markup by
+    | construction: it is never escaped, whatever this option says. That is the
+    | per-value opt-out. Escaping content that comes from user input, the database
+    | or translation files at the application boundary remains the safe habit,
+    | enabled or not.
+    |
+    */
+
+    'escape' => false,
+
+    /*
+    |--------------------------------------------------------------------------
     | Bootstrap 4 layout options
     |--------------------------------------------------------------------------
     |

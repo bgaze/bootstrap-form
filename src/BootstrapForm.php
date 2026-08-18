@@ -42,6 +42,7 @@ use Illuminate\Support\Traits\Macroable;
  * @property string|false $lspace
  * @property bool $show_all_errors
  * @property bool $show_valid_feedback
+ * @property bool $escape
  * @property bool|array $group
  */
 class BootstrapForm
@@ -122,6 +123,10 @@ class BootstrapForm
         // Assembled as a plain (heterogeneous) array, then wrapped once.
         $settings = array_fill_keys(self::RESERVED, null);
         $settings['error_bag'] = 'default';
+        // "escape" is seeded BEFORE the config merge, so an application value still wins while
+        // the key always exists. Without it, a config file published before the key was added
+        // would push "escape" out of the settings partition and render it as an HTML attribute.
+        $settings['escape'] = false;
         $settings = array_merge($settings, Arr::except($config, ['blade_directives', 'components', 'bootstrap4', 'bootstrap5']));
         // "custom" is always a known setting (a no-op in Bootstrap 5) so it is never
         // mistaken for an HTML attribute, even when absent from the version section.

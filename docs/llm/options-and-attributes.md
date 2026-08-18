@@ -180,6 +180,7 @@ An **empty anchor is a defect**: it marks a behaviour this guide claims and noth
 | `show_all_errors` | `false` | bool | form + every field | `tests/ErrorSettingsTest.php` |
 | `show_valid_feedback` | `false` | bool | form + every field | `tests/golden/b5/valid.text_success.html` |
 | `required_mark` | `' *'` | string\|`false` | form + every field | `tests/RequiredMarkTest.php` |
+| `escape` | `false` | bool | form + every field | `tests/EscapeSettingTest.php` |
 | `group` | `[]` | array\|`false` | form + every field | `tests/ConfigurableClassesTest.php` |
 | `group_class` | `mb-3` (B4 `form-group`) | string\|`false` | **config only** — override by styling the group | `tests/ConfigurableClassesTest.php` |
 | `left_class` | `col-lg-2 col-xl-3` | string | horizontal | `tests/golden/b5/layout.horizontal.html` |

@@ -17,6 +17,42 @@ use Illuminate\Support\HtmlString;
  */
 class EscapeSettingTest extends TestCase
 {
+    // ## THE SETTING ############################################################
+
+    /**
+     * `escape` is a recognized setting, so it is consumed as configuration and never leaks onto
+     * the control as an HTML attribute.
+     */
+    public function test_the_setting_never_reaches_the_markup(): void
+    {
+        $this->assertStringNotContainsString('escape', (string) BF::text('q', 'Q', null, ['escape' => true]));
+    }
+
+    /**
+     * The key is seeded before the config merge, so a config file published before it existed
+     * keeps it a known setting instead of letting it render as an attribute.
+     */
+    public function test_the_setting_survives_a_published_config_that_omits_it(): void
+    {
+        $config = config('bootstrap_form');
+        unset($config['escape']);
+        config(['bootstrap_form' => $config]);
+        BF::close();
+
+        $this->assertStringNotContainsString('escape', (string) BF::text('q', 'Q', null, ['escape' => true]));
+    }
+
+    /**
+     * The application value still wins over the seeded default.
+     */
+    public function test_the_config_value_wins_over_the_seeded_default(): void
+    {
+        config(['bootstrap_form.escape' => true]);
+        BF::close();
+
+        $this->assertTrue(BF::settings()->get('escape'));
+    }
+
     // ## THE PRIMITIVE ##########################################################
 
     public function test_content_is_emitted_verbatim_by_default(): void
