@@ -1,11 +1,13 @@
 <!--
 Sources: src/Support/Options.php, src/Support/Attributes.php, src/Support/Input.php,
+         src/Support/Html.php (content), src/Support/Traits/HasAddons.php,
          src/View/Components/Concerns/ResolvesBootstrapAttributes.php
 Goldens: tests/golden/b4/text.id_explicit.html, tests/golden/b4/text.id_false.html,
          tests/golden/b4/check.option_id_override.html
 Tests:   tests/ConfigurableClassesTest.php (class ownership, control vs group),
          tests/SettingsPartitionTest.php (both directions of the partition, `tag`, `~size`)
-         tests/SettingsTableCoverageTest.php (this file's reference table vs the code)
+         tests/SettingsTableCoverageTest.php (this file's reference table vs the code),
+         tests/EscapeSettingTest.php (the `escape` regime), tests/RawContentTest.php (the default)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -63,6 +65,66 @@ The x-component equivalent is the **`input:`** prefix (see [components.md](compo
 ```blade
 <x-bf::text name="code" input:size="10"/>
 ```
+
+---
+
+## Content escaping — the `escape` setting
+
+The **content sinks** — the field `label`, `help`, `success` and the `prepend` / `append` addons — emit
+their value as raw HTML, because injecting markup into a label or an addon is a real need.
+`escape => true` makes them escape it instead. Default `false`, so nothing changes for an existing
+application; it is an **inherited setting** (config → per form → per field).
+
+```php
+BF::text('q', '<b>Bold</b> & co');
+// <label for="q" class="form-label"><b>Bold</b> & co</label>
+
+BF::text('q', '<b>Bold</b> & co', null, ['escape' => true]);
+// <label for="q" class="form-label">&lt;b&gt;Bold&lt;/b&gt; &amp; co</label>
+```
+
+| Sink | `escape => false` (default) | `escape => true` |
+|---|---|---|
+| `label`, `help`, `success` | raw | escaped |
+| `prepend` / `append` | raw **when the value carries a tag**, otherwise escaped and wrapped in `.input-group-text` | always escaped and wrapped — the heuristic is retired |
+
+**Addons are where it earns the most.** By default the escaping decision is taken by the *value*, so
+the same call site is escaped for `°C` and raw the day its value happens to contain a tag. With
+`escape` the decision belongs to the call site. Full truth table: [input-groups.md](input-groups.md).
+
+**Per-value opt-out — pass a `Htmlable`.** An `HtmlString` (or any `Htmlable`) is markup by
+construction and is never escaped, whatever the setting says:
+
+```php
+use Illuminate\Support\HtmlString;
+
+BF::text('amt', 'Amt', null, [
+    'escape' => true,
+    'prepend' => new HtmlString('<button type="button" class="btn btn-outline-secondary">Go</button>'),
+]);
+```
+
+That is what keeps the x-component **slots** working under a global `escape => true`: a slot is markup
+the author wrote in the template, so it is handed over as an `HtmlString` (see
+[components.md](components.md)). The bypass skips the **escaping** decision, not the **wrapping** one —
+a tag-free `Htmlable` addon is still wrapped as a text addon, exactly like a tag-free string.
+
+**Three things it does not cover:**
+
+- **`required_mark` is never escaped.** It comes from the configuration, it is developer-authored, and
+  emitting its HTML verbatim is a documented feature — so it is appended *after* the label has been
+  escaped.
+- **Validation error messages** keep their own raw path.
+- **The standalone `BF::label()`** has its own per-call knob (a fourth argument, default `false`), not
+  this setting.
+
+Escaping uses `htmlspecialchars` with `ENT_QUOTES` and **no double-encoding** — the same policy as HTML
+attributes, `textarea` content and `select` options, so an already-encoded entity survives a round trip
+instead of becoming `&amp;amp;`.
+
+**Not a substitute for escaping at the application boundary.** Content coming from user input, the
+database or translation files should be escaped before it reaches a sink, whether or not this setting
+is on.
 
 ---
 

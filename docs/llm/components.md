@@ -51,10 +51,14 @@ The attribute bag is translated into a `BF` options array by these rules:
 | `input:*` | a **literal** input HTML attribute — the x-component equivalent of the `~` escape (`input:size="10"`) |
 | `option:*` / `optgroup:*` | blanket child attributes — **only** on `<x-bf::select>`, `<x-bf::checkboxes>`, `<x-bf::radios>` |
 | a known setting name (kebab/camel) | normalized to the snake_case setting (`error-bag` → `error_bag`, `show-all-errors` → `show_all_errors`) |
+| a boolean setting given as `"true"` / `"false"` | the actual boolean — so `escape="false"` and `:escape="false"` agree |
 | anything else | an HTML attribute on the control, verbatim (`data-*`, `aria-*`, `placeholder`, `required`, …) |
 
-Boolean attributes follow Blade: a bare attribute (`required`, `switch`, `inline`, `multiple`) passes
-`true`. See [options-and-attributes.md](options-and-attributes.md) for the underlying partition, the
+Boolean attributes follow Blade: a bare attribute (`required`, `switch`, `inline`, `multiple`, `escape`)
+passes `true`. A boolean **setting** written as a string is normalized, so `escape="false"` disables it
+just like `:escape="false"` — the same holds for `switch`, `inline`, `custom`, `show-all-errors`,
+`show-valid-feedback` and `disable-errors`. Settings that legitimately accept a string are left alone:
+`help="false"` is the text `false`, not a boolean. See [options-and-attributes.md](options-and-attributes.md) for the underlying partition, the
 `~` / `input:` escape and the **class-ownership rule** (`group:class` / `label:class` replace the
 configured defaults instead of adding to them), and [choice-fields.md](choice-fields.md) for
 `option:` / `optgroup:`.
@@ -76,6 +80,13 @@ configured defaults instead of adding to them), and [choice-fields.md](choice-fi
     <x-slot:prepend>$</x-slot:prepend>
 </x-bf::text>
 ```
+
+> **A slot is always raw markup.** Its content is handed to the facade as an `HtmlString`, so it is
+> never escaped — including under a global `escape => true`, where the author's template markup must
+> obviously survive. The facade equivalent of a slot is therefore
+> `['prepend' => new HtmlString('…')]`, not a plain string. A tag-free slot is still wrapped as a text
+> addon (`<x-slot:prepend>$</x-slot:prepend>` keeps its `.input-group-text` span). See
+> [options-and-attributes.md](options-and-attributes.md).
 
 ---
 

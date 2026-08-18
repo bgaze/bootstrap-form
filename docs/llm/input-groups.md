@@ -6,7 +6,8 @@ Goldens: tests/golden/b5/text.prepend_append.html, tests/golden/b5/text.help.htm
          tests/golden/b5/float.addon.html, tests/golden/b4/text.prepend_append.html (B4),
          tests/golden/b4/error.help_describedby.html
 Tests:   tests/TextareaSizeTest.php (textarea size vs dimensions),
-         tests/RawContentTest.php (addon escaping regime)
+         tests/RawContentTest.php (default addon escaping regime),
+         tests/EscapeSettingTest.php + tests/EscapeSettingB4Test.php (the `escape` regime)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -32,10 +33,26 @@ Providing either wraps the control in a Bootstrap **input group**.
 Detection keys on a tag opening (`<` immediately followed by a letter, `!` or `/`), so bare content
 such as `°C`, `$`, `R&D` or `a < b` stays text.
 
-> **The escaping decision is taken by the value, not by the call site.** The same `prepend` emits an
-> escaped span for `°C` and raw markup the moment its value happens to contain a tag. So an addon fed
-> from user input, a database column or a translation file is an injection sink — escape it before
-> passing it. `label`, `help` and `success` are **always** raw, with no heuristic at all.
+> **By default the escaping decision is taken by the value, not by the call site.** The same `prepend`
+> emits an escaped span for `°C` and raw markup the moment its value happens to contain a tag. So an
+> addon fed from user input, a database column or a translation file is an injection sink — escape it
+> before passing it, or set **`escape => true`** to retire the heuristic. `label`, `help` and `success`
+> are **always** raw by default, with no heuristic at all.
+
+**With `escape => true`** the value stops deciding — the call site does. A `Htmlable` value (an
+`HtmlString`, a Blade slot) is markup by construction, so it keeps the default regime either way:
+
+| Value | `escape => false` (default) | `escape => true` |
+|---|---|---|
+| string, no tag | escaped + wrapped | escaped + wrapped |
+| string carrying a tag | raw, unwrapped | escaped + wrapped |
+| `Htmlable`, no tag | escaped + wrapped | escaped + wrapped |
+| `Htmlable` carrying a tag | raw, unwrapped | raw, unwrapped |
+
+The bypass skips the escaping decision, not the wrapping one — which is why a
+`<x-slot:prepend>$</x-slot:prepend>` keeps its `.input-group-text` span while
+`<x-slot:append><button …></x-slot:append>` markup survives a global `escape => true`. See
+[options-and-attributes.md](options-and-attributes.md).
 
 ```blade
 <x-bf::text name="amount" prepend="$" append=".00"/>

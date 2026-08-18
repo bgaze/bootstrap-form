@@ -28,9 +28,10 @@ read it before assuming a value (see the [hub](index.md) §1.1).
 | `show_all_errors` | `bool` = `false` | Render all of a field's error messages instead of only the first. See [model-binding.md](model-binding.md). |
 | `show_valid_feedback` | `bool` = `false` | After a failed submit, mark error-free fields valid (`is-valid`); a per-field `success` message then renders a `valid-feedback`. |
 | `required_mark` | `string` \| `false` = `' *'` | Mark appended to the label of any field carrying the HTML `required` attribute. HTML accepted verbatim; `false` disables. See below. |
+| `escape` | `bool` = `false` | Escape the content sinks (`label`, `help`, `success`, `prepend`/`append`) instead of emitting raw HTML. Opt-in; a `Htmlable` value is never escaped. See below. |
 
 The `bootstrap_version` and `layout` values, plus `custom`, `show_all_errors`, `show_valid_feedback`,
-`required_mark` and the version-section keys below, are **inheritable settings**: a form default
+`required_mark`, `escape` and the version-section keys below, are **inheritable settings**: a form default
 cascades to its fields, and each field may override. The one exception is `group_class`, which is
 set in config only (see below).
 
@@ -58,6 +59,37 @@ BF::text('email', 'Email', null, ['required' => true, 'required_mark' => ' <span
 // Disable per form (or per field):
 BF::open(['required_mark' => false]);
 ```
+
+### `escape`
+
+The content sinks — the field `label`, `help`, `success` and the `prepend` / `append` addons — emit
+their value as **raw HTML**, because injecting markup is a supported use case. `escape => true` makes
+them escape it instead. Notes:
+
+- **Opt-in, `false` by default** — nothing changes for an existing application.
+- **A `Htmlable` value is never escaped** (an `HtmlString`, a Blade slot): it is markup by
+  construction. That is the per-value opt-out.
+- **`required_mark` is never escaped** — it is configuration, and its HTML is a documented feature, so
+  it is appended after the label has been escaped.
+- On addons it also **retires the text-vs-HTML heuristic**: with `escape` on, every string value is
+  treated as text. See [input-groups.md](input-groups.md).
+- Escaping uses `htmlspecialchars` / `ENT_QUOTES` with **no double-encoding**.
+
+```php
+// Global default:
+'escape' => true,
+
+// Per form, per field:
+BF::open(['escape' => true]);
+BF::text('q', 'Q', null, ['escape' => true]);
+
+// Per value, regardless of the setting:
+BF::text('amt', 'Amt', null, ['escape' => true, 'prepend' => new HtmlString('<button>Go</button>')]);
+```
+
+It is **not** a substitute for escaping at the application boundary: content coming from user input,
+the database or translation files should be escaped before it reaches a sink. Full rules:
+[options-and-attributes.md](options-and-attributes.md).
 
 ---
 

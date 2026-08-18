@@ -35,7 +35,7 @@ Never assume defaults. Establish the project's actual conventions first.
   (`vertical`|`horizontal`|`inline`|`floating`), `group` (application-wide form-group attributes),
   `custom` (Bootstrap 4 only), the `bootstrap4` / `bootstrap5` layout sections (`group_class`,
   `left_class`, `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`), `show_all_errors`,
-  `show_valid_feedback`, `required_mark`, `blade_directives`, `components`.
+  `show_valid_feedback`, `required_mark`, `escape`, `blade_directives`, `components`.
 - Full reference: **[config.md](config.md)**.
 
 ### 1.2 Syntax in use
@@ -128,8 +128,9 @@ styling the label removes it: `label:class="fw-bold"` renders `class="fw-bold co
 (`label:class="fw-bold col-lg-2 col-xl-3"`). Same for `group:class`, which also takes over the
 inline spacing.
 
-**Raw HTML — the content sinks are not escaped.** Injecting markup is a supported use case, so these
-sinks emit their content verbatim. Two regimes, and the difference is what a caller must know:
+**Raw HTML — the content sinks are not escaped by default.** Injecting markup is a supported use
+case, so these sinks emit their content verbatim. Two regimes, and the difference is what a caller
+must know:
 
 - **Always raw** — `label` (field and standalone), `help`, `success`. Predictable; it is what makes
   an HTML `required_mark` work.
@@ -137,8 +138,13 @@ sinks emit their content verbatim. Two regimes, and the difference is what a cal
   emitted verbatim; a tag-free value is escaped and wrapped in `.input-group-text`. The decision is
   taken by the *value*, not by the call site.
 
-Escape anything derived from user input, the database or translation files **before** passing it to
-one of these.
+**Opt in to escaping with `escape => true`** (config → per form → per field): the field `label`,
+`help`, `success` and the addons are then escaped, and the addon heuristic is retired. A `Htmlable`
+value (an `HtmlString`, a Blade slot) is markup by construction and is never escaped — the per-value
+opt-out. `required_mark` and validation messages are not covered.
+
+Either way, escape anything derived from user input, the database or translation files **before**
+passing it to one of these.
 
 See [options-and-attributes.md](options-and-attributes.md) and [input-groups.md](input-groups.md).
 
@@ -169,7 +175,7 @@ The complete set follows.
 - **Inherited from the form** (form default cascades to its fields): `layout`
   (**[layouts.md](layouts.md)**), `bootstrap_version` and `custom` (**[bootstrap5.md](bootstrap5.md)**),
   `error_bag`, `show_all_errors`, `show_valid_feedback` (**[model-binding.md](model-binding.md)**),
-  `required_mark` (**[config.md](config.md)**), `left_class`, `right_class`, `pull_right`, `lspace`,
+  `required_mark` and `escape` (**[config.md](config.md)**), `left_class`, `right_class`, `pull_right`, `lspace`,
   `hspace`, `vspace`, `group` (**[options-and-attributes.md](options-and-attributes.md)**).
 - **Config-level only** (recognized, never rendered, set in the version sections): `group_class` —
   override it at a call site by styling the group (`group => ['class' => …]`).

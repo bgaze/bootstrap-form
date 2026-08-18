@@ -187,6 +187,10 @@ Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom
   <div id="roles-group" class="mb-3"><label for="roles" class="form-label">Roles *</label><div><div class="form-check"><input required id="roles-admin" class="form-check-input" name="roles" type="checkbox" value="admin"><label for="roles-admin" class="form-check-label">Admin</label></div><div class="form-check"><input required id="roles-editor" class="form-check-input" name="roles" type="checkbox" value="editor"><label for="roles-editor" class="form-check-label">Editor</label></div></div></div>
   ```
 
+- **`escape` propagates to the children** — the collection passes its settings down to the generated
+  controls, so `escape => true` escapes the individual choice labels along with the global one. Nothing
+  to declare per child. See [options-and-attributes.md](options-and-attributes.md).
+
 - **Horizontal layout — global label alignment.** In the `horizontal` layout the collection's global
   label gets `pt-0` so it lines up with the first choice rather than with the column. It is
   driver-owned (an alignment requirement of that layout), so it survives a `label:class` of your own
