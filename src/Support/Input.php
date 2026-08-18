@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
  * @property bool $show_all_errors
  * @property bool $show_valid_feedback
  * @property string|false|null $required_mark
+ * @property bool $escape
  * @property string|false $group_class
  * @property string|false $pull_right
  * @property string $left_class
@@ -432,14 +433,18 @@ abstract class Input
     }
 
     /**
-     * The label content with the required mark appended when applicable. The mark rides
-     * the label's (unescaped) render path, so HTML marks are emitted verbatim.
+     * The label content with the required mark appended when applicable.
+     *
+     * The label goes through the escaping policy; the mark never does. The mark comes from the
+     * configuration, is developer-authored, and emitting its HTML verbatim is a documented
+     * feature — so it is appended AFTER the label has been escaped.
      */
-    protected function labelValue(): mixed
+    protected function labelValue(): string
     {
+        $label = $this->html->content($this->label, (bool) $this->escape);
         $mark = $this->requiredMark();
 
-        return $mark === '' ? $this->label : $this->label.$mark;
+        return $mark === '' ? $label : $label.$mark;
     }
 
     /**

@@ -53,6 +53,66 @@ class EscapeSettingTest extends TestCase
         $this->assertTrue(BF::settings()->get('escape'));
     }
 
+    // ## THE LABEL SINK #########################################################
+
+    public function test_a_field_label_is_escaped(): void
+    {
+        $expected = '<div id="q-group" class="mb-3"><label for="q" class="form-label">&lt;b&gt;Bold&lt;/b&gt; &amp; co</label>'
+            .'<div><input id="q" class="form-control" name="q" type="text"></div></div>';
+
+        $this->assertSame($expected, (string) BF::text('q', '<b>Bold</b> & co', null, ['escape' => true]));
+    }
+
+    /**
+     * The required mark is configuration, not content: its HTML is a documented feature, so it is
+     * appended after the label has been escaped.
+     */
+    public function test_the_required_mark_keeps_its_markup_while_the_label_is_escaped(): void
+    {
+        $html = (string) BF::text('q', '<b>Q</b>', null, [
+            'required' => true,
+            'required_mark' => ' <span class="text-danger">*</span>',
+            'escape' => true,
+        ]);
+
+        $this->assertStringContainsString(
+            '>&lt;b&gt;Q&lt;/b&gt; <span class="text-danger">*</span></label>',
+            $html,
+        );
+    }
+
+    public function test_a_htmlable_label_is_emitted_verbatim(): void
+    {
+        $this->assertStringContainsString(
+            '<label for="q" class="form-label"><b>Bold</b></label>',
+            (string) BF::text('q', new HtmlString('<b>Bold</b>'), null, ['escape' => true]),
+        );
+    }
+
+    /**
+     * A choice collection propagates its settings to the generated children, so the child labels
+     * follow the collection's escaping policy without anything to declare.
+     */
+    public function test_choice_child_labels_inherit_the_setting(): void
+    {
+        $html = (string) BF::checkboxes('opts', 'Opts', ['a' => '<b>A</b>'], null, ['escape' => true]);
+
+        $this->assertStringContainsString('&lt;b&gt;A&lt;/b&gt;', $html);
+        $this->assertStringNotContainsString('<b>A</b>', $html);
+    }
+
+    /**
+     * Inherited from the form like any other setting.
+     */
+    public function test_the_setting_is_inherited_from_the_form(): void
+    {
+        BF::open(['url' => '/foo', 'escape' => true]);
+        $html = (string) BF::text('q', '<b>Bold</b>');
+        BF::close();
+
+        $this->assertStringContainsString('&lt;b&gt;Bold&lt;/b&gt;', $html);
+    }
+
     // ## THE PRIMITIVE ##########################################################
 
     public function test_content_is_emitted_verbatim_by_default(): void
