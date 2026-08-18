@@ -3,7 +3,8 @@ Sources: src/Support/Options.php, src/Support/Attributes.php, src/Support/Input.
          src/View/Components/Concerns/ResolvesBootstrapAttributes.php
 Goldens: tests/golden/b4/text.id_explicit.html, tests/golden/b4/text.id_false.html,
          tests/golden/b4/check.option_id_override.html
-Tests:   tests/ConfigurableClassesTest.php (class ownership, control vs group)
+Tests:   tests/ConfigurableClassesTest.php (class ownership, control vs group),
+         tests/SettingsPartitionTest.php (both directions of the partition, `tag`, `~size`)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -51,6 +52,10 @@ To force a key onto the element **even though its name collides with a setting**
 // Without ~, `size` is read as the Bootstrap control-size setting (sm|lg).
 BF::text('code', 'Code', null, ['~size' => '10']);   // → <input … size="10">
 ```
+
+> **`tag` is the one recognized name you can never use.** It is consumed as a setting on text-like
+> and checkable fields, then overwritten by the builder — so `['tag' => 'email']` neither changes the
+> input type nor reaches the element. There is no way to render an HTML attribute named `tag`.
 
 The x-component equivalent is the **`input:`** prefix (see [components.md](components.md)):
 

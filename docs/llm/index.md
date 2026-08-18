@@ -28,10 +28,10 @@ Never assume defaults. Establish the project's actual conventions first.
 - If **`config/bootstrap_form.php`** exists in the app, **it wins** — read it.
 - Otherwise defaults come from `vendor/bgaze/bootstrap-form/src/config/config.php`.
 - Values that change the markup you must emit: `bootstrap_version` (`4`|`5`), `layout`
-  (`vertical`|`horizontal`|`inline`|`floating`), `custom` (Bootstrap 4 only), the `bootstrap4` /
-  `bootstrap5` layout sections (`left_class`, `right_class`, `pull_right`, `lspace`, `hspace`,
-  `vspace`), `show_all_errors`, `show_valid_feedback`, `required_mark`, `blade_directives`,
-  `components`.
+  (`vertical`|`horizontal`|`inline`|`floating`), `group` (application-wide form-group attributes),
+  `custom` (Bootstrap 4 only), the `bootstrap4` / `bootstrap5` layout sections (`group_class`,
+  `left_class`, `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`), `show_all_errors`,
+  `show_valid_feedback`, `required_mark`, `blade_directives`, `components`.
 - Full reference: **[config.md](config.md)**.
 
 ### 1.2 Syntax in use
@@ -144,9 +144,11 @@ See [options-and-attributes.md](options-and-attributes.md) and [input-groups.md]
 
 Anything **not** in this list is treated as an HTML attribute.
 
-- **Inherited from the form** (form default cascades to its fields): `layout`, `bootstrap_version`,
-  `custom`, `error_bag`, `show_all_errors`, `show_valid_feedback`, `required_mark`, `left_class`,
-  `right_class`, `pull_right`, `lspace`, `hspace`, `vspace`, `group`.
+- **Inherited from the form** (form default cascades to its fields): `layout`
+  (**[layouts.md](layouts.md)**), `bootstrap_version` and `custom` (**[bootstrap5.md](bootstrap5.md)**),
+  `error_bag`, `show_all_errors`, `show_valid_feedback` (**[model-binding.md](model-binding.md)**),
+  `required_mark` (**[config.md](config.md)**), `left_class`, `right_class`, `pull_right`, `lspace`,
+  `hspace`, `vspace`, `group` (**[options-and-attributes.md](options-and-attributes.md)**).
 - **Config-level only** (recognized, never rendered, set in the version sections): `group_class` —
   override it at a call site by styling the group (`group => ['class' => …]`).
 - **Per field, all types:** `label`, `help`, `success`.
@@ -155,7 +157,12 @@ Anything **not** in this list is treated as an HTML attribute.
   raw-HTML rule, see **[input-groups.md](input-groups.md)**. A `textarea`'s **dimensions** are the
   plain `cols` / `rows` attributes (default `50` × `10`), not `size`.
 - **Form-only, reserved** (never inherited by fields): `model`, `url`, `route`, `action`, `store`,
-  `update`.
+  `update`, plus `files` (adds `enctype="multipart/form-data"`) and `method` (consumed to build the
+  form method, `PUT`/`PATCH`/`DELETE` included). See **[model-binding.md](model-binding.md)**.
+
+- **Recognized but not for you:** `tag` (the input type) is consumed on text-like and checkable
+  fields and then **overwritten by the builder**, so passing it can only ever swallow an HTML
+  attribute named `tag` — it never changes the rendered type.
 
 **Resolution cascade** (each level overrides the previous): global config (default `5`) → per-form
 (`BF::open(['bootstrap_version' => 4])`) → per-field (`['bootstrap_version' => 4]` in a field's
@@ -185,7 +192,7 @@ binding (**[model-binding.md](model-binding.md)**), plus any inherited setting a
 `text`, `email` (name defaults to `email`), `url`, `tel`, `number`, `date`, `time`,
 `datetimeLocal` (tag `<x-bf::datetime-local>`), `month`, `week`, `search`, `color`, `textarea`.
 
-`password` — `(name, label)` only (no value).
+`password` — `(name, label)`: no `value` argument.
 
 ### Choice inputs
 
@@ -211,7 +218,7 @@ binding (**[model-binding.md](model-binding.md)**), plus any inherited setting a
 
 | x-component | facade / directive | Signature | Notes |
 |---|---|---|---|
-| `<x-bf::file>` | `BF::file` / `@file` | `(name, label)` | `multiple`, `custom`. |
+| `<x-bf::file>` | `BF::file` / `@file` | `(name, label)` | `multiple`, `custom` (+ `text` / `button`, B4 custom-file only — **[bootstrap5.md](bootstrap5.md)**). |
 | `<x-bf::range>` | `BF::range` / `@range` | `(name, label, value)` | `min`/`max`/`step`, `custom`. |
 | `<x-bf::hidden>` | `BF::hidden` / `@hidden` | `(name, value)` | No label/group. |
 
@@ -219,14 +226,14 @@ binding (**[model-binding.md](model-binding.md)**), plus any inherited setting a
 
 | x-component | facade / directive | Signature | Notes |
 |---|---|---|---|
-| `<x-bf::submit>` | `BF::submit` / `@submit` | `(value, options)` | Text via attr or slot. `primary`. |
-| `<x-bf::reset>` | `BF::reset` / `@reset` | `(value, options)` | `danger`. |
-| `<x-bf::button>` | `BF::button` / `@button` | `(value, options)` | `primary`. |
-| `<x-bf::link>` | `BF::link` / `@link` | `(url, title, options)` | Renders a button-styled `<a>`. |
-| `<x-bf::label>` | `BF::label` / `@label` | `(name, value, options)` | Standalone label. |
+| `<x-bf::submit>` | `BF::submit` / `@submit` | `(value)` | Text via attr or slot. `primary`. |
+| `<x-bf::reset>` | `BF::reset` / `@reset` | `(value)` | `danger`. |
+| `<x-bf::button>` | `BF::button` / `@button` | `(value)` | `primary`. |
+| `<x-bf::link>` | `BF::link` / `@link` | `(url, title)` | Renders a button-styled `<a>`. |
+| `<x-bf::label>` | `BF::label` / `@label` | `(name, value)` | Standalone label. Content is **raw**; a 4th argument `escapeHtml = true` escapes it. |
 
-For buttons/link/label the `options` second arg may be a Bootstrap variant string (`'success'`,
-`'outline-primary'`, ...) or an options array.
+For buttons/link/label the trailing `options` may be a Bootstrap variant string (`'success'`,
+`'outline-primary'`, ...) instead of an array.
 
 ---
 
@@ -251,6 +258,14 @@ For buttons/link/label the `options` second arg may be a Bootstrap variant strin
 
 {{-- Checkbox as a switch, inline --}}
 <x-bf::checkbox name="accept" label="Accept terms" switch inline/>
+
+{{-- File upload: open the form with `files` so it carries the right enctype --}}
+<x-bf::form url="/import" files>
+    <x-bf::file name="docs" label="Documents" multiple/>
+</x-bf::form>
+
+{{-- Range: min / max / step are plain HTML attributes --}}
+<x-bf::range name="vol" label="Volume" value="50" min="0" max="100" step="5"/>
 
 {{-- No label / custom label attributes --}}
 <x-bf::text name="q" :label="false"/>

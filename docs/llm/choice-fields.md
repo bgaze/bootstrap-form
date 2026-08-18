@@ -35,7 +35,8 @@ addons). Anything else is an HTML attribute on `<select>` (`multiple`, `required
 
 - **`selected`** — a scalar or array; each matching option gets `selected="selected"`. For multiple
   selection add the `multiple` HTML attribute and pass an array.
-- **`placeholder`** — renders a leading blank, pre-selected option (not an HTML attribute here):
+- **`placeholder`** — passed as an attribute but **intercepted at render**: instead of being emitted
+  on `<select>`, it becomes a leading blank, pre-selected option.
 
   ```blade
   <x-bf::select name="sel" :choices="['a' => 'A']" placeholder="Pick"/>

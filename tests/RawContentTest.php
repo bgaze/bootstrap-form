@@ -66,4 +66,15 @@ class RawContentTest extends TestCase
             (string) BF::text('amt', 'Amt', null, ['prepend' => '<script>alert(1)</script>']),
         );
     }
+
+    /**
+     * Escaping a standalone label is opt-in through the fourth argument, which defaults to false.
+     */
+    public function test_a_standalone_label_can_be_escaped_on_demand(): void
+    {
+        $this->assertSame(
+            '<label for="q">&lt;b&gt;Bold&lt;/b&gt; &amp; co</label>',
+            (string) BF::label('q', '<b>Bold</b> & co', [], true),
+        );
+    }
 }

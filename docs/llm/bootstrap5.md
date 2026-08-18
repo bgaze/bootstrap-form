@@ -3,6 +3,7 @@ Sources: src/Support/Drivers/VersionDriver.php, src/Support/Drivers/Bootstrap4Dr
          src/Support/Drivers/Bootstrap5Driver.php, src/Support/Drivers/DriverManager.php,
          src/BootstrapForm.php (resetForm/initForm version resolution, driver()), src/config/config.php
 Goldens: tests/golden/b5/*.html
+Tests:   tests/FileInputTest.php (B4 custom-file labels)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -74,6 +75,17 @@ Representative Bootstrap 5 output:
 
 - **`custom` is a recognized no-op in B5** — it stays a known setting (never emitted as an HTML
   attribute) but changes nothing. See [options-and-attributes.md](options-and-attributes.md).
+- **`custom-file` carries two settings of its own, B4 only:** `text` — the label rendered inside the
+  control (default `'Choose file'`) — and `button`, which sets the browse-button label through
+  `data-browse`. Both are swallowed with no effect unless the field is `custom` **and** the version
+  is 4:
+
+  ```php
+  BF::file('avatar', null, ['custom' => true, 'text' => 'Pick a file', 'button' => 'Browse']);
+  ```
+  ```html
+  <div id="avatar-group" class="form-group"><label for="avatar">Avatar</label><div><div class="custom-file"><input id="avatar" class="custom-file-input" name="avatar" type="file"><label for="avatar" class="custom-file-label" data-browse="Browse">Pick a file</label></div></div></div>
+  ```
 - **Floating** is B5-only; on B4 the `floating` layout degrades to vertical. See [layouts.md](layouts.md).
 - **Inline** forms are best-effort on B5 and may need extra markup; vertical and horizontal are fully
   supported on both versions.
