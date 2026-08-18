@@ -14,6 +14,10 @@ description, through **three interchangeable syntaxes that produce byte-identica
 HTML layer (no `laravelcollective/html`). **Bootstrap 5 is the default; Bootstrap 4 is fully supported
 for backward compatibility.**
 
+**Applies to:** `bgaze/bootstrap-form` **v4** — PHP ≥ 8.2, Laravel 12 or 13. Earlier majors are a
+different API (v3 renders Bootstrap 4 by default and depends on `laravelcollective/html`); this guide
+does not describe them.
+
 **How to use this guide:** read this file in full — it is enough to build the large majority of forms.
 Load a spoke from the [on-demand index](#on-demand-index) only when a task needs that specific area.
 
@@ -306,9 +310,9 @@ Load a spoke only when the task touches its area. All paths are relative to this
 |---|---|
 | [choice-fields.md](choice-fields.md) | select / checkboxes / radios, the `choices` grammar, optgroups, per-option attributes, switches. |
 | [layouts.md](layouts.md) | vertical / horizontal / inline / floating layouts and their column/spacing options. |
-| [input-groups.md](input-groups.md) | prepend/append addons (options & slots), help text, control sizing. |
+| [input-groups.md](input-groups.md) | prepend/append addons (options & slots, raw-HTML rule), help text, control sizing, textarea dimensions. |
 | [model-binding.md](model-binding.md) | binding an Eloquent model, `store`/`update`, old input, error display, valid feedback, `error_bag`. |
-| [options-and-attributes.md](options-and-attributes.md) | the settings-vs-attributes partition, the `~` / `input:` escape, `id` policy, `custom`. |
+| [options-and-attributes.md](options-and-attributes.md) | the settings-vs-attributes partition, the `~` / `input:` escape, class ownership, `id` policy, `custom`, and the per-setting reference table. |
 | [components.md](components.md) | x-component specifics: tags, attribute projection (kebab→setting, `label:`/`group:`/`input:`/`option:`/`optgroup:`), boolean shortcuts, slots. |
 | [bootstrap5.md](bootstrap5.md) | Bootstrap 4↔5 differences, version override, floating layout, `custom` no-op, inline caveat. |
 | [config.md](config.md) | the full configuration key reference. |

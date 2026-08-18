@@ -25,12 +25,13 @@ class GoldenSnapshotB5Test extends TestCase
     {
         $names = [
             'text', 'text.help', 'text.prepend_append',
-            'select.native', 'select.selected', 'select.optgroup',
+            'select.native', 'select.selected', 'select.optgroup', 'select.placeholder',
             'checkbox', 'checkbox.switch', 'radios.checked', 'checkboxes.option_attributes',
             'checkbox.help', 'checkbox.switch_help', 'checkbox.inline_help', 'radio.help', 'checkboxes.help',
             'required.text', 'required.text_html', 'required.checkbox', 'required.checkboxes', 'required.radios',
             'file', 'range',
-            'layout.horizontal', 'layout.horizontal_checkbox', 'layout.horizontal_checkbox_help', 'layout.inline',
+            'layout.horizontal', 'layout.horizontal_checkbox', 'layout.horizontal_checkbox_help',
+            'layout.horizontal_checkboxes', 'layout.inline',
             'float.text', 'float.select', 'float.textarea', 'float.addon', 'float.checkbox',
             'model.text', 'old.text', 'error.text', 'valid.text_success',
             'error.checkbox_help', 'valid.checkbox_success',
@@ -68,6 +69,7 @@ class GoldenSnapshotB5Test extends TestCase
             case 'select.native': return (string) BF::select('sel', null, $choices);
             case 'select.selected': return (string) BF::select('sel', null, $choices, 'b');
             case 'select.optgroup': return (string) BF::select('sel', null, ['G1' => ['a' => 'A', 'b' => 'B'], 'G2' => ['c' => 'C']]);
+            case 'select.placeholder': return (string) BF::select('sel', null, $choices, null, ['placeholder' => 'Pick']);
 
             case 'checkbox': return (string) BF::checkbox('accept', 'Accept');
             case 'checkbox.switch': return (string) BF::checkbox('accept', 'Accept', 1, null, ['switch' => true]);
@@ -108,6 +110,11 @@ class GoldenSnapshotB5Test extends TestCase
                 return $h;
             case 'layout.horizontal_checkbox_help': BF::horizontal(['url' => '/x']);
                 $h = (string) BF::checkbox('accept', 'Accept', 1, null, ['help' => 'Some help']);
+                BF::close();
+
+                return $h;
+            case 'layout.horizontal_checkboxes': BF::horizontal(['url' => '/x']);
+                $h = (string) BF::checkboxes('tags', null, ['a' => 'A', 'b' => 'B']);
                 BF::close();
 
                 return $h;

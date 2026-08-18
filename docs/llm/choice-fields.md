@@ -39,10 +39,10 @@ addons). Anything else is an HTML attribute on `<select>` (`multiple`, `required
   on `<select>`, it becomes a leading blank, pre-selected option.
 
   ```blade
-  <x-bf::select name="sel" :choices="['a' => 'A']" placeholder="Pick"/>
+  <x-bf::select name="sel" :choices="['a' => 'A', 'b' => 'B', 'c' => 'C']" placeholder="Pick"/>
   ```
   ```html
-  <select id="sel" class="form-select" name="sel"><option selected="selected" value="">Pick</option><option value="a">A</option></select>
+  <div id="sel-group" class="mb-3"><label for="sel" class="form-label">Sel</label><div><select id="sel" class="form-select" name="sel"><option selected="selected" value="">Pick</option><option value="a">A</option><option value="b">B</option><option value="c">C</option></select></div></div>
   ```
 - **`custom`** (Bootstrap 4 legacy) → in B4, `class="custom-select"` instead of `form-control`. No-op in
   Bootstrap 5 (the default), which always renders `form-select`. See [bootstrap5.md](bootstrap5.md).
@@ -194,5 +194,5 @@ Checkable-specific settings: `checked` (bool, the arg), `inline` (bool), `custom
   (`form-check-label`). See [options-and-attributes.md](options-and-attributes.md).
 
   ```html
-  <div id="tags-group" class="mb-3 row"><label for="tags" class="pt-0 col-form-label col-lg-2 col-xl-3">Tags</label><div class="col"><div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a"><label for="tags-a" class="form-check-label">A</label></div></div></div>
+  <div id="tags-group" class="mb-3 row"><label for="tags" class="pt-0 col-form-label col-lg-2 col-xl-3">Tags</label><div class="col"><div class="form-check"><input id="tags-a" class="form-check-input" name="tags" type="checkbox" value="a"><label for="tags-a" class="form-check-label">A</label></div><div class="form-check"><input id="tags-b" class="form-check-input" name="tags" type="checkbox" value="b"><label for="tags-b" class="form-check-label">B</label></div></div></div>
   ```

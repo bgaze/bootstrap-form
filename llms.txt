@@ -13,9 +13,9 @@ load-on-demand index below. Read a spoke only when the task touches its area.
 - [Usage guide — hub](docs/llm/index.md): entry point — detection steps, field model, the three syntaxes, full field catalog, cascade, spoke index.
 - [Choice fields](docs/llm/choice-fields.md): select / checkboxes / radios, the `choices` grammar, optgroups, per-option attributes, switches.
 - [Layouts](docs/llm/layouts.md): vertical / horizontal / inline / floating + column and spacing options.
-- [Input groups](docs/llm/input-groups.md): prepend/append addons (options & slots), control sizing, help text.
+- [Input groups](docs/llm/input-groups.md): prepend/append addons (options & slots, raw-HTML rule), control sizing, textarea dimensions, help text.
 - [Model binding & validation](docs/llm/model-binding.md): form open, model store/update, old input, error display, valid feedback, error bags.
-- [Options & attributes](docs/llm/options-and-attributes.md): settings-vs-attributes partition, the `~` / `input:` escape, `id` policy, `label`, `group`, `custom`.
+- [Options & attributes](docs/llm/options-and-attributes.md): settings-vs-attributes partition, the `~` / `input:` escape, class ownership, `id` policy, and the per-setting reference table (defaults, scope, and the test pinning each behaviour).
 - [x-components](docs/llm/components.md): tag list, attribute projection, slots, layout shortcuts, the parity contract.
 - [Bootstrap 5](docs/llm/bootstrap5.md): Bootstrap 4↔5 deltas, version override, floating layout, `custom` no-op, inline caveat.
 - [Configuration](docs/llm/config.md): the full configuration key reference.
