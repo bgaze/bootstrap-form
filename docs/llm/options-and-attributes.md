@@ -5,6 +5,7 @@ Goldens: tests/golden/b4/text.id_explicit.html, tests/golden/b4/text.id_false.ht
          tests/golden/b4/check.option_id_override.html
 Tests:   tests/ConfigurableClassesTest.php (class ownership, control vs group),
          tests/SettingsPartitionTest.php (both directions of the partition, `tag`, `~size`)
+         tests/SettingsTableCoverageTest.php (this file's reference table vs the code)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
