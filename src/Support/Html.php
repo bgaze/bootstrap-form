@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bgaze\BootstrapForm\Support;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 
 /**
@@ -63,6 +64,25 @@ class Html
     public function entities(string $value): string
     {
         return htmlentities($value, ENT_QUOTES, 'UTF-8', false);
+    }
+
+    /**
+     * Resolve a content value for injection into an element body.
+     *
+     * A Htmlable value is markup by construction (a Blade slot, an explicit HtmlString): the
+     * caller owns it, so it is emitted verbatim whatever $escape asks. Anything else is a plain
+     * value, escaped only on demand and WITHOUT double-encoding — the policy every other
+     * escaping site in the package follows (attributes, textarea, select options).
+     */
+    public function content(mixed $value, bool $escape = false): string
+    {
+        if ($value instanceof Htmlable) {
+            return $value->toHtml();
+        }
+
+        $string = (string) $value;
+
+        return $escape ? e($string, false) : $string;
     }
 
     public function tag(string $tag, mixed $content, array $attributes = []): HtmlString
