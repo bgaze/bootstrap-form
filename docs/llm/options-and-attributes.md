@@ -188,7 +188,6 @@ An **empty anchor is a defect**: it marks a behaviour this guide claims and noth
 | `lspace` | `me-2` (B4 `mr-2`) | string\|`false` | inline | `tests/golden/b5/layout.inline.html` |
 | `hspace` | `me-3` (B4 `mr-3`) | string\|`false` | inline | `tests/golden/b5/layout.inline.html` |
 | `vspace` | `my-1` | string\|`false` | inline | `tests/golden/b5/layout.inline.html` |
-| `components` | `true` | bool | **config only** — recognized on fields, where it does nothing | `tests/ComponentIntegrationTest.php` |
 
 ### Per field
 

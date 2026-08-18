@@ -122,7 +122,7 @@ class BootstrapForm
         // Assembled as a plain (heterogeneous) array, then wrapped once.
         $settings = array_fill_keys(self::RESERVED, null);
         $settings['error_bag'] = 'default';
-        $settings = array_merge($settings, Arr::except($config, ['blade_directives', 'bootstrap4', 'bootstrap5']));
+        $settings = array_merge($settings, Arr::except($config, ['blade_directives', 'components', 'bootstrap4', 'bootstrap5']));
         // "custom" is always a known setting (a no-op in Bootstrap 5) so it is never
         // mistaken for an HTML attribute, even when absent from the version section.
         $settings['custom'] = false;
