@@ -6,6 +6,7 @@ namespace Bgaze\BootstrapForm\View\Components\Concerns;
 
 use Bgaze\BootstrapForm\Support\Attributes;
 use Bgaze\BootstrapForm\Support\Facades\BF;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 /**
@@ -22,6 +23,9 @@ use Illuminate\Support\Str;
  *                  {@see childAttributeGroups()} — so the array bag never leaks as a rendered
  *                  attribute on a component that does not support it.
  *  - `group`    -> false disables the wrapper; an array provides its attributes
+ *  - a boolean setting passed as the STRING 'true' / 'false' -> the actual boolean, so the
+ *                  Blade idioms `escape="false"` and `:escape="false"` agree
+ *                  ({@see booleanSettingKeys()})
  *  - anything else -> input attribute / setting, its key normalized to the snake_case BF
  *                     setting name when it maps to one (so kebab-case is idiomatic), otherwise
  *                     kept verbatim (HTML attributes such as data-*, aria-* stay untouched).
@@ -55,7 +59,8 @@ trait ResolvesBootstrapAttributes
                     $group = array_merge($group, $value);
                 }
             } else {
-                $options[$this->normalizeSettingKey($key)] = $value;
+                $setting = $this->normalizeSettingKey($key);
+                $options[$setting] = $this->normalizeBooleanValue($setting, $value);
             }
         }
 
@@ -85,6 +90,48 @@ trait ResolvesBootstrapAttributes
         $canonical = Str::snake(Str::camel($key));
 
         return in_array($canonical, $this->settingKeys(), true) ? $canonical : $key;
+    }
+
+    /**
+     * Read a boolean setting given as a Blade attribute string.
+     *
+     * `escape="false"` passes the STRING 'false', which is truthy — the classic Blade footgun,
+     * silently enabling what the author meant to disable. Normalizing it here makes
+     * `escape="false"` and `:escape="false"` agree.
+     */
+    protected function normalizeBooleanValue(string $key, mixed $value): mixed
+    {
+        if (! is_string($value) || ! in_array($key, $this->booleanSettingKeys(), true)) {
+            return $value;
+        }
+
+        return match ($value) {
+            'true' => true,
+            'false' => false,
+            default => $value,
+        };
+    }
+
+    /**
+     * The settings that only ever hold a boolean.
+     *
+     * Deliberately excludes the settings that default to false but legitimately accept a string
+     * (`help`, `success`, `prepend`, `append`): `help="false"` must stay the text "false". `group`
+     * has its own handling above.
+     *
+     * @return array<int, string>
+     */
+    protected function booleanSettingKeys(): array
+    {
+        return [
+            'escape',
+            'switch',
+            'inline',
+            'custom',
+            'show_all_errors',
+            'show_valid_feedback',
+            'disable_errors',
+        ];
     }
 
     /**
@@ -134,9 +181,12 @@ trait ResolvesBootstrapAttributes
      * Read from __laravel_slots (the actual slots) rather than $data[$name], so a slot never
      * collides with a public property of the same name (e.g. the label prop).
      *
+     * Returned as a HtmlString: a slot is markup by construction, so it must keep the raw regime
+     * even under `escape => true` — the author wrote that markup in the template on purpose.
+     *
      * @param  array<string, mixed>  $data
      */
-    protected function namedSlot(array $data, string $name): ?string
+    protected function namedSlot(array $data, string $name): ?HtmlString
     {
         $slots = $data['__laravel_slots'] ?? [];
 
@@ -146,7 +196,7 @@ trait ResolvesBootstrapAttributes
 
         $content = trim((string) $slots[$name]);
 
-        return $content !== '' ? $content : null;
+        return $content !== '' ? new HtmlString($content) : null;
     }
 
     /**

@@ -104,6 +104,10 @@ class FormElements
 
     protected function formatLabel(string $name, mixed $value): string
     {
+        // Resolve first: a Htmlable value (a Blade slot, an explicit HtmlString) would otherwise
+        // break the declared string return type under strict_types.
+        $value = $this->html->content($value);
+
         return $value ?: ucwords(str_replace('_', ' ', $name));
     }
 
