@@ -3,6 +3,7 @@ Sources: src/BootstrapForm.php, src/BootstrapFormServiceProvider.php, src/config
          src/Support/Input.php, src/Support/Options.php, src/Support/Attributes.php,
          src/View/Components/*.php
 Goldens: tests/golden/b5/text.html (default), tests/golden/b4/*.html (B4 baseline)
+Tests:   tests/RawContentTest.php (raw content sinks), tests/ConfigurableClassesTest.php (class ownership)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -113,8 +114,29 @@ group wrapper id is `{id}-group`.
 only what the driver requires, skipping every config-sourced class. `group => ['class' => …]` /
 `group:class` **replaces** `group_class` (config `bootstrap4`/`bootstrap5` sections — `form-group` /
 `mb-3`) and the inline spacing; `label => ['class' => …]` / `label:class` replaces `left_class` and
-`lspace`. `class => false` renders none; `group => false` drops the wrapper entirely. See
-[options-and-attributes.md](options-and-attributes.md).
+`lspace`. `false` means *none of mine*, **not** *no class*: the driver's own classes always survive,
+so `['class' => false]` still renders `<input class="form-control">`. `group => false` drops the
+wrapper entirely.
+
+**Horizontal layout — restate the column width.** `left_class` carries the label's grid column, so
+styling the label removes it: `label:class="fw-bold"` renders `class="fw-bold col-form-label"` — no
+`col-lg-2 col-xl-3`, and the row collapses. Restate the width in your own class
+(`label:class="fw-bold col-lg-2 col-xl-3"`). Same for `group:class`, which also takes over the
+inline spacing.
+
+**Raw HTML — the content sinks are not escaped.** Injecting markup is a supported use case, so these
+sinks emit their content verbatim. Two regimes, and the difference is what a caller must know:
+
+- **Always raw** — `label` (field and standalone), `help`, `success`. Predictable; it is what makes
+  an HTML `required_mark` work.
+- **Raw depending on the value** — `prepend` / `append` addons. A value carrying an HTML tag is
+  emitted verbatim; a tag-free value is escaped and wrapped in `.input-group-text`. The decision is
+  taken by the *value*, not by the call site.
+
+Escape anything derived from user input, the database or translation files **before** passing it to
+one of these.
+
+See [options-and-attributes.md](options-and-attributes.md) and [input-groups.md](input-groups.md).
 
 ---
 
@@ -129,7 +151,9 @@ Anything **not** in this list is treated as an HTML attribute.
   override it at a call site by styling the group (`group => ['class' => …]`).
 - **Per field, all types:** `label`, `help`, `success`.
 - **Per field, text-like inputs only** (text/email/url/tel/number/date/time/datetime-local/month/
-  week/search/color/textarea/password): `size` (`'sm'`|`'lg'`), `prepend`, `append`.
+  week/search/color/textarea/password): `size` (`'sm'`|`'lg'`), `prepend`, `append` — addons carry a
+  raw-HTML rule, see **[input-groups.md](input-groups.md)**. A `textarea`'s **dimensions** are the
+  plain `cols` / `rows` attributes (default `50` × `10`), not `size`.
 - **Form-only, reserved** (never inherited by fields): `model`, `url`, `route`, `action`, `store`,
   `update`.
 
@@ -219,7 +243,7 @@ For buttons/link/label the `options` second arg may be a Bootstrap variant strin
 {{-- Control sizing (text-like) --}}
 <x-bf::text name="code" size="sm"/>
 
-{{-- Input-group addons: plain text auto-wraps in .input-group-text; pass HTML (a button, an icon) to bypass — see input-groups.md --}}
+{{-- Input-group addons: tag-free text is escaped and wrapped in .input-group-text; a value containing a tag is emitted RAW — see input-groups.md --}}
 <x-bf::text name="amount" prepend="$" append=".00"/>
 
 {{-- Select with a plain value => label map --}}

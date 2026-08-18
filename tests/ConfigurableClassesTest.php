@@ -195,4 +195,39 @@ class ConfigurableClassesTest extends TestCase
             trim(Blade::render('<x-bf::text name="login" label:class="fw-bold"/>'))
         );
     }
+
+    // ## CONTROL CLASS ##########################################################
+
+    /**
+     * A false class means "none of mine", not "no class": the driver's component class is a
+     * requirement of the markup, not a configured default, so it always survives.
+     */
+    public function test_a_false_control_class_still_keeps_the_driver_component_class(): void
+    {
+        $expected = '<div id="q-group" class="mb-3"><label for="q" class="form-label">Search</label>'
+            .'<div><input class="form-control" id="q" name="q" type="text"></div></div>';
+
+        $this->assertSame($expected, (string) BF::text('q', 'Search', null, ['class' => false]));
+    }
+
+    public function test_a_false_control_class_keeps_the_driver_class_on_select_and_checkable(): void
+    {
+        $this->assertStringContainsString(
+            '<select class="form-select" id="s" name="s">',
+            (string) BF::select('s', 'S', ['a' => 'A'], null, ['class' => false]),
+        );
+
+        $this->assertStringContainsString(
+            '<input class="form-check-input" id="c" name="c" type="checkbox" value="1">',
+            (string) BF::checkbox('c', 'C', 1, null, ['class' => false]),
+        );
+    }
+
+    public function test_a_supplied_control_class_is_added_to_the_driver_class(): void
+    {
+        $this->assertStringContainsString(
+            '<input class="custom form-control" id="q" name="q" type="text">',
+            (string) BF::text('q', 'Search', null, ['class' => 'custom']),
+        );
+    }
 }

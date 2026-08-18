@@ -3,6 +3,7 @@ Sources: src/Support/Options.php, src/Support/Attributes.php, src/Support/Input.
          src/View/Components/Concerns/ResolvesBootstrapAttributes.php
 Goldens: tests/golden/b4/text.id_explicit.html, tests/golden/b4/text.id_false.html,
          tests/golden/b4/check.option_id_override.html
+Tests:   tests/ConfigurableClassesTest.php (class ownership, control vs group)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -115,8 +116,20 @@ In x-components: `group="false"` disables it, `group:class="mb-4"` sets attribut
 > **Supply a class for an element and you own its styling: the package then adds only the classes
 > its version driver requires. Every config-sourced class is skipped.**
 
-There is exactly **one** way to style each element — its own attribute bag — and it always replaces,
-never appends. `class => false` renders no class at all.
+There is exactly **one** way to style each element — its own attribute bag — and it replaces the
+**config-sourced** classes, never the driver's. So `false` means *none of mine*, not *no class*:
+
+| Call | Rendered |
+|---|---|
+| `BF::text('q', 'Search')` | `<input id="q" class="form-control" …>` |
+| `['class' => 'custom']` | `<input class="custom form-control" …>` — no config class applies to a control, so yours is added |
+| `['class' => false]` | `<input class="form-control" …>` — **the driver class survives** |
+| `['group' => ['class' => false]]` | `<div id="q-group">` — empty, because `group_class` is config-sourced |
+| `['group' => false]` | no wrapper at all |
+
+A `false` class only empties the attribute on an element whose classes are **all** config-sourced —
+the group wrapper, outside the horizontal layout. A control always carries a driver class, so it
+always keeps one.
 
 | Element | Your attribute | Always added (driver) | Skipped (config) |
 |---|---|---|---|

@@ -5,6 +5,8 @@ Sources: src/Support/Traits/HasAddons.php, src/Support/Drivers/VersionDriver.php
 Goldens: tests/golden/b5/text.prepend_append.html, tests/golden/b5/text.help.html (default),
          tests/golden/b5/float.addon.html, tests/golden/b4/text.prepend_append.html (B4),
          tests/golden/b4/error.help_describedby.html
+Tests:   tests/TextareaSizeTest.php (textarea size vs dimensions),
+         tests/RawContentTest.php (addon escaping regime)
 Keep in sync in the SAME commit as any change to the files above (see CLAUDE.md § Documentation).
 -->
 
@@ -29,6 +31,11 @@ Providing either wraps the control in a Bootstrap **input group**.
 
 Detection keys on a tag opening (`<` immediately followed by a letter, `!` or `/`), so bare content
 such as `°C`, `$`, `R&D` or `a < b` stays text.
+
+> **The escaping decision is taken by the value, not by the call site.** The same `prepend` emits an
+> escaped span for `°C` and raw markup the moment its value happens to contain a tag. So an addon fed
+> from user input, a database column or a translation file is an injection sink — escape it before
+> passing it. `label`, `help` and `success` are **always** raw, with no heuristic at all.
 
 ```blade
 <x-bf::text name="amount" prepend="$" append=".00"/>
@@ -81,8 +88,26 @@ Validation feedback is forced to display as a block (`invalid-feedback d-block`)
 <x-bf::text name="code" size="sm"/>   {{-- <input … class="form-control form-control-sm"> --}}
 ```
 
-> `size` on a **`textarea`** means something else: `cols x rows` (e.g. `size="30x5"`), matching the
-> historical Collective behavior.
+### `textarea` — size versus dimensions
+
+`size` on a `textarea` is the same Bootstrap control size as above. Its **dimensions** come from the
+plain `cols` / `rows` HTML attributes, which are always emitted and default to `cols="50" rows="10"`:
+
+```blade
+<x-bf::textarea name="bio" cols="30" rows="5"/>
+```
+```html
+<div id="bio-group" class="mb-3"><label for="bio" class="form-label">Bio</label><div><textarea cols="30" rows="5" id="bio" class="form-control" name="bio"></textarea></div></div>
+```
+
+The historical Collective `COLSxROWS` form still works, but **only through the literal escape**:
+`size` is consumed as a setting before it can reach the textarea, so a plain `size="30x5"` is
+swallowed and changes nothing.
+
+```php
+BF::textarea('bio', null, null, ['~size' => '30x5']);  // <textarea … cols="30" rows="5">
+BF::textarea('bio', null, null, ['size' => '30x5']);   // swallowed — cols="50" rows="10"
+```
 
 ---
 
