@@ -6,3 +6,4 @@ composer.lock
 .phpunit.result.cache
 todo.md
 /.claude
+.DS_Store
